@@ -1,0 +1,1035 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نظام المؤتمرات المتطور | لوحة التحكم الإدارية</title>
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap');
+
+        :root {
+            --primary-color: #9d4edd;
+            --secondary-color: #00f5ff;
+            --accent-color: #c77dff;
+            --dark-bg: #10002b;
+            --card-bg: rgba(255, 255, 255, 0.05);
+            --card-border: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            font-family: 'Tajawal', sans-serif !important;
+        }
+
+        body {
+            background-color: var(--dark-bg) !important;
+            color: #fff !important;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* خلفية التكنولوجيا المتحركة */
+        .tech-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .grid-lines {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-image:
+                    linear-gradient(to right, rgba(154, 96, 255, 0.1) 1px, transparent 1px),
+                    linear-gradient(to bottom, rgba(154, 96, 255, 0.1) 1px, transparent 1px);
+            background-size: 40px 40px;
+            animation: gridMove 20s linear infinite;
+        }
+
+        .floating-shapes {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        .shape {
+            position: absolute;
+            background: var(--primary-color);
+            opacity: 0.1;
+            border-radius: 50%;
+            filter: blur(40px);
+            animation: float 15s infinite ease-in-out;
+        }
+
+        .shape:nth-child(1) {
+            width: 300px;
+            height: 300px;
+            top: 10%;
+            left: 5%;
+            animation-delay: 0s;
+        }
+
+        .shape:nth-child(2) {
+            width: 250px;
+            height: 250px;
+            bottom: 15%;
+            right: 10%;
+            background: var(--secondary-color);
+            animation-delay: -5s;
+        }
+
+        .shape:nth-child(3) {
+            width: 350px;
+            height: 350px;
+            top: 50%;
+            right: 15%;
+            background: var(--accent-color);
+            animation-delay: -10s;
+        }
+
+        /* تعديلات Bootstrap */
+        .top-bar {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(15px);
+            border-bottom: 1px solid var(--card-border);
+        }
+
+        .hologram-logo-small {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color), var(--accent-color));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            box-shadow: 0 0 20px rgba(154, 96, 255, 0.6);
+            animation: hologramPulse 4s infinite alternate;
+        }
+
+        .site-title {
+            font-size: 22px;
+            font-weight: 700;
+            background: linear-gradient(90deg, var(--secondary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        /* الشريط الجانبي */
+        .sidebar {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(15px);
+            border-left: 1px solid var(--card-border);
+            height: calc(100vh - 80px);
+            position: sticky;
+            top: 80px;
+            overflow-y: auto;
+        }
+
+        .sidebar .nav-link {
+            color: rgba(255, 255, 255, 0.8);
+            border-radius: 12px;
+            margin-bottom: 8px;
+            padding: 15px 20px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .sidebar .nav-link:hover {
+            background: rgba(154, 96, 255, 0.2);
+            color: white;
+            transform: translateX(-5px);
+        }
+
+        .sidebar .nav-link.active {
+            background: linear-gradient(90deg, rgba(154, 96, 255, 0.3), rgba(0, 245, 255, 0.2));
+            color: white;
+            border-right: 3px solid var(--secondary-color);
+        }
+
+        .sidebar .nav-icon {
+            font-size: 20px;
+            width: 30px;
+            text-align: center;
+        }
+
+        /* بطاقات الإحصائيات */
+        .stat-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            height: 100%;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(0, 245, 255, 0.3);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--secondary-color), var(--primary-color), var(--accent-color));
+        }
+
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+        }
+
+        .icon-events { background: rgba(157, 78, 221, 0.2); color: var(--primary-color); }
+        .icon-users { background: rgba(0, 245, 255, 0.2); color: var(--secondary-color); }
+        .icon-submissions { background: rgba(199, 125, 255, 0.2); color: var(--accent-color); }
+        .icon-revenue { background: rgba(255, 107, 107, 0.2); color: #ff6b6b; }
+
+        .stat-change {
+            font-size: 14px;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+
+        .change-up { background: rgba(46, 204, 113, 0.2); color: #2ecc71; }
+        .change-down { background: rgba(255, 71, 87, 0.2); color: #ff4757; }
+
+        .stat-value {
+            font-size: 36px;
+            font-weight: 800;
+            margin-bottom: 10px;
+        }
+
+        /* بطاقات المخططات */
+        .chart-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            height: 100%;
+        }
+
+        .chart-container {
+            height: 300px;
+            position: relative;
+        }
+
+        /* بطاقات الجداول */
+        .table-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+        }
+
+        .table-search .form-control {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--card-border);
+            color: white;
+        }
+
+        .table-search .form-control:focus {
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 0.25rem rgba(0, 245, 255, 0.25);
+        }
+
+        /* الجداول */
+        .data-table {
+            --bs-table-bg: transparent;
+            --bs-table-color: rgba(255, 255, 255, 0.8);
+            --bs-table-border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .data-table th {
+            color: var(--secondary-color);
+            font-weight: 600;
+            border-bottom: 1px solid var(--card-border);
+        }
+
+        .data-table tbody tr:hover {
+            background: rgba(154, 96, 255, 0.1);
+        }
+
+        .status-badge {
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .status-active { background: rgba(46, 204, 113, 0.2); color: #2ecc71; }
+        .status-pending { background: rgba(241, 196, 15, 0.2); color: #f1c40f; }
+        .status-inactive { background: rgba(255, 71, 87, 0.2); color: #ff4757; }
+
+        .action-buttons .btn {
+            width: 35px;
+            height: 35px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            padding: 0;
+        }
+
+        .btn-edit { background: rgba(52, 152, 219, 0.2); border-color: rgba(52, 152, 219, 0.3); color: #3498db; }
+        .btn-delete { background: rgba(231, 76, 60, 0.2); border-color: rgba(231, 76, 60, 0.3); color: #e74c3c; }
+        .btn-view { background: rgba(155, 89, 182, 0.2); border-color: rgba(155, 89, 182, 0.3); color: #9b59b6; }
+
+        .action-buttons .btn:hover {
+            transform: scale(1.1);
+        }
+
+        /* معلومات المستخدم */
+        .user-profile {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 50px;
+            padding: 8px 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .user-profile:hover {
+            background: rgba(154, 96, 255, 0.2);
+        }
+
+        .user-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .badge-admin {
+            background: #ff4757;
+            color: white;
+            font-size: 11px;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+
+        /* الإشعارات */
+        .notification-bell {
+            position: relative;
+            cursor: pointer;
+            font-size: 22px;
+            color: var(--accent-color);
+            transition: all 0.3s ease;
+        }
+
+        .notification-bell:hover {
+            color: var(--secondary-color);
+            transform: scale(1.1);
+        }
+
+        .notification-count {
+            position: absolute;
+            top: -8px;
+            left: -8px;
+            background: #ff4757;
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* العناوين */
+        .page-title {
+            font-size: 32px;
+            font-weight: 800;
+            background: linear-gradient(90deg, var(--secondary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        /* تأثيرات الحركة */
+        @keyframes gridMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(40px, 40px); }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-30px) rotate(5deg); }
+        }
+
+        @keyframes hologramPulse {
+            0% {
+                box-shadow: 0 0 20px rgba(154, 96, 255, 0.6);
+            }
+            100% {
+                box-shadow: 0 0 40px rgba(154, 96, 255, 0.8);
+            }
+        }
+
+        /* تذييل الصفحة */
+        .footer {
+            border-top: 1px solid var(--card-border);
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 14px;
+        }
+
+        /* تحسينات للتصميم المتجاوب */
+        @media (max-width: 768px) {
+            .sidebar {
+                height: auto;
+                position: static;
+            }
+
+            .page-title {
+                font-size: 24px;
+            }
+
+            .stat-value {
+                font-size: 28px;
+            }
+        }
+    </style>
+</head>
+<body>
+<!-- خلفية التكنولوجيا -->
+<div class="tech-background">
+    <div class="grid-lines"></div>
+    <div class="floating-shapes">
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+    </div>
+</div>
+
+<!-- الشريط العلوي -->
+<nav class="navbar navbar-expand-lg top-bar px-3 px-lg-4 py-3">
+    <div class="container-fluid">
+        <!-- الشعار والعنوان -->
+        <div class="d-flex align-items-center">
+            <div class="hologram-logo-small me-3">
+                <i class="fas fa-user-shield"></i>
+            </div>
+            <div class="site-title d-none d-md-block">لوحة التحكم الإدارية</div>
+        </div>
+
+        <!-- زر القائمة للموبايل -->
+        <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon">
+                <i class="fas fa-bars text-white"></i>
+            </span>
+        </button>
+
+        <!-- محتوى الشريط العلوي -->
+        <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+            <div class="d-flex align-items-center gap-3">
+                <!-- الإشعارات -->
+                <div class="notification-bell position-relative" id="notificationBell">
+                    <i class="fas fa-bell"></i>
+                    <span class="notification-count">5</span>
+                </div>
+
+                <!-- معلومات المستخدم -->
+                <div class="user-profile d-flex align-items-center gap-2" id="userProfile" role="button">
+                    <div class="user-avatar">
+                        <i class="fas fa-user-cog"></i>
+                    </div>
+                    <div class="d-none d-md-block">
+                        <div class="fw-semibold">المشرف العام</div>
+                        <div class="d-flex align-items-center gap-1">
+                            <span class="badge-admin">مدير النظام</span>
+                            <i class="fas fa-chevron-down fs-12"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<!-- المحتوى الرئيسي -->
+<div class="container-fluid">
+    <div class="row">
+        <!-- الشريط الجانبي -->
+        <div class="col-lg-3 col-xl-2 px-0">
+            <div class="sidebar p-3 p-lg-4">
+                <!-- عنوان الشريط الجانبي -->
+                <div class="mb-4 pb-3 border-bottom border-secondary">
+                    <h5 class="fw-bold text-white mb-2">القائمة الرئيسية</h5>
+                    <p class="text-muted mb-0">إدارة النظام بالكامل</p>
+                </div>
+
+                <!-- قائمة التنقل -->
+                <nav class="nav flex-column" id="sidebarNav">
+                    <a class="nav-link active" href="#" data-page="dashboard">
+                        <i class="nav-icon fas fa-tachometer-alt"></i>
+                        <span>لوحة التحكم</span>
+                    </a>
+
+                    <a class="nav-link" href="#" data-page="events">
+                        <i class="nav-icon fas fa-calendar-alt"></i>
+                        <span>الأحداث</span>
+                        <span class="badge bg-primary rounded-pill ms-auto">12</span>
+                    </a>
+
+                    <a class="nav-link" href="#" data-page="users">
+                        <i class="nav-icon fas fa-users"></i>
+                        <span>المستخدمين</span>
+                        <span class="badge bg-primary rounded-pill ms-auto">154</span>
+                    </a>
+
+                    <a class="nav-link" href="#" data-page="organizers">
+                        <i class="nav-icon fas fa-user-tie"></i>
+                        <span>المنظمين</span>
+                        <span class="badge bg-primary rounded-pill ms-auto">8</span>
+                    </a>
+
+                    <a class="nav-link" href="#" data-page="reports">
+                        <i class="nav-icon fas fa-file-alt"></i>
+                        <span>التقارير</span>
+                    </a>
+
+                    <a class="nav-link" href="#" data-page="statistics">
+                        <i class="nav-icon fas fa-chart-bar"></i>
+                        <span>الإحصائيات</span>
+                    </a>
+
+                    <a class="nav-link" href="#" data-page="settings">
+                        <i class="nav-icon fas fa-cog"></i>
+                        <span>الإعدادات</span>
+                    </a>
+
+                    <a class="nav-link" href="#" data-page="security">
+                        <i class="nav-icon fas fa-shield-alt"></i>
+                        <span>الأمان</span>
+                    </a>
+                </nav>
+
+                <!-- زر تسجيل الخروج -->
+                <div class="mt-auto pt-4 border-top border-secondary">
+                    <button class="btn btn-outline-danger w-100 d-flex align-items-center justify-content-center gap-2 py-3" id="logoutBtn">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>تسجيل الخروج</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- المحتوى الرئيسي -->
+        <div class="col-lg-9 col-xl-10 px-3 px-lg-4 py-4">
+            <!-- عنوان الصفحة -->
+            <div class="mb-4">
+                <h1 class="page-title mb-2">مرحباً بك، المشرف العام</h1>
+                <p class="text-muted">نظرة عامة على النظام وإحصائيات الأداء</p>
+            </div>
+
+            <!-- بطاقات الإحصائيات -->
+            <div class="row g-4 mb-5">
+                <div class="col-md-6 col-lg-3">
+                    <div class="stat-card p-4">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <div class="stat-icon icon-events">
+                                <i class="fas fa-calendar-check"></i>
+                            </div>
+                            <div class="stat-change change-up">
+                                <i class="fas fa-arrow-up me-1"></i> 12%
+                            </div>
+                        </div>
+                        <h3 class="stat-value">24</h3>
+                        <p class="text-muted mb-0">حدث نشط</p>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-lg-3">
+                    <div class="stat-card p-4">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <div class="stat-icon icon-users">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <div class="stat-change change-up">
+                                <i class="fas fa-arrow-up me-1"></i> 23%
+                            </div>
+                        </div>
+                        <h3 class="stat-value">1,542</h3>
+                        <p class="text-muted mb-0">مستخدم مسجل</p>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-lg-3">
+                    <div class="stat-card p-4">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <div class="stat-icon icon-submissions">
+                                <i class="fas fa-file-alt"></i>
+                            </div>
+                            <div class="stat-change change-down">
+                                <i class="fas fa-arrow-down me-1"></i> 5%
+                            </div>
+                        </div>
+                        <h3 class="stat-value">328</h3>
+                        <p class="text-muted mb-0">ملخص علمي</p>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-lg-3">
+                    <div class="stat-card p-4">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <div class="stat-icon icon-revenue">
+                                <i class="fas fa-money-bill-wave"></i>
+                            </div>
+                            <div class="stat-change change-up">
+                                <i class="fas fa-arrow-up me-1"></i> 18%
+                            </div>
+                        </div>
+                        <h3 class="stat-value">$12,450</h3>
+                        <p class="text-muted mb-0">إجمالي الإيرادات</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- المخططات -->
+            <div class="row g-4 mb-5">
+                <div class="col-lg-6">
+                    <div class="chart-card p-4">
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <h5 class="fw-bold mb-0">نشاط المستخدمين</h5>
+                            <div class="btn-group" role="group">
+                                <input type="radio" class="btn-check" name="chartPeriod" id="week" autocomplete="off">
+                                <label class="btn btn-outline-primary btn-sm" for="week">أسبوع</label>
+
+                                <input type="radio" class="btn-check" name="chartPeriod" id="month" autocomplete="off" checked>
+                                <label class="btn btn-outline-primary btn-sm" for="month">شهر</label>
+
+                                <input type="radio" class="btn-check" name="chartPeriod" id="year" autocomplete="off">
+                                <label class="btn btn-outline-primary btn-sm" for="year">سنة</label>
+                            </div>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="activityChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-6">
+                    <div class="chart-card p-4">
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <h5 class="fw-bold mb-0">توزيع الأحداث</h5>
+                            <div class="btn-group" role="group">
+                                <input type="radio" class="btn-check" name="chartType" id="eventType" autocomplete="off" checked>
+                                <label class="btn btn-outline-primary btn-sm" for="eventType">نوع الحدث</label>
+
+                                <input type="radio" class="btn-check" name="chartType" id="eventStatus" autocomplete="off">
+                                <label class="btn btn-outline-primary btn-sm" for="eventStatus">حالة الحدث</label>
+                            </div>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="eventsChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- جدول الأحداث -->
+            <div class="table-card p-4 mb-4">
+                <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4">
+                    <h5 class="fw-bold mb-3 mb-md-0">الأحداث الحديثة</h5>
+                    <div class="table-search" style="width: 300px;">
+                        <div class="input-group">
+                            <span class="input-group-text bg-transparent border-end-0">
+                                <i class="fas fa-search text-muted"></i>
+                            </span>
+                            <input type="text" class="form-control border-start-0" id="searchInput" placeholder="بحث في الأحداث...">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table data-table table-hover">
+                        <thead>
+                        <tr>
+                            <th scope="col">اسم الحدث</th>
+                            <th scope="col">المنظم</th>
+                            <th scope="col">التاريخ</th>
+                            <th scope="col">المشاركون</th>
+                            <th scope="col">الحالة</th>
+                            <th scope="col" class="text-center">الإجراءات</th>
+                        </tr>
+                        </thead>
+                        <tbody id="eventsTable">
+                        <!-- سيتم ملء البيانات ديناميكياً -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- ترقيم الصفحات -->
+                <nav class="mt-4">
+                    <ul class="pagination justify-content-center">
+                        <li class="page-item disabled">
+                            <a class="page-link bg-transparent border-0" href="#">
+                                <i class="fas fa-chevron-right"></i>
+                            </a>
+                        </li>
+                        <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                        <li class="page-item"><a class="page-link" href="#">2</a></li>
+                        <li class="page-item"><a class="page-link" href="#">3</a></li>
+                        <li class="page-item">
+                            <a class="page-link bg-transparent border-0" href="#">
+                                <i class="fas fa-chevron-left"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+
+            <!-- تذييل الصفحة -->
+            <div class="footer text-center py-3 mt-4">
+                <p class="mb-2">© 2024 نظام المؤتمرات المتطور. جميع الحقوق محفوظة.</p>
+                <p class="mb-0 small">
+                    <i class="fas fa-server me-2"></i> إصدار النظام: 2.4.1 |
+                    <i class="fas fa-clock ms-3 me-2"></i> آخر تحديث: 10 دقائق
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // بيانات المخططات
+        const activityCtx = document.getElementById('activityChart').getContext('2d');
+        const eventsCtx = document.getElementById('eventsChart').getContext('2d');
+
+        // مخطط نشاط المستخدمين
+        const activityChart = new Chart(activityCtx, {
+            type: 'line',
+            data: {
+                labels: ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو'],
+                datasets: [{
+                    label: 'المستخدمين النشطين',
+                    data: [120, 190, 300, 500, 200, 300],
+                    borderColor: '#9d4edd',
+                    backgroundColor: 'rgba(157, 78, 221, 0.1)',
+                    borderWidth: 3,
+                    fill: true,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.1)'
+                        },
+                        ticks: {
+                            color: 'rgba(255, 255, 255, 0.7)'
+                        }
+                    },
+                    x: {
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.1)'
+                        },
+                        ticks: {
+                            color: 'rgba(255, 255, 255, 0.7)'
+                        }
+                    }
+                }
+            }
+        });
+
+        // مخطط توزيع الأحداث
+        const eventsChart = new Chart(eventsCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['مؤتمرات', 'ندوات', 'ورش عمل', 'أيام علمية'],
+                datasets: [{
+                    data: [40, 30, 20, 10],
+                    backgroundColor: [
+                        '#9d4edd',
+                        '#00f5ff',
+                        '#c77dff',
+                        '#ff6b6b'
+                    ],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            color: 'rgba(255, 255, 255, 0.8)',
+                            padding: 20
+                        }
+                    }
+                }
+            }
+        });
+
+        // بيانات الجدول
+        const eventsData = [
+            {
+                name: 'المؤتمر العالمي للصحة الرقمية',
+                organizer: 'د. أحمد محمد',
+                date: '15-20 مايو 2024',
+                participants: '450',
+                status: 'active'
+            },
+            {
+                name: 'ورشة الذكاء الاصطناعي في التشخيص',
+                organizer: 'د. سارة خالد',
+                date: '10-12 يونيو 2024',
+                participants: '120',
+                status: 'active'
+            },
+            {
+                name: 'اليوم العلمي للأبحاث الطبية',
+                organizer: 'أ. محمد حسن',
+                date: '5 أبريل 2024',
+                participants: '300',
+                status: 'inactive'
+            },
+            {
+                name: 'ندوة الطب الشخصي',
+                organizer: 'د. علي عبدالله',
+                date: '20-22 يوليو 2024',
+                participants: '200',
+                status: 'pending'
+            },
+            {
+                name: 'مؤتمر التكنولوجيا الطبية',
+                organizer: 'د. فاطمة علي',
+                date: '1-3 أغسطس 2024',
+                participants: '350',
+                status: 'active'
+            }
+        ];
+
+        // تعبئة الجدول بالبيانات
+        function populateEventsTable() {
+            const tableBody = document.getElementById('eventsTable');
+            tableBody.innerHTML = '';
+
+            eventsData.forEach(event => {
+                let statusBadge = '';
+                if (event.status === 'active') {
+                    statusBadge = '<span class="status-badge status-active">نشط</span>';
+                } else if (event.status === 'pending') {
+                    statusBadge = '<span class="status-badge status-pending">قيد المراجعة</span>';
+                } else {
+                    statusBadge = '<span class="status-badge status-inactive">منتهي</span>';
+                }
+
+                const row = `
+                    <tr>
+                        <td>${event.name}</td>
+                        <td>${event.organizer}</td>
+                        <td>${event.date}</td>
+                        <td>${event.participants}</td>
+                        <td>${statusBadge}</td>
+                        <td>
+                            <div class="d-flex justify-content-center gap-2">
+                                <button class="btn btn-view" onclick="viewEvent('${event.name}')">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button class="btn btn-edit" onclick="editEvent('${event.name}')">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="btn btn-delete" onclick="deleteEvent('${event.name}')">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+
+                tableBody.innerHTML += row;
+            });
+        }
+
+        // البحث في الجدول
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const rows = document.querySelectorAll('#eventsTable tr');
+
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                if (text.includes(searchTerm)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        });
+
+        // التنقل في الشريط الجانبي
+        document.querySelectorAll('#sidebarNav .nav-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+
+                // إزالة النشط من جميع الروابط
+                document.querySelectorAll('#sidebarNav .nav-link').forEach(item => {
+                    item.classList.remove('active');
+                });
+
+                // إضافة النشط للرابط الحالي
+                this.classList.add('active');
+
+                // تحديث عنوان الصفحة
+                const pageName = this.querySelector('span').textContent;
+                document.querySelector('.page-title').textContent = `لوحة ${pageName}`;
+            });
+        });
+
+        // تسجيل الخروج
+        document.getElementById('logoutBtn').addEventListener('click', function() {
+            if (confirm('هل أنت متأكد من تسجيل الخروج؟')) {
+                const originalText = this.innerHTML;
+                this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري تسجيل الخروج...';
+                this.disabled = true;
+
+                setTimeout(() => {
+                    window.location.href = "login.html";
+                }, 1500);
+            }
+        });
+
+        // الإشعارات
+        document.getElementById('notificationBell').addEventListener('click', function() {
+            const notifications = [
+                'تسجيل جديد: د. محمد أحمد',
+                'حدث جديد: مؤتمر الذكاء الاصطناعي',
+                'بلاغ: مشكلة في الخادم',
+                'تحديث النظام متاح',
+                '5 رسائل جديدة في صندوق الوارد'
+            ];
+
+            let notificationText = 'الإشعارات الحديثة:\n\n';
+            notifications.forEach((notif, index) => {
+                notificationText += `${index + 1}. ${notif}\n`;
+            });
+
+            alert(notificationText);
+
+            // إعادة عداد الإشعارات إلى صفر
+            document.querySelector('.notification-count').textContent = '0';
+        });
+
+        // معلومات المستخدم
+        document.getElementById('userProfile').addEventListener('click', function() {
+            alert('قائمة الملف الشخصي للمشرف العام\n\nيمكنك من هنا:\n- عرض الملف الشخصي\n- تغيير كلمة المرور\n- تعديل الإعدادات الشخصية');
+        });
+
+        // وظائف الإجراءات
+        window.viewEvent = function(eventName) {
+            alert(`عرض تفاصيل الحدث: ${eventName}`);
+        };
+
+        window.editEvent = function(eventName) {
+            alert(`تعديل الحدث: ${eventName}`);
+        };
+
+        window.deleteEvent = function(eventName) {
+            if (confirm(`هل أنت متأكد من حذف الحدث "${eventName}"؟`)) {
+                alert(`تم حذف الحدث: ${eventName}`);
+            }
+        };
+
+        // تحديث البيانات الحية
+        function updateLiveData() {
+            // تحديث عدد المستخدمين عشوائياً
+            const usersElement = document.querySelectorAll('.stat-value')[1];
+            if (usersElement) {
+                const currentUsers = parseInt(usersElement.textContent.replace(/,/g, ''));
+                const newUsers = currentUsers + Math.floor(Math.random() * 3);
+                usersElement.textContent = newUsers.toLocaleString();
+            }
+
+            // تحديث الوقت في التذييل
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('ar-SA');
+            document.querySelector('.footer p:nth-child(2)').innerHTML =
+                `<i class="fas fa-server me-2"></i> إصدار النظام: 2.4.1 |
+                 <i class="fas fa-clock ms-3 me-2"></i> آخر تحديث: ${timeString}`;
+        }
+
+        // تحديث البيانات كل دقيقة
+        setInterval(updateLiveData, 60000);
+
+        // تهيئة البيانات
+        populateEventsTable();
+        updateLiveData();
+
+        // تأثيرات عند التمرير
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // تطبيق تأثيرات على بطاقات الإحصائيات
+        document.querySelectorAll('.stat-card').forEach(card => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px)';
+            card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+            observer.observe(card);
+        });
+    });
+</script>
+</body>
+</html>
