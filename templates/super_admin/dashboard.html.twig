@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 
+
 {% block title %}Super Admin Dashboard - Royal Control{% endblock %}
 
 {% block body %}
@@ -162,3 +163,81 @@
         </div>
     </div>
 {% endblock %}
+
+{% block title %}Super Admin Dashboard{% endblock %}
+
+{% block body %}
+    <div class="container py-5">
+        <h1 class="animated-title text-center mb-5">Super Admin Panel</h1>
+
+        <div class="row g-4">
+            <!-- Users Card -->
+            <div class="col-md-4">
+                <div class="glass-card p-4 shadow">
+                    <h5 class="text-white"><i class="bi bi-people-fill"></i> Total Users</h5>
+                    <h2 class="text-white mt-2">120</h2>
+                    <a href="{{ path('super_manage_users') }}" class="btn btn-glow mt-3 w-100">Manage Users</a>
+                </div>
+            </div>
+
+            <!-- Organizers Card -->
+            <div class="col-md-4">
+                <div class="glass-card p-4 shadow">
+                    <h5 class="text-white"><i class="bi bi-person-badge-fill"></i> Organizers</h5>
+                    <h2 class="text-white mt-2">15</h2>
+                    <a href="{{ path('super_manage_users') }}" class="btn btn-glow mt-3 w-100">Manage Organizers</a>
+                </div>
+            </div>
+
+            <!-- Events Card -->
+            <div class="col-md-4">
+                <div class="glass-card p-4 shadow">
+                    <h5 class="text-white"><i class="bi bi-calendar-event-fill"></i> Total Events</h5>
+                    <h2 class="text-white mt-2">32</h2>
+                    <a href="{{ path('super_manage_events') }}" class="btn btn-glow mt-3 w-100">Manage Events</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Users Table -->
+        <div class="mt-5 glass-card p-4 shadow">
+            <h4 class="text-white mb-3">Recent Users</h4>
+            <div class="table-responsive">
+                <table class="table table-dark table-striped table-hover">
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Role</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td>John Doe</td>
+                        <td>john@example.com</td>
+                        <td>Organizer</td>
+                        <td>
+                            <a href="#" class="btn btn-glow btn-sm">Edit</a>
+                            <a href="#" class="btn btn-glow btn-sm">Delete</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>Jane Smith</td>
+                        <td>jane@example.com</td>
+                        <td>Participant</td>
+                        <td>
+                            <a href="#" class="btn btn-glow btn-sm">Edit</a>
+                            <a href="#" class="btn btn-glow btn-sm">Delete</a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+>>>>>>> acfc3203d125882e0b4480b8abfc605025247098
