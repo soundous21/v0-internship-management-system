@@ -1,0 +1,64 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Author Dashboard{% endblock %}
+
+{% block body %}
+    <div class="container py-5 mt-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="text-white">Author <span class="text-info">Dashboard</span></h1>
+            <a href="{{ path('app_submit') }}" class="btn btn-glow">New Submission</a>
+        </div>
+
+        {# عرض الإحصائيات [cite: 162] #}
+        <div class="row g-4 mb-5">
+            <div class="col-md-4">
+                <div class="glass-card p-4 text-center">
+                    <h3 class="text-white">{{ stats.total }}</h3>
+                    <p class="text-white-50">Total Submissions</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="glass-card p-4 text-center">
+                    <h3 class="text-info">{{ stats.accepted }}</h3>
+                    <p class="text-white-50">Accepted</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="glass-card p-4 text-center">
+                    <h3 class="text-warning">{{ stats.pending }}</h3>
+                    <p class="text-white-50">Pending</p>
+                </div>
+            </div>
+        </div>
+
+        {# جدول الأبحاث [cite: 169] #}
+        <div class="glass-card p-4">
+            <table class="table text-white">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Title</th>
+                    <th>Status</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for comm in communications %}
+                    <tr>
+                        <td>#{{ comm.id }}</td>
+                        <td>{{ comm.title }}</td>
+                        <td>
+                        <span class="badge {% if comm.status == 'Accepted' %}bg-success{% else %}bg-warning{% endif %}">
+                            {{ comm.status }}
+                        </span>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="3" class="text-center">No submissions yet.</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

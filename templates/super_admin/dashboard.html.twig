@@ -1,0 +1,164 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Super Admin Dashboard - Royal Control{% endblock %}
+
+{% block body %}
+    <style>
+        /* تصحيح لتناسب الخلفية مع base.html.twig */
+        body {
+            height: auto !important;
+            overflow-y: auto !important;
+            display: block !important;
+            padding: 40px 0;
+        }
+
+        /* جعل البطاقة سوداء فخمة ومتناسقة مع المراجع */
+        .super-card {
+            background: rgba(0, 0, 0, 0.85) !important;
+            border: 1px solid var(--deep-black) !important;
+            border-radius: 25px !important;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.9);
+        }
+
+        /* تنسيق الجداول لتكون سوداء بالكامل */
+        .table-dark-custom {
+            background: transparent !important;
+            color: white !important;
+        }
+
+        .table-dark-custom thead th {
+            background-color: #000 !important;
+            color: var(--soft-blue) !important;
+            border-bottom: 2px solid var(--bourgeois-purple) !important;
+            text-transform: uppercase;
+            padding: 15px;
+        }
+
+        .table-dark-custom tbody td {
+            background-color: rgba(255, 255, 255, 0.02) !important;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+            color: rgba(255, 255, 255, 0.8) !important;
+            padding: 12px;
+        }
+
+        /* أيقونة السوبر أدمن المضيئة */
+        .admin-glow-icon {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(45deg, var(--bourgeois-purple), var(--royal-blue));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 20px var(--royal-blue);
+            margin: 0 auto 15px;
+        }
+
+        .metric-box {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            transition: 0.3s;
+        }
+
+        .metric-box:hover {
+            border-color: var(--soft-blue);
+            background: rgba(255, 255, 255, 0.08);
+        }
+    </style>
+
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-11">
+                <div class="card super-card p-4">
+
+                    <div class="text-center mb-5">
+                        <div class="admin-glow-icon">
+                            <i class="bi bi-shield-lock-fill text-white fs-3"></i>
+                        </div>
+                        <h2 class="animated-title h3">Super Admin Systems</h2>
+                        <p class="text-white-50">Global Management & Oversight Panel</p>
+                    </div>
+
+                    <div class="row text-center mb-5">
+                        <div class="col-md-4 mb-3">
+                            <div class="metric-box p-4">
+                                <h2 class="fw-bold text-info">12</h2>
+                                <p class="small text-white-50 text-uppercase">Active Events</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="metric-box p-4">
+                                <h2 class="fw-bold text-info">25</h2>
+                                <p class="small text-white-50 text-uppercase">Organizers</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="metric-box p-4">
+                                <h2 class="fw-bold text-info">320</h2>
+                                <p class="small text-white-50 text-uppercase">Participants</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mb-5">
+                        <div class="col-md-4">
+                            <a href="#" class="btn btn-glow w-100 py-3 fw-bold">
+                                <i class="bi bi-people me-2"></i>Manage Organizers
+                            </a>
+                        </div>
+                        <div class="col-md-4">
+                            <a href="#" class="btn btn-glow w-100 py-3 fw-bold">
+                                <i class="bi bi-calendar-event me-2"></i>Manage Events
+                            </a>
+                        </div>
+                        <div class="col-md-4">
+                            <a href="#" class="btn btn-glow w-100 py-3 fw-bold">
+                                <i class="bi bi-file-earmark-bar-graph me-2"></i>View Reports
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="mt-2">
+                        <h5 class="text-white mb-4 fw-bold">
+                            <i class="bi bi-clock-history me-2 text-info"></i>System Activity Logs
+                        </h5>
+                        <div class="table-responsive">
+                            <table class="table table-dark-custom align-middle">
+                                <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Action Performed</th>
+                                    <th>Administrator</th>
+                                    <th>Target Event</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>2025-12-30</td>
+                                    <td>Approved new organizer</td>
+                                    <td class="text-info">John Doe</td>
+                                    <td>Annual Health Conference</td>
+                                </tr>
+                                <tr>
+                                    <td>2025-12-29</td>
+                                    <td>Deleted participant</td>
+                                    <td class="text-info">Mary Smith</td>
+                                    <td>AI & Medicine</td>
+                                </tr>
+                                <tr>
+                                    <td>2025-12-28</td>
+                                    <td>Created new event</td>
+                                    <td class="text-info">Admin System</td>
+                                    <td>Data Science Workshop</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

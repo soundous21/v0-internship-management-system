@@ -1,0 +1,67 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Submit Abstract - Scientific Event{% endblock %}
+
+{% block body %}
+    <div class="container py-3"> {# قللنا الـ padding من الأعلى #}
+        <div class="row justify-content-center">
+            <div class="col-lg-6 col-md-8"> {# عرض أرشق للبطاقة #}
+
+                <div class="card glass-card border-0 shadow-lg text-white animate__animated animate__fadeIn">
+                    <div class="card-body p-4"> {# تصغير المسافة الداخلية للبطاقة #}
+
+                        <div class="text-center mb-3">
+                            <h3 class="fw-bold text-uppercase mb-1" style="font-size: 1.5rem;">
+                                <i class="bi bi-journal-medical me-2 text-info"></i>Scientific Submission
+                            </h3>
+                            <p class="small text-white-50">Fill in your research details</p>
+                        </div>
+
+                        <form action="{{ path('app_submit') }}" method="POST" enctype="multipart/form-data">
+
+                            <div class="mb-3">
+                                <label class="form-label small fw-bold text-info text-uppercase">Research Title</label>
+                                <input type="text" name="title" class="form-control bg-transparent text-white border-secondary rounded-2" placeholder="Title..." required>
+                            </div>
+
+                            <div class="row g-3">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label small fw-bold text-info text-uppercase">Type</label>
+                                    <select name="type" class="form-select bg-dark text-white border-secondary rounded-2 shadow-none">
+                                        <option value="oral">Oral</option>
+                                        <option value="poster">Poster</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label small fw-bold text-info text-uppercase">Keywords</label>
+                                    <input type="text" name="keywords" class="form-control bg-transparent text-white border-secondary rounded-2" placeholder="AI, Health...">
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label small fw-bold text-info text-uppercase">Abstract Content</label>
+                                <textarea name="abstract" class="form-control bg-transparent text-white border-secondary rounded-2" rows="4" placeholder="Brief summary..." required></textarea>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label small fw-bold text-info text-uppercase">Manuscript (PDF)</label>
+                                <div class="p-3 border border-dashed rounded-3 text-center" style="background: rgba(255,255,255,0.03); border-color: rgba(13, 202, 240, 0.3) !important;">
+                                    <input type="file" name="submission_file" class="form-control bg-transparent border-0 text-white shadow-none small">
+                                </div>
+                            </div>
+
+                            <div class="d-grid gap-2 mt-4">
+                                <button type="submit" class="btn btn-glow py-2 fw-bold text-uppercase">
+                                    <i class="bi bi-send-check me-2"></i>Confirm and Submit
+                                </button>
+                                <a href="{{ path('app_author_dashboard') }}" class="btn btn-link btn-sm text-white-50 text-decoration-none text-center">
+                                    <i class="bi bi-arrow-left me-1"></i> Back
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
