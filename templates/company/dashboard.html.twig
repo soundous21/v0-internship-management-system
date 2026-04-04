@@ -1,0 +1,66 @@
+{% extends "base.html.twig" %}
+
+{% block title %}لوحة التحكم - الشركة - Stag.io{% endblock %}
+
+{% block content %}
+<div style="display: flex; gap: 2rem; margin: 2rem 0;">
+    <!-- Sidebar -->
+    <aside style="width: 250px; background: white; padding: 1.5rem; border-radius: 0.5rem; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); height: fit-content;">
+        <h3 style="margin-bottom: 1.5rem;">قائمة التنقل</h3>
+        <nav style="display: flex; flex-direction: column; gap: 0.5rem;">
+            <a href="{{ path('company_dashboard') }}" style="padding: 0.75rem; background: var(--primary-light); color: white; border-radius: 0.25rem;">الرئيسية</a>
+            <a href="{{ path('company_offers') }}" style="padding: 0.75rem; color: var(--foreground); border-radius: 0.25rem;">الفرص</a>
+            <a href="{{ path('company_candidates') }}" style="padding: 0.75rem; color: var(--foreground); border-radius: 0.25rem;">المرشحون</a>
+            <a href="{{ path('company_profile') }}" style="padding: 0.75rem; color: var(--foreground); border-radius: 0.25rem;">ملف الشركة</a>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main style="flex: 1;">
+        <h1 style="margin-bottom: 2rem;">لوحة التحكم - شركة الفنون</h1>
+
+        <!-- Statistics -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-bottom: 3rem;">
+            <div style="background: white; padding: 1.5rem; border-radius: 0.5rem; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); border-left: 4px solid var(--primary-light);">
+                <div style="font-size: 2rem; font-weight: bold; color: var(--primary-light);">8</div>
+                <div style="color: var(--secondary); margin-top: 0.5rem;">الفرص النشطة</div>
+            </div>
+
+            <div style="background: white; padding: 1.5rem; border-radius: 0.5rem; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); border-left: 4px solid var(--accent);">
+                <div style="font-size: 2rem; font-weight: bold; color: var(--accent);">24</div>
+                <div style="color: var(--secondary); margin-top: 0.5rem;">عدد المتقدمين</div>
+            </div>
+
+            <div style="background: white; padding: 1.5rem; border-radius: 0.5rem; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); border-left: 4px solid var(--success);">
+                <div style="font-size: 2rem; font-weight: bold; color: var(--success);">3</div>
+                <div style="color: var(--secondary); margin-top: 0.5rem;">المقبولون</div>
+            </div>
+        </div>
+
+        <!-- Recent Applications -->
+        <div style="background: white; padding: 1.5rem; border-radius: 0.5rem; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);">
+            <h2 style="margin-bottom: 1rem;">آخر التطبيقات</h2>
+            <table style="width: 100%; border-collapse: collapse;">
+                <thead>
+                    <tr style="border-bottom: 2px solid var(--border);">
+                        <th style="padding: 0.75rem; text-align: right;">الطالب</th>
+                        <th style="padding: 0.75rem; text-align: right;">الفرصة</th>
+                        <th style="padding: 0.75rem; text-align: right;">الحالة</th>
+                        <th style="padding: 0.75rem; text-align: right;">التاريخ</th>
+                        <th style="padding: 0.75rem; text-align: right;">الإجراءات</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr style="border-bottom: 1px solid var(--border);">
+                        <td style="padding: 0.75rem;">أحمد محمد</td>
+                        <td style="padding: 0.75rem;">مهندس ويب</td>
+                        <td style="padding: 0.75rem;"><span style="background: #dbeafe; color: #0c4a6e; padding: 0.25rem 0.75rem; border-radius: 0.25rem;">قيد المراجعة</span></td>
+                        <td style="padding: 0.75rem;">2024-01-15</td>
+                        <td style="padding: 0.75rem;"><a href="#" style="color: var(--primary-light);">عرض</a></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+</div>
+{% endblock %}

@@ -1,0 +1,56 @@
+{% extends "base.html.twig" %}
+
+{% block title %}الفرص - لوحة الشركة - Stag.io{% endblock %}
+
+{% block content %}
+<div style="display: flex; gap: 2rem; margin: 2rem 0;">
+    <!-- Sidebar -->
+    <aside style="width: 250px; background: white; padding: 1.5rem; border-radius: 0.5rem; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); height: fit-content;">
+        <h3 style="margin-bottom: 1.5rem;">قائمة التنقل</h3>
+        <nav style="display: flex; flex-direction: column; gap: 0.5rem;">
+            <a href="{{ path('company_dashboard') }}" style="padding: 0.75rem; color: var(--foreground); border-radius: 0.25rem;">الرئيسية</a>
+            <a href="{{ path('company_offers') }}" style="padding: 0.75rem; background: var(--primary-light); color: white; border-radius: 0.25rem;">الفرص</a>
+            <a href="{{ path('company_candidates') }}" style="padding: 0.75rem; color: var(--foreground); border-radius: 0.25rem;">المرشحون</a>
+            <a href="{{ path('company_profile') }}" style="padding: 0.75rem; color: var(--foreground); border-radius: 0.25rem;">ملف الشركة</a>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main style="flex: 1;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+            <h1>فرصي</h1>
+            <a href="{{ path('company_offer_new') }}" class="btn btn-primary">إضافة فرصة جديدة</a>
+        </div>
+
+        <div style="background: white; padding: 1.5rem; border-radius: 0.5rem; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);">
+            <table style="width: 100%; border-collapse: collapse;">
+                <thead>
+                    <tr style="border-bottom: 2px solid var(--border);">
+                        <th style="padding: 0.75rem; text-align: right;">العنوان</th>
+                        <th style="padding: 0.75rem; text-align: right;">المتقدمون</th>
+                        <th style="padding: 0.75rem; text-align: right;">المدة</th>
+                        <th style="padding: 0.75rem; text-align: right;">الحالة</th>
+                        <th style="padding: 0.75rem; text-align: right;">الإجراءات</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr style="border-bottom: 1px solid var(--border);">
+                        <td style="padding: 0.75rem;">مهندس ويب</td>
+                        <td style="padding: 0.75rem;">5</td>
+                        <td style="padding: 0.75rem;">3 أشهر</td>
+                        <td style="padding: 0.75rem;"><span style="background: #d1fae5; color: #065f46; padding: 0.25rem 0.75rem; border-radius: 0.25rem;">نشط</span></td>
+                        <td style="padding: 0.75rem;"><a href="#" style="color: var(--primary-light); margin-left: 1rem;">تحرير</a> <a href="#" style="color: var(--danger);">حذف</a></td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid var(--border);">
+                        <td style="padding: 0.75rem;">مطور قواعد بيانات</td>
+                        <td style="padding: 0.75rem;">3</td>
+                        <td style="padding: 0.75rem;">6 أشهر</td>
+                        <td style="padding: 0.75rem;"><span style="background: #d1fae5; color: #065f46; padding: 0.25rem 0.75rem; border-radius: 0.25rem;">نشط</span></td>
+                        <td style="padding: 0.75rem;"><a href="#" style="color: var(--primary-light); margin-left: 1rem;">تحرير</a> <a href="#" style="color: var(--danger);">حذف</a></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+</div>
+{% endblock %}

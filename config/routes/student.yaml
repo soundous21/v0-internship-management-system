@@ -1,0 +1,33 @@
+student_dashboard:
+  path: /
+  controller: App\Controller\StudentController::dashboard
+  methods: GET
+
+student_offers:
+  path: /offers
+  controller: App\Controller\StudentController::offers
+  methods: GET
+
+student_offer_detail:
+  path: /offers/{id}
+  controller: App\Controller\StudentController::offerDetail
+  methods: GET
+  requirements:
+    id: '\d+'
+
+student_apply:
+  path: /offers/{id}/apply
+  controller: App\Controller\StudentController::apply
+  methods: [GET, POST]
+  requirements:
+    id: '\d+'
+
+student_profile:
+  path: /profile
+  controller: App\Controller\StudentController::profile
+  methods: [GET, POST]
+
+student_applications:
+  path: /applications
+  controller: App\Controller\StudentController::applications
+  methods: GET

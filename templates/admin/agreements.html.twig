@@ -1,0 +1,53 @@
+{% extends "base.html.twig" %}
+
+{% block title %}الاتفاقيات - لوحة الإدارة - Stag.io{% endblock %}
+
+{% block content %}
+<div style="display: flex; gap: 2rem; margin: 2rem 0;">
+    <!-- Sidebar -->
+    <aside style="width: 250px; background: white; padding: 1.5rem; border-radius: 0.5rem; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); height: fit-content;">
+        <h3 style="margin-bottom: 1.5rem;">قائمة التنقل</h3>
+        <nav style="display: flex; flex-direction: column; gap: 0.5rem;">
+            <a href="{{ path('admin_dashboard') }}" style="padding: 0.75rem; color: var(--foreground); border-radius: 0.25rem;">الرئيسية</a>
+            <a href="{{ path('admin_validations') }}" style="padding: 0.75rem; color: var(--foreground); border-radius: 0.25rem;">التحققات</a>
+            <a href="{{ path('admin_agreements') }}" style="padding: 0.75rem; background: var(--primary-light); color: white; border-radius: 0.25rem;">الاتفاقيات</a>
+            <a href="{{ path('admin_statistics') }}" style="padding: 0.75rem; color: var(--foreground); border-radius: 0.25rem;">الإحصائيات</a>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main style="flex: 1;">
+        <h1 style="margin-bottom: 2rem;">الاتفاقيات</h1>
+
+        <div style="background: white; padding: 1.5rem; border-radius: 0.5rem; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);">
+            <table style="width: 100%; border-collapse: collapse;">
+                <thead>
+                    <tr style="border-bottom: 2px solid var(--border);">
+                        <th style="padding: 0.75rem; text-align: right;">الطالب</th>
+                        <th style="padding: 0.75rem; text-align: right;">الشركة</th>
+                        <th style="padding: 0.75rem; text-align: right;">الحالة</th>
+                        <th style="padding: 0.75rem; text-align: right;">تاريخ البداية</th>
+                        <th style="padding: 0.75rem; text-align: right;">الإجراءات</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr style="border-bottom: 1px solid var(--border);">
+                        <td style="padding: 0.75rem;">أحمد محمد</td>
+                        <td style="padding: 0.75rem;">شركة الفنون</td>
+                        <td style="padding: 0.75rem;"><span style="background: #d1fae5; color: #065f46; padding: 0.25rem 0.75rem; border-radius: 0.25rem;">موقعة</span></td>
+                        <td style="padding: 0.75rem;">2024-01-15</td>
+                        <td style="padding: 0.75rem;"><a href="#" style="color: var(--primary-light);">عرض</a></td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid var(--border);">
+                        <td style="padding: 0.75rem;">فاطمة علي</td>
+                        <td style="padding: 0.75rem;">شركة التقنية</td>
+                        <td style="padding: 0.75rem;"><span style="background: #dbeafe; color: #0c4a6e; padding: 0.25rem 0.75rem; border-radius: 0.25rem;">قيد الانتظار</span></td>
+                        <td style="padding: 0.75rem;">2024-01-20</td>
+                        <td style="padding: 0.75rem;"><a href="#" style="color: var(--primary-light);">عرض</a></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+</div>
+{% endblock %}

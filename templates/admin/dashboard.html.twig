@@ -1,0 +1,56 @@
+{% extends "base.html.twig" %}
+
+{% block title %}لوحة التحكم - المسؤول - Stag.io{% endblock %}
+
+{% block content %}
+<div style="display: flex; gap: 2rem; margin: 2rem 0;">
+    <!-- Sidebar -->
+    <aside style="width: 250px; background: white; padding: 1.5rem; border-radius: 0.5rem; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); height: fit-content;">
+        <h3 style="margin-bottom: 1.5rem;">قائمة التنقل</h3>
+        <nav style="display: flex; flex-direction: column; gap: 0.5rem;">
+            <a href="{{ path('admin_dashboard') }}" style="padding: 0.75rem; background: var(--primary-light); color: white; border-radius: 0.25rem;">الرئيسية</a>
+            <a href="{{ path('admin_validations') }}" style="padding: 0.75rem; color: var(--foreground); border-radius: 0.25rem;">التحققات</a>
+            <a href="{{ path('admin_agreements') }}" style="padding: 0.75rem; color: var(--foreground); border-radius: 0.25rem;">الاتفاقيات</a>
+            <a href="{{ path('admin_statistics') }}" style="padding: 0.75rem; color: var(--foreground); border-radius: 0.25rem;">الإحصائيات</a>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main style="flex: 1;">
+        <h1 style="margin-bottom: 2rem;">لوحة التحكم - الإدارة</h1>
+
+        <!-- Statistics -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-bottom: 3rem;">
+            <div style="background: white; padding: 1.5rem; border-radius: 0.5rem; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); border-left: 4px solid var(--primary-light);">
+                <div style="font-size: 2rem; font-weight: bold; color: var(--primary-light);">1256</div>
+                <div style="color: var(--secondary); margin-top: 0.5rem;">إجمالي الطلاب</div>
+            </div>
+
+            <div style="background: white; padding: 1.5rem; border-radius: 0.5rem; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); border-left: 4px solid var(--accent);">
+                <div style="font-size: 2rem; font-weight: bold; color: var(--accent);">347</div>
+                <div style="color: var(--secondary); margin-top: 0.5rem;">إجمالي الشركات</div>
+            </div>
+
+            <div style="background: white; padding: 1.5rem; border-radius: 0.5rem; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); border-left: 4px solid var(--warning);">
+                <div style="font-size: 2rem; font-weight: bold; color: var(--warning);">89</div>
+                <div style="color: var(--secondary); margin-top: 0.5rem;">التحققات المعلقة</div>
+            </div>
+
+            <div style="background: white; padding: 1.5rem; border-radius: 0.5rem; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); border-left: 4px solid var(--success);">
+                <div style="font-size: 2rem; font-weight: bold; color: var(--success);">2341</div>
+                <div style="color: var(--secondary); margin-top: 0.5rem;">إجمالي التطبيقات</div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div style="background: white; padding: 1.5rem; border-radius: 0.5rem; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);">
+            <h2 style="margin-bottom: 1rem;">الإجراءات السريعة</h2>
+            <div style="display: flex; gap: 1rem;">
+                <a href="{{ path('admin_validations') }}" class="btn btn-primary">التحققات المعلقة</a>
+                <a href="{{ path('admin_agreements') }}" class="btn btn-secondary">الاتفاقيات</a>
+                <a href="{{ path('admin_statistics') }}" class="btn btn-secondary">الإحصائيات</a>
+            </div>
+        </div>
+    </main>
+</div>
+{% endblock %}

@@ -1,0 +1,37 @@
+{% extends "base.html.twig" %}
+
+{% block title %}التسجيل - Stag.io{% endblock %}
+
+{% block content %}
+<div style="max-width: 500px; margin: 4rem auto; background: white; padding: 2rem; border-radius: 0.5rem; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);">
+    <h1 style="text-align: center; margin-bottom: 2rem;">إنشاء حساب جديد</h1>
+
+    <form method="post" action="{{ path('app_register') }}" style="display: flex; flex-direction: column; gap: 1.5rem;">
+        <div>
+            <label for="email" style="display: block; margin-bottom: 0.5rem;">البريد الإلكتروني</label>
+            <input type="email" id="email" name="email" required style="width: 100%; padding: 0.75rem; border: 1px solid var(--border); border-radius: 0.25rem;">
+        </div>
+
+        <div>
+            <label for="password" style="display: block; margin-bottom: 0.5rem;">كلمة المرور</label>
+            <input type="password" id="password" name="password" required style="width: 100%; padding: 0.75rem; border: 1px solid var(--border); border-radius: 0.25rem;">
+        </div>
+
+        <div>
+            <label for="role" style="display: block; margin-bottom: 0.5rem;">اختر دورك</label>
+            <select id="role" name="role" required style="width: 100%; padding: 0.75rem; border: 1px solid var(--border); border-radius: 0.25rem;">
+                <option value="">-- اختر دورك --</option>
+                <option value="student">طالب</option>
+                <option value="company">شركة</option>
+                <option value="admin">مسؤول جامعة</option>
+            </select>
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="width: 100%;">إنشاء حساب</button>
+    </form>
+
+    <p style="text-align: center; margin-top: 1.5rem;">
+        هل لديك حساب بالفعل؟ <a href="{{ path('app_login') }}">سجل الدخول</a>
+    </p>
+</div>
+{% endblock %}

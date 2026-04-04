@@ -1,0 +1,38 @@
+company_dashboard:
+  path: /
+  controller: App\Controller\CompanyController::dashboard
+  methods: GET
+
+company_offers:
+  path: /offers
+  controller: App\Controller\CompanyController::offers
+  methods: GET
+
+company_offer_new:
+  path: /offers/new
+  controller: App\Controller\CompanyController::createOffer
+  methods: [GET, POST]
+
+company_offer_edit:
+  path: /offers/{id}/edit
+  controller: App\Controller\CompanyController::editOffer
+  methods: [GET, POST]
+  requirements:
+    id: '\d+'
+
+company_offer_delete:
+  path: /offers/{id}/delete
+  controller: App\Controller\CompanyController::deleteOffer
+  methods: POST
+  requirements:
+    id: '\d+'
+
+company_candidates:
+  path: /candidates
+  controller: App\Controller\CompanyController::candidates
+  methods: GET
+
+company_profile:
+  path: /profile
+  controller: App\Controller\CompanyController::profile
+  methods: [GET, POST]

@@ -1,0 +1,14 @@
+app_register:
+  path: /register
+  controller: App\Controller\AuthController::register
+  methods: [GET, POST]
+
+app_login:
+  path: /login
+  controller: App\Controller\AuthController::login
+  methods: [GET, POST]
+
+app_logout:
+  path: /logout
+  controller: App\Controller\AuthController::logout
+  methods: GET

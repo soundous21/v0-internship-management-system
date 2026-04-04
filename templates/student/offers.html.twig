@@ -1,0 +1,75 @@
+{% extends "base.html.twig" %}
+
+{% block title %}الفرص - لوحة التحكم - Stag.io{% endblock %}
+
+{% block content %}
+<div style="display: flex; gap: 2rem; margin: 2rem 0;">
+    <!-- Sidebar -->
+    <aside style="width: 250px; background: white; padding: 1.5rem; border-radius: 0.5rem; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); height: fit-content;">
+        <h3 style="margin-bottom: 1.5rem;">قائمة التنقل</h3>
+        <nav style="display: flex; flex-direction: column; gap: 0.5rem;">
+            <a href="{{ path('student_dashboard') }}" style="padding: 0.75rem; color: var(--foreground); border-radius: 0.25rem;">الرئيسية</a>
+            <a href="{{ path('student_offers') }}" style="padding: 0.75rem; background: var(--primary-light); color: white; border-radius: 0.25rem;">الفرص</a>
+            <a href="{{ path('student_applications') }}" style="padding: 0.75rem; color: var(--foreground); border-radius: 0.25rem;">التطبيقات</a>
+            <a href="{{ path('student_profile') }}" style="padding: 0.75rem; color: var(--foreground); border-radius: 0.25rem;">ملفي الشخصي</a>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main style="flex: 1;">
+        <h1 style="margin-bottom: 2rem;">الفرص المتاحة</h1>
+
+        <!-- Filters -->
+        <div style="background: white; padding: 1.5rem; border-radius: 0.5rem; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); margin-bottom: 2rem;">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                <input type="text" placeholder="ابحث عن الفرص..." style="padding: 0.75rem; border: 1px solid var(--border); border-radius: 0.25rem;">
+                <select style="padding: 0.75rem; border: 1px solid var(--border); border-radius: 0.25rem;">
+                    <option>جميع الولايات</option>
+                    <option>الجزائر</option>
+                    <option>البليدة</option>
+                    <option>وهران</option>
+                </select>
+                <select style="padding: 0.75rem; border: 1px solid var(--border); border-radius: 0.25rem;">
+                    <option>جميع المهارات</option>
+                    <option>PHP</option>
+                    <option>JavaScript</option>
+                    <option>Python</option>
+                </select>
+                <button style="padding: 0.75rem; background: var(--primary-light); color: white; border: none; border-radius: 0.25rem; cursor: pointer;">بحث</button>
+            </div>
+        </div>
+
+        <!-- Offers List -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem;">
+            <div style="background: white; padding: 1.5rem; border-radius: 0.5rem; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); border-top: 4px solid var(--primary-light);">
+                <h3 style="margin-bottom: 0.5rem;">مهندس ويب</h3>
+                <p style="color: var(--secondary); margin-bottom: 1rem;">شركة الفنون</p>
+                <p style="margin-bottom: 1rem;">تطوير تطبيقات ويب حديثة باستخدام الأطر المتقدمة</p>
+                <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem; flex-wrap: wrap;">
+                    <span style="background: #e0e7ff; color: #3730a3; padding: 0.25rem 0.75rem; border-radius: 0.25rem; font-size: 0.875rem;">PHP</span>
+                    <span style="background: #e0e7ff; color: #3730a3; padding: 0.25rem 0.75rem; border-radius: 0.25rem; font-size: 0.875rem;">MySQL</span>
+                    <span style="background: #e0e7ff; color: #3730a3; padding: 0.25rem 0.75rem; border-radius: 0.25rem; font-size: 0.875rem;">JavaScript</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <span style="color: var(--secondary); font-size: 0.875rem;">3 أشهر</span>
+                    <a href="#" class="btn btn-primary">عرض التفاصيل</a>
+                </div>
+            </div>
+
+            <div style="background: white; padding: 1.5rem; border-radius: 0.5rem; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); border-top: 4px solid var(--accent);">
+                <h3 style="margin-bottom: 0.5rem;">مطور قواعد بيانات</h3>
+                <p style="color: var(--secondary); margin-bottom: 1rem;">شركة التقنية</p>
+                <p style="margin-bottom: 1rem;">تصميم وتطوير قواعد بيانات كبيرة الحجم</p>
+                <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem; flex-wrap: wrap;">
+                    <span style="background: #f0fdfa; color: #134e4a; padding: 0.25rem 0.75rem; border-radius: 0.25rem; font-size: 0.875rem;">SQL</span>
+                    <span style="background: #f0fdfa; color: #134e4a; padding: 0.25rem 0.75rem; border-radius: 0.25rem; font-size: 0.875rem;">MongoDB</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <span style="color: var(--secondary); font-size: 0.875rem;">6 أشهر</span>
+                    <a href="#" class="btn btn-primary">عرض التفاصيل</a>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+{% endblock %}

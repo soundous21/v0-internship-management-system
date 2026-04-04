@@ -1,0 +1,75 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Stag.io - منصة إدارة التدريبات الجامعية{% endblock %}
+
+{% block content %}
+<section style="background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%); color: white; padding: 4rem 2rem; text-align: center; margin: -1rem -2rem 0;">
+    <div class="container">
+        <h1 style="font-size: 3rem; margin-bottom: 1rem;">Stag.io</h1>
+        <p style="font-size: 1.25rem; margin-bottom: 2rem;">منصة إدارة التدريبات الجامعية الموحدة</p>
+        <p style="margin-bottom: 2rem;">ربط الطلاب مع الشركات وتبسيط عملية إدارة التدريبات للجامعات</p>
+
+        <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin: 2rem 0;">
+            <a href="{{ path('app_register') }}" class="btn" style="background-color: #14b8a6; color: white;">ابدأ الآن</a>
+            <a href="{{ path('app_about') }}" class="btn" style="background-color: rgba(255, 255, 255, 0.2); color: white; border: 1px solid white;">تعرف على المزيد</a>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; margin-top: 3rem;">
+            <div style="background: rgba(255, 255, 255, 0.1); padding: 2rem; border-radius: 0.5rem;">
+                <div style="font-size: 2rem; margin-bottom: 0.5rem;">1000+</div>
+                <div>شركة شريكة</div>
+            </div>
+            <div style="background: rgba(255, 255, 255, 0.1); padding: 2rem; border-radius: 0.5rem;">
+                <div style="font-size: 2rem; margin-bottom: 0.5rem;">5000+</div>
+                <div>طالب مسجل</div>
+            </div>
+            <div style="background: rgba(255, 255, 255, 0.1); padding: 2rem; border-radius: 0.5rem;">
+                <div style="font-size: 2rem; margin-bottom: 0.5rem;">50+</div>
+                <div>جامعة شريكة</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section style="padding: 4rem 2rem;">
+    <div class="container">
+        <h2 style="text-align: center; font-size: 2rem; margin-bottom: 3rem;">الميزات الرئيسية</h2>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+            {% for feature in features %}
+            <div style="background: white; padding: 2rem; border-radius: 0.5rem; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);">
+                <div style="font-size: 2.5rem; margin-bottom: 1rem;">{{ feature.icon }}</div>
+                <h3 style="margin-bottom: 0.5rem;">{{ feature.title }}</h3>
+                <p style="color: var(--secondary);">{{ feature.description }}</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<section style="background-color: #f1f5f9; padding: 4rem 2rem;">
+    <div class="container">
+        <h2 style="text-align: center; font-size: 2rem; margin-bottom: 3rem;">الأدوار</h2>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+            <div style="background: white; padding: 2rem; border-radius: 0.5rem; text-align: center; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); border-top: 3px solid var(--primary-light);">
+                <h3 style="margin-bottom: 1rem;">للطلاب</h3>
+                <p style="margin-bottom: 1.5rem; color: var(--secondary);">ابحث عن فرص التدريب المناسبة لك</p>
+                <a href="{{ path('app_register') }}" class="btn btn-primary">تسجيل كطالب</a>
+            </div>
+
+            <div style="background: white; padding: 2rem; border-radius: 0.5rem; text-align: center; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); border-top: 3px solid var(--accent);">
+                <h3 style="margin-bottom: 1rem;">للشركات</h3>
+                <p style="margin-bottom: 1.5rem; color: var(--secondary);">ابحث عن أفضل الطلاب للتدريب</p>
+                <a href="{{ path('app_register') }}" class="btn btn-secondary">تسجيل كشركة</a>
+            </div>
+
+            <div style="background: white; padding: 2rem; border-radius: 0.5rem; text-align: center; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); border-top: 3px solid var(--warning);">
+                <h3 style="margin-bottom: 1rem;">للجامعات</h3>
+                <p style="margin-bottom: 1.5rem; color: var(--secondary);">إدارة وتتبع التدريبات الجامعية</p>
+                <a href="{{ path('app_register') }}" class="btn btn-secondary">تسجيل كمسؤول</a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

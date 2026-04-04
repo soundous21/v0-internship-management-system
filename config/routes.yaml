@@ -1,0 +1,24 @@
+routes:
+  path: ../src/Controller/
+  namespace: App\Controller
+  prefix: /
+  defaults:
+    _controller: '\App\Controller\$_route_object->getController()'
+
+home_routes:
+  resource: '@App/routes/home.yaml'
+
+auth_routes:
+  resource: '@App/routes/auth.yaml'
+
+student_routes:
+  resource: '@App/routes/student.yaml'
+  prefix: /dashboard/student
+
+company_routes:
+  resource: '@App/routes/company.yaml'
+  prefix: /dashboard/company
+
+admin_routes:
+  resource: '@App/routes/admin.yaml'
+  prefix: /dashboard/admin

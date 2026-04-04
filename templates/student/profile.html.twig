@@ -1,0 +1,65 @@
+{% extends "base.html.twig" %}
+
+{% block title %}ملفي الشخصي - لوحة التحكم - Stag.io{% endblock %}
+
+{% block content %}
+<div style="display: flex; gap: 2rem; margin: 2rem 0;">
+    <!-- Sidebar -->
+    <aside style="width: 250px; background: white; padding: 1.5rem; border-radius: 0.5rem; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); height: fit-content;">
+        <h3 style="margin-bottom: 1.5rem;">قائمة التنقل</h3>
+        <nav style="display: flex; flex-direction: column; gap: 0.5rem;">
+            <a href="{{ path('student_dashboard') }}" style="padding: 0.75rem; color: var(--foreground); border-radius: 0.25rem;">الرئيسية</a>
+            <a href="{{ path('student_offers') }}" style="padding: 0.75rem; color: var(--foreground); border-radius: 0.25rem;">الفرص</a>
+            <a href="{{ path('student_applications') }}" style="padding: 0.75rem; color: var(--foreground); border-radius: 0.25rem;">التطبيقات</a>
+            <a href="{{ path('student_profile') }}" style="padding: 0.75rem; background: var(--primary-light); color: white; border-radius: 0.25rem;">ملفي الشخصي</a>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main style="flex: 1;">
+        <h1 style="margin-bottom: 2rem;">ملفي الشخصي</h1>
+
+        <div style="background: white; padding: 2rem; border-radius: 0.5rem; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);">
+            <form style="display: flex; flex-direction: column; gap: 1.5rem;">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem;">
+                    <div>
+                        <label style="display: block; margin-bottom: 0.5rem;">الاسم الأول</label>
+                        <input type="text" value="أحمد" style="width: 100%; padding: 0.75rem; border: 1px solid var(--border); border-radius: 0.25rem;">
+                    </div>
+                    <div>
+                        <label style="display: block; margin-bottom: 0.5rem;">الاسم الأخير</label>
+                        <input type="text" value="محمد" style="width: 100%; padding: 0.75rem; border: 1px solid var(--border); border-radius: 0.25rem;">
+                    </div>
+                </div>
+
+                <div>
+                    <label style="display: block; margin-bottom: 0.5rem;">البريد الإلكتروني</label>
+                    <input type="email" value="ahmed@example.com" style="width: 100%; padding: 0.75rem; border: 1px solid var(--border); border-radius: 0.25rem;">
+                </div>
+
+                <div>
+                    <label style="display: block; margin-bottom: 0.5rem;">نبذة عنك</label>
+                    <textarea style="width: 100%; padding: 0.75rem; border: 1px solid var(--border); border-radius: 0.25rem; min-height: 100px;">طالب هندسة معلومات متخصص في تطوير الويب</textarea>
+                </div>
+
+                <div>
+                    <label style="display: block; margin-bottom: 0.5rem;">المهارات التقنية</label>
+                    <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                        <span style="background: #e0e7ff; color: #3730a3; padding: 0.5rem 1rem; border-radius: 0.25rem;">PHP ×</span>
+                        <span style="background: #e0e7ff; color: #3730a3; padding: 0.5rem 1rem; border-radius: 0.25rem;">MySQL ×</span>
+                        <span style="background: #e0e7ff; color: #3730a3; padding: 0.5rem 1rem; border-radius: 0.25rem;">JavaScript ×</span>
+                    </div>
+                    <input type="text" placeholder="أضف مهارة جديدة..." style="width: 100%; padding: 0.75rem; border: 1px solid var(--border); border-radius: 0.25rem; margin-top: 0.5rem;">
+                </div>
+
+                <div>
+                    <label style="display: block; margin-bottom: 0.5rem;">السيرة الذاتية (PDF)</label>
+                    <input type="file" accept=".pdf" style="width: 100%; padding: 0.75rem; border: 1px solid var(--border); border-radius: 0.25rem;">
+                </div>
+
+                <button type="submit" class="btn btn-primary">حفظ التغييرات</button>
+            </form>
+        </div>
+    </main>
+</div>
+{% endblock %}

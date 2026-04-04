@@ -1,0 +1,14 @@
+app_home:
+  path: /
+  controller: App\Controller\HomeController::index
+  methods: GET
+
+app_about:
+  path: /about
+  controller: App\Controller\HomeController::about
+  methods: GET
+
+app_contact:
+  path: /contact
+  controller: App\Controller\HomeController::contact
+  methods: GET

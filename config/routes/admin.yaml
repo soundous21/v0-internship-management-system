@@ -1,0 +1,40 @@
+admin_dashboard:
+  path: /
+  controller: App\Controller\AdminController::dashboard
+  methods: GET
+
+admin_validations:
+  path: /validations
+  controller: App\Controller\AdminController::validations
+  methods: GET
+
+admin_validation_approve:
+  path: /validations/{id}/approve
+  controller: App\Controller\AdminController::approveValidation
+  methods: POST
+  requirements:
+    id: '\d+'
+
+admin_validation_reject:
+  path: /validations/{id}/reject
+  controller: App\Controller\AdminController::rejectValidation
+  methods: POST
+  requirements:
+    id: '\d+'
+
+admin_agreements:
+  path: /agreements
+  controller: App\Controller\AdminController::agreements
+  methods: GET
+
+admin_agreements_sign:
+  path: /agreements/{id}/sign
+  controller: App\Controller\AdminController::signAgreement
+  methods: POST
+  requirements:
+    id: '\d+'
+
+admin_statistics:
+  path: /statistics
+  controller: App\Controller\AdminController::statistics
+  methods: GET

@@ -1,16 +1,32 @@
-# v0 sandbox internal files
-__v0_runtime_loader.js
-__v0_devtools.tsx
-__v0_jsx-dev-runtime.ts
-.snowflake/
-.v0-trash/
-.vercel/
-next.user-config.*
+# Symfony
+/bin/
+/var/
+/vendor/
+/.env.local
+/.env.*.local
+/.env
+/public/uploads/
+*.log
 
-# Environment variables
-.env*.local
-
-# Common ignores
-node_modules
-.next/
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
 .DS_Store
+
+# OS
+Thumbs.db
+.DS_Store
+
+# PHP
+.php_cs
+.php_cs.cache
+
+# Database
+*.sql
+*.sqlite
+
+# Docker
+.env.docker
