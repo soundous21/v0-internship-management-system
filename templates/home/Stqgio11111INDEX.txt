@@ -1,0 +1,352 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Stage.io - Connecting Students with Career Opportunities{% endblock %}
+
+{% block body %}
+    <style>
+        body { background-color: #030712; color: white; font-family: 'Inter', sans-serif; overflow-x: hidden; }
+
+        /* Hero Section */
+        .hero-section { padding: 120px 0 80px; text-align: center; }
+        .hero-title { font-size: 4rem; font-weight: 800; letter-spacing: -0.04em; line-height: 1.1; }
+
+        /* Cards Style (v0) */
+        .card-custom {
+            background-color: #09090b;
+            border: 1px solid #1f2937;
+            border-radius: 12px;
+            transition: 0.3s;
+            padding: 24px;
+        }
+        .card-custom:hover { border-color: #3b82f6; transform: translateY(-5px); }
+        .icon-box {
+            width: 40px; height: 40px; background: rgba(59, 130, 246, 0.1);
+            border-radius: 8px; display: flex; align-items: center; justify-content: center;
+            color: #3b82f6; margin-bottom: 20px;
+        }
+
+        /* Horizontal Cards Style */
+        .user-card-horizontal {
+            background: #09090b;
+            border: 1px solid #1f2937;
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: 0.3s;
+        }
+        .user-card-horizontal:hover { border-color: #3b82f6; }
+        .user-features-inline {
+            display: flex;
+            gap: 20px;
+            list-style: none;
+            padding: 0;
+            margin-top: 10px;
+        }
+        .user-features-inline li { font-size: 0.85rem; color: #94a3b8; display: flex; align-items: center; gap: 6px; }
+        .user-features-inline li i { color: #10b981; }
+
+        /* Modal Styles */
+        .modal-v0 .modal-content {
+            background-color: #09090b !important;
+            border: 1px solid #1f2937 !important;
+            border-radius: 16px !important;
+            box-shadow: 0 0 40px rgba(0,0,0,0.5);
+        }
+        .v0-input {
+            background: black !important;
+            border: 1px solid #374151 !important;
+            color: white !important;
+            border-radius: 8px;
+            padding: 12px;
+        }
+        .v0-input:focus { border-color: #3b82f6 !important; box-shadow: none !important; }
+
+        .eye-icon { color: white !important; opacity: 0.8; cursor: pointer; transition: 0.2s; }
+        .eye-icon:hover { opacity: 1; }
+
+        .btn-v0-white {
+            background: white; color: black; font-weight: 700;
+            border-radius: 8px; padding: 12px; width: 100%; border: none; transition: 0.3s;
+        }
+        .btn-v0-white:hover { background: #e2e8f0; }
+
+        /* --- Footer Styles (Matching Image) --- */
+        .footer-custom { padding: 60px 0 30px; margin-top: 80px; border-top: 1px solid #1f2937; }
+        .footer-logo-text { color: #ffffff; font-weight: 700; font-size: 1.5rem; display: flex; align-items: center; gap: 10px; }
+        .footer-description { color: #94a3b8; font-size: 0.9rem; line-height: 1.6; max-width: 400px; margin-top: 15px; }
+        .footer-heading { color: #ffffff; font-weight: 600; font-size: 1rem; margin-bottom: 20px; }
+        .footer-links { list-style: none; padding: 0; }
+        .footer-links li { margin-bottom: 12px; }
+        .footer-links a { color: #94a3b8; text-decoration: none; font-size: 0.9rem; transition: 0.3s; }
+        .footer-links a:hover { color: #ffffff; }
+        .footer-contact-info { color: #94a3b8; font-size: 0.9rem; line-height: 1.8; }
+        .footer-contact-info a { color: #3b82f6; text-decoration: none; }
+        .footer-divider { border-top: 1px solid #1f2937; margin: 40px 0 20px; opacity: 0.5; }
+        .footer-bottom-text { color: #64748b; font-size: 0.85rem; }
+    </style>
+
+    <div class="container">
+        {# --- Hero Section --- #}
+        <section class="hero-section text-center">
+            <span class="badge rounded-pill bg-dark border border-secondary mb-4 px-3 py-2">
+                <span class="text-primary me-1">●</span> University-Enterprise Bridge
+            </span>
+            <h1 class="hero-title mb-4">Connecting Students with <br> <span class="text-primary">Career Opportunities</span></h1>
+            <p class="lead text-secondary mb-5 mx-auto" style="max-width: 700px;">
+                Stage.io streamlines internship management between students, companies, and universities. Find the perfect match effortlessly.
+            </p>
+            <div class="d-flex justify-content-center gap-3 mb-5">
+                <button class="btn btn-light btn-lg px-5 fw-bold" data-bs-toggle="modal" data-bs-target="#signUpModal">Get Started</button>
+            </div>
+        </section>
+
+        {# --- Features Section --- #}
+        <div class="row g-4 mb-5 pb-5">
+            <h2 class="text-center mb-5 fw-bold">Everything You Need for Internship Management</h2>
+            {% set features = [
+                {'icon': 'bi-search', 'title': 'Smart Matching', 'desc': 'Find internships based on skills and preferences.'},
+                {'icon': 'bi-file-earmark-text', 'title': 'Digital Agreements', 'desc': 'Auto-generate internship conventions pre-filled.'},
+                {'icon': 'bi-bar-chart', 'title': 'Analytics Dashboard', 'desc': 'Track placement rates and applications in real-time.'},
+                {'icon': 'bi-person-badge', 'title': 'Skill-Based Profiles', 'desc': 'Create detailed profiles with technical tags.'},
+                {'icon': 'bi-bell', 'title': 'Real-time Notifications', 'desc': 'Stay updated with instant alerts for new offers.'},
+                {'icon': 'bi-shield-lock', 'title': 'Secure & Centralized', 'desc': 'All data is securely stored and accessible.'}
+            ] %}
+            {% for f in features %}
+                <div class="col-md-4">
+                    <div class="card card-custom h-100">
+                        <div class="icon-box"><i class="bi {{ f.icon }} fs-5"></i></div>
+                        <h5 class="fw-bold">{{ f.title }}</h5>
+                        <p class="text-secondary small mb-0">{{ f.desc }}</p>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        {# --- Horizontal Cards Section --- #}
+        <section class="py-5">
+            <h2 class="text-center fw-bold mb-5">Built for Everyone</h2>
+            {# Student #}
+            <div class="user-card-horizontal">
+                <div class="user-info">
+                    <h4 class="fw-bold mb-1">For Students</h4>
+                    <p class="small text-secondary mb-2">Find your dream internship and start your professional journey.</p>
+                    <ul class="user-features-inline">
+                        <li><i class="bi bi-check2"></i> Digital CV</li>
+                        <li><i class="bi bi-check2"></i> Tech Filtering</li>
+                        <li><i class="bi bi-check2"></i> Status Tracking</li>
+                    </ul>
+                </div>
+                <button class="btn btn-outline-light px-4 py-2 ms-4" data-bs-toggle="modal" data-bs-target="#signUpModal">Join as Student</button>
+            </div>
+            {# Company #}
+            <div class="user-card-horizontal">
+                <div class="user-info">
+                    <h4 class="fw-bold mb-1">For Companies</h4>
+                    <p class="small text-secondary mb-2">Recruit top university talent and manage applications easily.</p>
+                    <ul class="user-features-inline">
+                        <li><i class="bi bi-check2"></i> Post Offers</li>
+                        <li><i class="bi bi-check2"></i> Talent Search</li>
+                        <li><i class="bi bi-check2"></i> Auto-Agreements</li>
+                    </ul>
+                </div>
+                <button class="btn btn-outline-light px-4 py-2 ms-4" data-bs-toggle="modal" data-bs-target="#signUpModal">Join as Company</button>
+            </div>
+            {# Admin #}
+            <div class="user-card-horizontal">
+                <div class="user-info">
+                    <h4 class="fw-bold mb-1">For Administrators</h4>
+                    <p class="small text-secondary mb-2">Control and validate the internship lifecycle from one dashboard.</p>
+                    <ul class="user-features-inline">
+                        <li><i class="bi bi-check2"></i> Validation</li>
+                        <li><i class="bi bi-check2"></i> Statistics</li>
+                        <li><i class="bi bi-check2"></i> Doc Generation</li>
+                    </ul>
+                </div>
+                <button class="btn btn-outline-light px-4 py-2 ms-4" data-bs-toggle="modal" data-bs-target="#signInModal">Admin Portal</button>
+            </div>
+        </section>
+
+        {# --- NEW FOOTER (Based on your Image) --- #}
+        <footer class="footer-custom">
+            <div class="row">
+                <div class="col-md-5">
+                    <div class="footer-logo-text">
+                        <i class="bi bi-mortarboard-fill text-primary"></i> Stag.io
+                    </div>
+                    <p class="footer-description">
+                        Stag.io is an internship management platform developed as part of the L3TI Workshop 2025-2026. It connects students with companies while streamlining administrative processes for universities.
+                    </p>
+                </div>
+                <div class="col-md-3 offset-md-1">
+                    <h6 class="footer-heading">Platform</h6>
+                    <ul class="footer-links">
+                        <li><a href="#">Features</a></li>
+                        <li><a href="#">For Students</a></li>
+                        <li><a href="#">For Companies</a></li>
+                        <li><a href="#">For Admins</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3">
+                    <h6 class="footer-heading">Contact</h6>
+                    <div class="footer-contact-info">
+                        University of Technology<br>
+                        Department of Computer Science<br>
+                        <a href="mailto:contact@stagio.edu">contact@stagio.edu</a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-divider"></div>
+            <div class="d-flex justify-content-between align-items-center footer-bottom-text">
+                <div>2025-2026 Stag.io. L3TI Workshop Project.</div>
+                <div>Supervised by <span class="text-white fw-bold">Dr. Adil Chekati</span></div>
+            </div>
+        </footer>
+    </div>
+
+    {# --- MODAL: SIGN IN --- #}
+    <div class="modal fade modal-v0" id="signInModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" style="max-width: 400px;">
+            <div class="modal-content p-4">
+                <div class="text-end"><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div>
+                <div class="text-center mb-4">
+                    <div class="icon-box mx-auto"><i class="bi bi-layers-fill fs-4"></i></div>
+                    <h3 class="fw-bold text-white">Welcome back</h3>
+                </div>
+                {#  <form>
+                    <div class="mb-3 text-start">
+                        <label class="small text-secondary fw-bold mb-1">EMAIL ADDRESS</label>
+                        <input type="email" class="form-control v0-input" placeholder="name@university.edu">
+                    </div>
+                    <div class="mb-3 text-start">
+                        <div class="d-flex justify-content-between">
+                            <label class="small text-secondary fw-bold mb-1">PASSWORD</label>
+                            {#  <a href="#" class="text-primary small text-decoration-none" style="font-size: 11px;">Forgot password?</a>
+                        </div>#}
+
+
+                {#  <a href="{{ path('app_forgot_password') }}" class="text-primary small text-decoration-none" style="font-size: 11px;">
+                                Forgot password?
+                            </a>
+                        </div>
+                        <div class="position-relative">
+                            <input type="password" class="form-control v0-input w-100" placeholder="••••••••">
+                            <i class="bi bi-eye position-absolute top-50 end-0 translate-middle-y me-3 eye-icon"></i>
+                        </div>
+                    </div>
+                    <div class="mb-4 form-check text-start">
+                        <input type="checkbox" class="form-check-input bg-black border-secondary" id="remCheck">
+                        <label class="form-check-label small text-secondary ms-1" for="remCheck">Remember me</label>
+                    </div>
+                    <button type="submit" class="btn-v0-white">Sign In</button>
+                </form> #}
+
+                <form action="{{ path('app_login') }}" method="post">
+                    {# 1. توكن الحماية #}
+                    <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+                    {# 2. عرض رسائل الخطأ إن وجدت #}
+                    {% if error|default(null) %}
+                        <div class="alert alert-danger p-2 small" style="background: rgba(220, 38, 38, 0.1); border-color: #dc2626; color: #f87171;">
+                            {{ error.messageKey|trans(error.messageData, 'security') }}
+                        </div>
+                    {% endif %}
+
+                    <div class="mb-3 text-start">
+                        <label class="small text-secondary fw-bold mb-1">EMAIL ADDRESS</label>
+                        {# أضفنا name="_username" و القيمة الأخيرة المدخلة #}
+                        <input type="email" name="_username" value="{{ last_username|default('') }}" class="form-control v0-input" placeholder="name@university.edu" required autofocus>
+                    </div>
+
+                    <div class="mb-3 text-start">
+                        <div class="d-flex justify-content-between">
+                            <label class="small text-secondary fw-bold mb-1">PASSWORD</label>
+                            <a href="{{ path('app_forgot_password') }}" class="text-primary small text-decoration-none" style="font-size: 11px;">
+                                Forgot password?
+                            </a>
+                        </div>
+                        <div class="position-relative">
+                            {# أضفنا name="_password" #}
+                            <input type="password" name="_password" class="form-control v0-input w-100" placeholder="••••••••" required>
+                            <i class="bi bi-eye position-absolute top-50 end-0 translate-middle-y me-3 eye-icon"></i>
+                        </div>
+                    </div>
+
+                    <div class="mb-4 form-check text-start">
+                        {# أضفنا name="_remember_me" #}
+                        <input type="checkbox" name="_remember_me" class="form-check-input bg-black border-secondary" id="remCheck">
+                        <label class="form-check-label small text-secondary ms-1" for="remCheck">Remember me</label>
+                    </div>
+
+                    <button type="submit" class="btn-v0-white">Sign In</button>
+                </form>
+                <p class="text-center small text-secondary mt-4">New here? <a href="#" class="text-white fw-bold text-decoration-none" data-bs-toggle="modal" data-bs-target="#signUpModal" data-bs-dismiss="modal">Create account</a></p>
+            </div>
+        </div>
+    </div>
+
+    {# --- MODAL: SIGN UP --- #}
+    <div class="modal fade modal-v0" id="signUpModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" style="max-width: 450px;">
+            <div class="modal-content p-4">
+                <div class="text-end"><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div>
+                <div class="text-center mb-4"><h3 class="fw-bold text-white">Create Account</h3></div>
+                <form>
+                    <div class="row g-2 mb-3 text-start">
+                        <div class="col-6"><label class="small text-secondary fw-bold mb-1">FIRST NAME</label><input type="text" class="form-control v0-input"></div>
+                        <div class="col-6"><label class="small text-secondary fw-bold mb-1">LAST NAME</label><input type="text" class="form-control v0-input"></div>
+                    </div>
+                    <div class="mb-3 text-start">
+                        <label class="small text-secondary fw-bold mb-1">I AM A...</label>
+                        <select class="form-select v0-input" style="background-image: none;">
+                            <option>Student</option><option>Company</option><option>Admin</option>
+                        </select>
+                    </div>
+                    <div class="mb-3 text-start"><label class="small text-secondary fw-bold mb-1">EMAIL ADDRESS</label><input type="email" class="form-control v0-input"></div>
+                    <div class="mb-4 text-start">
+                        <label class="small text-secondary fw-bold mb-1">PASSWORD</label>
+                        <div class="position-relative">
+                            <input type="password" class="form-control v0-input w-100" placeholder="••••••••">
+                            <i class="bi bi-eye position-absolute top-50 end-0 translate-middle-y me-3 eye-icon"></i>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn-v0-white">Register</button>
+                </form>
+                <p class="text-center small text-secondary mt-4">Already have an account? <a href="#" class="text-white fw-bold text-decoration-none" data-bs-toggle="modal" data-bs-target="#signInModal" data-bs-dismiss="modal">Sign in</a></p>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.querySelectorAll('.eye-icon').forEach(icon => {
+            icon.addEventListener('click', function() {
+                // البحث عن حقل الإدخال الموجود في نفس الحاوية (div)
+                const input = this.parentElement.querySelector('input');
+
+                if (input.type === 'password') {
+                    input.type = 'text';
+                    this.classList.replace('bi-eye', 'bi-eye-slash'); // تغيير شكل العين
+                } else {
+                    input.type = 'password';
+                    this.classList.replace('bi-eye-slash', 'bi-eye'); // إعادة شكل العين
+                }
+            });
+        });
+
+
+            window.onload = function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.has('openLogin')) {
+            var myModal = new bootstrap.Modal(document.getElementById('signInModal'));
+            myModal.show();
+        }
+        }
+        // فتح نافذة تسجيل الدخول تلقائياً إذا كان هناك خطأ (قادم من Controller)
+        {% if open_login_modal|default(false) %}
+        var loginModal = new bootstrap.Modal(document.getElementById('signInModal'));
+        loginModal.show();
+        {% endif %}
+
+    </script>
+{% endblock %}

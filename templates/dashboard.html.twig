@@ -1,0 +1,85 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Stag.io - Student Space{% endblock %}
+
+{% block body %}
+    <div class="container py-5">
+        <div class="row">
+            <div class="col-lg-4">
+                <div class="card bg-dark text-white border-secondary mb-4 shadow">
+                    <div class="card-body text-center">
+                        <div class="rounded-circle bg-primary d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px; font-size: 2rem;">
+                            {{ user.firstName|first }}{{ user.lastName|first }}
+                        </div>
+                        <h4 class="fw-bold">{{ user.fullName }}</h4>
+                        <p class="text-secondary small">{{ user.email }}</p>
+                        <hr class="border-secondary">
+
+                        <div class="text-start">
+                            <label class="small text-primary fw-bold mb-1">TECHNICAL SKILLS</label>
+                            <div class="mb-3">
+                                {% for skill in user.skills %}
+                                    <span class="badge bg-secondary me-1">{{ skill }}</span>
+                                {% else %}
+                                    <span class="text-muted small italic">No skills added yet.</span>
+                                {% endfor %}
+                            </div>
+
+                            <label class="small text-primary fw-bold mb-1">GITHUB / PORTFOLIO</label>
+                            <p class="small">
+                                {% if user.githubLink %}
+                                    <a href="{{ user.githubLink }}" target="_blank" class="text-white text-decoration-none">
+                                        <i class="bi bi-github"></i> {{ user.githubLink }}
+                                    </a>
+                                {% else %}
+                                    <span class="text-muted">Not provided</span>
+                                {% endif %}
+                            </p>
+                        </div>
+                        <a href="#" class="btn btn-outline-light btn-sm w-100 mt-3">Edit Profile</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-8">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2 class="fw-bold">Available Internships</h2>
+                    <div class="badge bg-success">Status: Looking for internship</div>
+                </div>
+
+                <div class="card bg-dark border-secondary p-3 mb-4">
+                    <form class="row g-2">
+                        <div class="col-md-5">
+                            <input type="text" class="form-control bg-black border-secondary text-white" placeholder="Search by Tech (React, Java...)">
+                        </div>
+                        <div class="col-md-4">
+                            <select class="form-select bg-black border-secondary text-white">
+                                <option selected>All Wilayas</option>
+                                <option>Constantine</option>
+                                <option>Algiers</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <button type="submit" class="btn btn-primary w-100">Find Offers</button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="list-group">
+                    <div class="list-group-item bg-dark border-secondary text-white mb-3 rounded shadow-sm p-4">
+                        <div class="d-flex justify-content-between">
+                            <h5 class="mb-1 fw-bold text-primary">Web Developer Intern</h5>
+                            <span class="text-secondary small">2 days ago</span>
+                        </div>
+                        <p class="mb-2 small">Company: TechSolutions DZ | Location: Constantine</p>
+                        <div class="mb-3">
+                            <span class="badge bg-black border border-primary text-primary">PHP</span>
+                            <span class="badge bg-black border border-primary text-primary">Symfony</span>
+                        </div>
+                        <button class="btn btn-v0-white btn-sm">Apply Now</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

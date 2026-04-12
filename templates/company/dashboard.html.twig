@@ -1,0 +1,316 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Stag.io - Company{% endblock %}
+
+{% block body %}
+    <style>
+        :root {
+            --bg-main: #030712;
+            --bg-sidebar: #09090b;
+            --card-bg: #0f172a;
+            --border-color: #1e293b;
+            --text-main: #ffffff;
+            --text-muted: #94a3b8;
+            --accent-primary: #3b82f6;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        header, .navbar, .navbar-top { display: none !important; }
+
+        .sidebar {
+            width: 260px; height: 100vh; position: fixed;
+            background: var(--bg-sidebar); border-right: 1px solid var(--border-color);
+            padding: 1.5rem; z-index: 1000; left: 0; top: 0;
+        }
+
+        .main-content { margin-left: 260px; padding: 2rem; width: calc(100% - 260px); }
+
+        .nav-link-custom {
+            display: flex; align-items: center; gap: 12px;
+            color: var(--text-muted); text-decoration: none;
+            padding: 12px 15px; border-radius: 8px; margin-bottom: 5px;
+            transition: all 0.2s;
+        }
+
+        .nav-link-custom:hover, .nav-link-custom.active {
+            background: rgba(59, 130, 246, 0.1);
+            color: var(--accent-primary);
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent-primary);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .form-control {
+            background: #020617;
+            border: 1px solid #334155; color: white; border-radius: 8px; padding: 12px;
+        }
+
+        .form-control:focus {
+            background: #020617;
+            color: white; border-color: var(--accent-primary); box-shadow: none;
+        }
+
+        .label-custom { color: #cbd5e1; font-weight: 500; font-size: 0.85rem; margin-bottom: 8px; display: block; }
+
+        .logo-preview-circle {
+            width: 80px; height: 80px; border-radius: 12px;
+            background: #020617; border: 1px dashed var(--border-color);
+            display: flex; align-items: center; justify-content: center; overflow: hidden;
+        }
+
+        .btn-save-custom {
+            background: linear-gradient(135deg, #3b82f6 0%, #10b981 100%);
+            border: none; color: white;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn-save-custom:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+        }
+    </style>
+
+    <div class="sidebar">
+        <div class="d-flex align-items-center gap-2 mb-4 px-2">
+            <div class="bg-primary rounded p-1">
+                <i class="bi bi-layers-half text-white"></i>
+            </div>
+            <span class="fw-bold fs-5 text-white">Stag<span class="text-primary">.io</span></span>
+        </div>
+
+        <nav>
+            <a href="{{ path('app_company_dashboard') }}"
+               class="nav-link-custom {{ app.request.attributes.get('_route') == 'app_company_dashboard' ? 'active' : '' }}">
+                <i class="bi bi-grid"></i> Dashboard
+            </a>
+
+            <a href="{{ path('app_company_profile') }}"
+               class="nav-link-custom {{ app.request.attributes.get('_route') == 'app_company_profile' ? 'active' : '' }}">
+                <i class="bi bi-person-circle"></i> My Profile
+            </a>
+
+            <a href="#" class="nav-link-custom"><i class="bi bi-briefcase"></i> My Offers</a>
+            <a href="#" class="nav-link-custom"><i class="bi bi-people"></i> Applicants</a>
+
+            <hr class="border-secondary my-4 opacity-25">
+
+            <a href="{{ path('app_logout') }}" class="nav-link-custom text-danger">
+                <i class="bi bi-box-arrow-left"></i> Logout
+            </a>
+        </nav>
+    </div>
+
+    <div class="main-content">
+        {# تحديد المسار الحالي #}
+        {% set current_route = app.request.attributes.get('_route') %}
+
+        {% if current_route == 'app_company_dashboard' %}
+            {# --- محتوى الداشبورد الفوارغ --- #}
+            <div class="dashboard-header mb-4">
+                <h2 class="fw-bold text-white">Dashboard Overview</h2>
+                <p class="text-secondary">Welcome back! Here is a summary of your activity.</p>
+            </div>
+
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="stat-card text-center">
+                        <i class="bi bi-briefcase text-primary fs-1 mb-2"></i>
+                        <h3 class="text-white fw-bold">0</h3>
+                        <p class="text-muted mb-0">Active Offers</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="stat-card text-center">
+                        <i class="bi bi-people text-success fs-1 mb-2"></i>
+                        <h3 class="text-white fw-bold">0</h3>
+                        <p class="text-muted mb-0">Total Applicants</p>
+                    </div>
+                </div>
+            </div>
+
+        {% else %}
+            {# --- محتوى الملف الشخصي (Profile) --- #}
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h2 class="fw-bold mb-0 text-white">Company Profile</h2>
+                    <p class="text-secondary small">Complete your profile to attract the best students.</p>
+                </div>
+                <button class="btn btn-save-custom px-4 shadow-sm fw-bold" onclick="saveProfile()">
+                    <i class="bi bi-save me-2"></i> Save Changes
+                </button>
+            </div>
+
+            <div class="row g-4">
+                <div class="col-lg-8">
+                    <div class="stat-card mb-4">
+                        <h6 class="fw-bold mb-3 text-white">Company Logo</h6>
+                        <div class="d-flex align-items-center gap-4">
+                            <div class="logo-preview-circle" id="logo-container">
+                                {% if company.logo %}
+                                    <img src="{{ asset('uploads/logos/' ~ company.logo) }}" id="logo-img" style="width: 100%; height: 100%; object-fit: cover;">
+                                    <i class="bi bi-building fs-1 text-secondary d-none" id="logo-icon"></i>
+                                {% else %}
+                                    <i class="bi bi-building fs-1 text-secondary" id="logo-icon"></i>
+                                    <img src="" id="logo-img" class="d-none" style="width: 100%; height: 100%; object-fit: cover;">
+                                {% endif %}
+                            </div>
+                            <div>
+                                <input type="file" id="logo-input" class="d-none" accept="image/*" onchange="previewLogo(this)">
+                                <button class="btn btn-outline-light btn-sm rounded-pill px-3" onclick="document.getElementById('logo-input').click()">
+                                    <i class="bi bi-upload me-2"></i> Upload Logo
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <h6 class="fw-bold mb-4 text-white"><i class="bi bi-pencil-square me-2 text-primary"></i> Company Details</h6>
+                        <div class="row g-3">
+                            <div class="col-md-12">
+                                <label class="label-custom">Company Name</label>
+                                <input type="text" id="comp-name" class="form-control" value="{{ company.companyName }}" oninput="updatePreview()">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="label-custom">Email Address</label>
+                                <input type="email" id="comp-email" class="form-control" value="{{ company.email }}" oninput="updatePreview()">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="label-custom">Phone Number</label>
+                                <input type="text" id="comp-phone" class="form-control" value="{{ company.phone }}" oninput="updatePreview()">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="label-custom">Industry</label>
+                                <input type="text" id="comp-industry" class="form-control" value="{{ company.industry }}" oninput="updatePreview()">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="label-custom">Wilaya</label>
+                                <input type="text" id="comp-wilaya" class="form-control" value="{{ company.wilaya }}" oninput="updatePreview()">
+                            </div>
+                            <div class="col-md-12">
+                                <label class="label-custom">Website</label>
+                                <input type="url" id="comp-web" class="form-control" value="{{ company.website }}" oninput="updatePreview()">
+                            </div>
+                            <div class="col-md-12">
+                                <label class="label-custom">About Us</label>
+                                <textarea id="comp-desc" class="form-control" rows="4" oninput="updatePreview()">{{ company.bio }}</textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4">
+                    <div class="stat-card sticky-top" style="top: 2rem;">
+                        <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-2 text-uppercase fw-bold mb-4" style="font-size: 0.75rem;">
+                            <i class="bi bi-eye me-2"></i> Live Preview
+                        </span>
+
+                        <div class="text-center mb-4">
+                            <div class="mx-auto mb-3" id="prev-logo-container" style="width: 75px; height: 75px; border-radius: 12px; background: #020617; display: flex; align-items: center; justify-content: center; overflow: hidden; border: 2px solid #3b82f6;">
+                                {% if company.logo %}
+                                    <img src="{{ asset('uploads/logos/' ~ company.logo) }}" id="prev-logo-img" style="width: 100%; height: 100%; object-fit: cover;">
+                                    <i class="bi bi-building fs-2 text-primary d-none" id="prev-logo-icon"></i>
+                                {% else %}
+                                    <img src="" id="prev-logo-img" class="d-none" style="width: 100%; height: 100%; object-fit: cover;">
+                                    <i class="bi bi-building fs-2 text-primary" id="prev-logo-icon"></i>
+                                {% endif %}
+                            </div>
+                            <h5 id="prev-name" class="mt-3 fw-bold text-white">{{ company.companyName|default('Company Name') }}</h5>
+                            <span id="prev-industry" class="badge bg-primary-subtle text-primary py-2 px-3">{{ company.industry|default('Industry') }}</span>
+                        </div>
+
+                        <div class="preview-info small d-flex flex-column gap-3">
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-envelope me-3 text-primary"></i>
+                                <span id="prev-email" class="text-light">{{ company.email|default('email@company.com') }}</span>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-telephone me-3 text-primary"></i>
+                                <span id="prev-phone" class="text-light">{{ company.phone|default('Not provided') }}</span>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-geo-alt me-3 text-primary"></i>
+                                <span id="prev-wilaya" class="text-light">{{ company.wilaya|default('Location') }}</span>
+                            </div>
+                        </div>
+                        <hr class="border-secondary opacity-25 my-4">
+                        <p id="prev-desc" class="text-secondary small mb-0">{{ company.bio|default('Company description will appear here.') }}</p>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+
+    <script>
+        function previewLogo(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const logoImg = document.getElementById('logo-img');
+                    const logoIcon = document.getElementById('logo-icon');
+                    const prevImg = document.getElementById('prev-logo-img');
+                    const prevIcon = document.getElementById('prev-logo-icon');
+
+                    if(logoImg) { logoImg.src = e.target.result; logoImg.classList.remove('d-none'); }
+                    if(logoIcon) { logoIcon.classList.add('d-none'); }
+                    if(prevImg) { prevImg.src = e.target.result; prevImg.classList.remove('d-none'); }
+                    if(prevIcon) { prevIcon.classList.add('d-none'); }
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function updatePreview() {
+            const name = document.getElementById('comp-name');
+            const email = document.getElementById('comp-email');
+            const industry = document.getElementById('comp-industry');
+            const desc = document.getElementById('comp-desc');
+
+            if(name) document.getElementById('prev-name').innerText = name.value || 'Company Name';
+            if(email) document.getElementById('prev-email').innerText = email.value || 'email@company.com';
+            if(industry) document.getElementById('prev-industry').innerText = industry.value || 'Industry';
+            if(desc) document.getElementById('prev-desc').innerText = desc.value || 'Description...';
+        }
+
+        function saveProfile() {
+            const formData = new FormData();
+            formData.append('companyName', document.getElementById('comp-name').value);
+            formData.append('email', document.getElementById('comp-email').value);
+            formData.append('phone', document.getElementById('comp-phone').value);
+            formData.append('industry', document.getElementById('comp-industry').value);
+            formData.append('wilaya', document.getElementById('comp-wilaya').value);
+            formData.append('website', document.getElementById('comp-web').value);
+            formData.append('bio', document.getElementById('comp-desc').value);
+
+            const logoFile = document.getElementById('logo-input').files[0];
+            if (logoFile) formData.append('logo', logoFile);
+
+            fetch('{{ path('app_company_profile_update') }}', {
+                method: 'POST',
+                body: formData
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') alert('✅ Changes Saved!');
+                    else alert('❌ Error: ' + data.message);
+                });
+        }
+    </script>
+{% endblock %}
