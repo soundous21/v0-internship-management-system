@@ -7,10 +7,10 @@
         :root {
             --bg-main: #030712;
             --bg-sidebar: #09090b;
-            --card-bg: #111827; /* لون خلفية للبطاقات أفتح قليلاً */
-            --border-color: rgba(75, 85, 99, 0.3); /* إطار شبه شفاف */
+            --card-bg: #000000; /* لون خلفية للبطاقات أفتح قليلاً */
+            --border-color: rgb(17, 24, 39); /* إطار شبه شفاف */
             --text-muted: #94a3b8;
-            --accent-primary: #3b82f6; /* الأزرق التكنولوجي */
+            --accent-primary: #3378f3; /* الأزرق التكنولوجي */
             --glow-color: rgba(59, 130, 246, 0.3); /* لون الوهج */
         }
 
@@ -115,6 +115,8 @@
             border: 1px solid rgba(59, 130, 246, 0.2);
             padding: 5px 12px;
             border-radius: 6px;
+
+
         }
 
         .d-none { display: none !important; }
@@ -164,6 +166,179 @@
             transform: translateY(-2px);
         }
 
+
+
+        /* ألوان شارات المهارات - فاتحة وهادئة */
+        .badge-custom {
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #cbd5e1;
+        }
+
+        .hover-primary:hover {
+            color: var(--accent-primary) !important;
+        }
+
+        .cursor-pointer {
+            cursor: pointer;
+        }
+
+        /* تأثير بسيط عند تمرير الماوس على البطاقة */
+        .offer-card {
+            transition: transform 0.2s ease, border-color 0.2s ease;
+        }
+
+        .offer-card:hover {
+            border-color: var(--accent-primary) !important;
+            background: rgba(59, 130, 246, 0.02) !important;
+        }
+
+
+
+
+
+
+
+
+
+
+
+        /* تأثير الصفوف عند التمرير */
+        .table-hover tbody tr:hover {
+            background-color: rgba(51, 120, 243, 0.05) !important;
+            transition: background 0.3s ease;
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+        /* تأثير الصفوف عند التمرير بشكل خافت */
+        .transition-row {
+            transition: all 0.3s ease;
+        }
+        .transition-row:hover {
+            background: rgba(51, 120, 243, 0.03) !important;
+        }
+
+        /* شارة مخصصة: حدود زرقاء ونص رمادي فاتح */
+        .badge-custom-tech {
+            background: rgba(51, 120, 243, 0.05);
+            border: 1px solid rgba(51, 120, 243, 0.2);
+            color: #94a3b8;
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* نقطة متوهجة للشارات */
+        .dot-glow {
+            width: 6px;
+            height: 6px;
+            background-color: var(--accent-primary);
+            border-radius: 50%;
+            box-shadow: 0 0 8px var(--accent-primary);
+        }
+
+        /* شارة الحالة النشطة (Accepted) بالأزرق الكامل */
+        .badge-custom-tech-active {
+            background: var(--accent-primary);
+            color: white;
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            box-shadow: 0 4px 15px rgba(51, 120, 243, 0.2);
+        }
+
+        /* زر تقني بحدود زرقاء فقط */
+        .btn-tech-outline {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: #94a3b8;
+            padding: 6px 16px;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            transition: 0.3s;
+        }
+
+        .btn-tech-outline:hover {
+            border-color: var(--accent-primary);
+            color: white;
+            box-shadow: 0 0 10px rgba(51, 120, 243, 0.2);
+        }
+
+        .uppercase-tracking {
+            letter-spacing: 1px;
+            font-size: 0.65rem !important;
+        }
+
+
+        /* شارة الرفض المتطابقة مع التصميم التقني */
+        .badge-custom-rejected {
+            background: rgba(239, 68, 68, 0.05);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            color: #f87171;
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .dot-glow-red {
+            width: 6px;
+            height: 6px;
+            background-color: #ef4444;
+            border-radius: 50%;
+            box-shadow: 0 0 8px #ef4444;
+        }
+
+        /* تنسيق إضافي لزر عرض السبب ليتناسب مع الجدول */
+        .btn-tech-outline-danger {
+            background: transparent;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #f87171;
+            padding: 6px 16px;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            transition: 0.3s;
+        }
+
+        .btn-tech-outline-danger:hover {
+            border-color: #ef4444;
+            background: rgba(239, 68, 68, 0.1);
+            color: white;
+        }
+
+
+        /* كود إضافي لضمان تلوين القائمة المنسدلة نفسها في بعض المتصفحات */
+        .form-select-dark {
+            background-color: #000 !important;
+            color: #fff !important;
+            border-color: #444 !important;
+        }
+        .form-select-dark option {
+            background-color: #000 !important;
+            color: #fff !important;
+        }
     </style>
 
     <div class="d-flex">
@@ -179,266 +354,972 @@
                 <a class="nav-link-custom" onclick="switchTab('offers', this)">
                     <i class="bi bi-search"></i> Browse Internships
                 </a>
-                <a class="nav-link-custom"><i class="bi bi-file-earmark-text"></i> My Applications</a>
+                <a class="nav-link-custom" onclick="switchTab('applications', this)">
+                    <i class="bi bi-file-earmark-text"></i> My Applications
+                </a>
                 <hr class="border-secondary">
                 <a href="{{ path('app_logout') }}" class="nav-link-custom text-danger"><i class="bi bi-box-arrow-right"></i> Logout</a>
             </nav>
         </div>
 
         <div class="main-content">
-            <div id="section-dashboard">
-                <header class="d-flex justify-content-between align-items-center mb-5">
-                    <div>
-                        <h2 class="fw-bold mb-0">Welcome back, {{ user.firstName }}!</h2>
-                        <p class="text-secondary small">Here's what's happening with your applications.</p>
-                    </div>
-                    <div class="d-flex align-items-center gap-3">
-                        <div class="text-end">
-                            <p class="mb-0 fw-bold small">{{ user.firstName }} {{ user.lastName }}</p>
-                            <small class="text-muted" style="font-size: 0.7rem;">{{ user.email }}</small>
+                <!-- بداية قسم الداشبورد -->
+                <div id="section-dashboard">
+                    <header class="d-flex justify-content-between align-items-center mb-5">
+                        <div>
+                            <h2 class="fw-bold mb-0">Welcome back, {{ user.firstName }}!</h2>
+                            <p class="text-secondary small">Here's what's happening with your applications.</p>
                         </div>
-                        <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center fw-bold" style="width: 45px; height: 45px;">
-                            {{ user.firstName|first }}{{ user.lastName|first }}
-                        </div>
-                    </div>
-                </header>
 
-                <div class="row g-4 mb-5">
-                    {% set stats = [
-                        {'label': 'Total Applied', 'value': 8, 'icon': 'bi-send', 'color': 'text-white'},
-                        {'label': 'Pending Review', 'value': 4, 'icon': 'bi-clock', 'color': 'text-white'},
-                        {'label': 'Accepted', 'value': 1, 'icon': 'bi-check-circle', 'color': 'text-white'},
-                        {'label': 'Rejected', 'value': 3, 'icon': 'bi-x-circle', 'color': 'text-white'}
-                    ] %}
-                    {% for stat in stats %}
-                        <div class="col-md-3">
-                            <div class="stat-card">
-                                <div class="d-flex justify-content-between align-items-center mb-2">
-                                    <span class="text-secondary small fw-bold">{{ stat.label|upper }}</span>
-                                    <i class="bi {{ stat.icon }} {{ stat.color }}"></i>
-                                </div>
-                                <h2 class="fw-bold mb-0">{{ stat.value }}</h2>
+                        {# قسم معلومات المستخدم في الهيدر #}
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="text-end">
+                                <p class="mb-0 fw-bold small">{{ user.firstName }} {{ user.lastName }}</p>
+                                <small class="text-muted" style="font-size: 0.7rem;">{{ user.email }}</small>
+                            </div>
+                            <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center fw-bold overflow-hidden"
+                                 style="width: 45px; height: 45px; border: 1px solid var(--border-color);">
+                                {% if user.profilePicture %}
+                                    <img src="{{ asset('uploads/profiles/' ~ user.profilePicture) }}" class="w-100 h-100 object-fit-cover">
+                                {% else %}
+                                    <span class="text-white">{{ user.firstName|first|upper }}{{ user.lastName|first|upper }}</span>
+                                {% endif %}
                             </div>
                         </div>
-                    {% endfor %}
-                </div>
+                    </header>
 
-                <div class="row g-4">
-                    <div class="col-lg-8">
-                        <h4 class="fw-bold mb-4">Recommended for You</h4>
-                        <div class="stat-card p-4">
-                            <div class="d-flex justify-content-between align-items-start">
-                                <div>
-                                    <span class="badge bg-primary-subtle text-primary mb-2">New</span>
-                                    <h5 class="fw-bold">Full-stack Symfony Developer</h5>
-                                    <p class="text-secondary small mb-3">TechSolutions Algeria • Constantine</p>
-                                    <div class="d-flex gap-2">
-                                        <span class="badge bg-black border border-secondary">Symfony</span>
-                                        <span class="badge bg-black border border-secondary">PHP</span>
+                    {# قسم الإحصائيات #}
+                    <div class="row g-4 mb-5">
+                        {% set items = [
+                            {'label': 'Total Applied', 'value': stats.total, 'icon': 'bi-send', 'color': 'text-white'},
+                            {'label': 'Pending', 'value': stats.pending, 'icon': 'bi-clock', 'color': 'text-white'},
+                            {'label': 'Accepted', 'value': stats.accepted, 'icon': 'bi-check-circle', 'color': 'text-white'},
+                            {'label': 'Rejected', 'value': stats.refused, 'icon': 'bi-x-circle', 'color': 'text-white'}
+                        ] %}
+                        {% for stat in items %}
+                            <div class="col-md-3">
+                                <div class="stat-card">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <span class="text-secondary small fw-bold">{{ stat.label|upper }}</span>
+                                        <i class="bi {{ stat.icon }} {{ stat.color }}"></i>
                                     </div>
+                                    <h2 class="fw-bold mb-0">{{ stat.value }}</h2>
                                 </div>
-                                <button class="btn btn-primary btn-sm px-4 rounded-pill">Apply Now</button>
+                            </div>
+                        {% endfor %}
+                    </div>
+
+                    {# القسم السفلي: العرض المقبول + نسبة اكتمال الملف #}
+                    <div class="row g-4">
+                        <!-- الجزء الذي طلبتِ استبداله بالعرض المقبول -->
+                        <div class="col-lg-8">
+                            {% if myInternship %}
+                                <h4 class="fw-bold mb-4">My Current Internship</h4>
+                                <div class="stat-card p-4 border-primary" style="background: rgba(51, 120, 243, 0.05);">
+                                    {# ... كود عرض التربص الذي أرسلته لكِ سابقاً ... #}
+                                </div>
+                            {% else %}
+                                <h4 class="fw-bold mb-4">Recommended for You</h4>
+                                <div class="stat-card p-4 text-center">
+                                    <p class="text-secondary mb-0">No approved internship yet.</p>
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- جانب لوحة التحكم: نسبة اكتمال الملف -->
+                        <div class="col-lg-4">
+                            <div class="stat-card">
+                                <h5 class="fw-bold mb-4">Profile Completion</h5>
+                                <div class="progress bg-black mb-3" style="height: 10px; border-radius: 5px;">
+                                    <div class="progress-bar bg-primary" style="width: {{ completionPercent }}%;"></div>
+                                </div>
+                                <p class="small text-secondary mb-4">{{ completionPercent }}% Completed</p>
+                                <h6 class="small fw-bold text-primary mb-3">YOUR SKILLS</h6>
+                                <div class="d-flex flex-wrap gap-2">
+                                    {% for skill in user.skills %}
+                                        <span class="badge bg-secondary">{{ skill.tagName }}</span>
+                                    {% endfor %}
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-lg-4">
-                        <div class="stat-card">
-                            <h5 class="fw-bold mb-4">Profile Completion</h5>
-                            <div class="progress bg-black mb-3" style="height: 10px; border-radius: 5px;">
-                                <div class="progress-bar bg-primary" style="width: 75%; border-radius: 5px;"></div>
-                            </div>
-                            <p class="small text-secondary mb-4">Complete your profile to increase your chances!</p>
-                            <h6 class="small fw-bold text-primary mb-3">YOUR SKILLS</h6>
-                            <div class="d-flex flex-wrap gap-2">
-                                {% for skill in user.skills %}
-                                    <span class="badge bg-secondary">{{ skill }}</span>
-                                {% endfor %}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+                    </div> <!-- إغلاق الـ row السفلي -->
+                </div> <!-- إغلاق section-dashboard الصحيح -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
             <div id="section-offers" class="d-none">
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <div>
-                        <h2 class="fw-bold mb-0">Internship Offers</h2>
-                        <p class="text-secondary small">Browse and apply to internship opportunities</p>
+                        <h2 class="fw-bold mb-0">Browse Internships</h2>
+                        <p class="text-secondary small">
+                            Offers from your university's partner companies
+                            {% if offers|length > 0 %}
+                                — <span class="text-primary fw-bold">{{ offers|length }} available</span>
+                            {% endif %}
+                        </p>
                     </div>
                 </div>
 
+                {# ══ Filters ══ #}
                 <div class="stat-card p-3 mb-4">
-                    <div class="row g-2">
-                        <div class="col-md-5">
+                    <div class="row g-2 align-items-end">
+
+                        {# Search #}
+                        <div class="col-md-4">
                             <div class="input-group">
-                                <span class="input-group-text bg-black border-secondary text-muted"><i class="bi bi-search"></i></span>
-                                <input type="text" class="form-control" placeholder="Search by title, company, or skills...">
+                    <span class="input-group-text bg-black border-secondary text-white">
+                        <i class="bi bi-search"></i>
+                    </span>
+                                <input type="text" id="filter-search" class="form-control shadow-none bg-black text-white border-secondary"
+                                       placeholder="Search by title, company, skill..."
+                                       oninput="filterOffers()">
                             </div>
                         </div>
-                        <div class="col-md-2">
-                            <select class="form-select form-control">
-                                <option selected>All Locations</option>
-                                <option>Algiers</option>
-                                <option>Constantine</option>
-                                <option>Oran</option>
-                            </select>
-                        </div>
-                        <div class="col-md-2">
-                            <select class="form-select form-control">
-                                <option selected>All Technology</option>
-                                <option>Frontend</option>
-                                <option>Backend</option>
-                                <option>Design</option>
-                            </select>
-                        </div>
+
+                        {# Wilaya #}
                         <div class="col-md-3">
-                            <select class="form-select form-control">
-                                <option selected>All Durations</option>
-                                <option>1-3 Months</option>
-                                <option>4-6 Months</option>
+                            <input class="form-control shadow-none bg-black text-white border-secondary"
+                                   id="filter-wilaya" list="datalistWilaya" placeholder="Wilaya..." oninput="filterOffers()">
+                            <datalist id="datalistWilaya">
+                                <option value="Adrar"><option value="Chlef"><option value="Laghouat">
+                                <option value="Oum El Bouaghi"><option value="Batna"><option value="Béjaïa">
+                                <option value="Biskra"><option value="Béchar"><option value="Blida">
+                                <option value="Bouira"><option value="Tamanrasset"><option value="Tébessa">
+                                <option value="Tlemcen"><option value="Tiaret"><option value="Tizi Ouzou">
+                                <option value="Algiers"><option value="Djelfa"><option value="Jijel">
+                                <option value="Sétif"><option value="Saïda"><option value="Skikda">
+                                <option value="Sidi Bel Abbès"><option value="Annaba"><option value="Guelma">
+                                <option value="Constantine"><option value="Médéa"><option value="Mostaganem">
+                                <option value="M'Sila"><option value="Mascara"><option value="Ouargla">
+                                <option value="Oran"><option value="El Bayadh"><option value="Illizi">
+                                <option value="Bordj Bou Arreridj"><option value="Boumerdès"><option value="El Tarf">
+                                <option value="Tindouf"><option value="Tissemsilt"><option value="El Oued">
+                                <option value="Khenchela"><option value="Souk Ahras"><option value="Tipaza">
+                                <option value="Mila"><option value="Aïn Defla"><option value="Naâma">
+                                <option value="Aïn Témouchent"><option value="Ghardaïa"><option value="Relizane">
+                                <option value="Timimoun"><option value="Bordj Badji Mokhtar">
+                                <option value="Ouled Djellal"><option value="Béni Abbès"><option value="In Salah">
+                                <option value="In Guezzam"><option value="Touggourt"><option value="Djanet">
+                                <option value="El M'Ghair"><option value="El Meniaa">
+                            </datalist>
+                        </div>
+
+                        {# Type #}
+                        <div class="col-md-2">
+                            <select class="form-select shadow-none bg-black text-white border-secondary" id="filter-type" onchange="filterOffers()">
+                                <option value="">All Types</option>
+                                <option value="PFE">PFE</option>
+                                <option value="Stage d'Immersion">Stage d'Immersion</option>
+                                <option value="Stage Technique">Stage Technique</option>
                             </select>
+                        </div>
+
+                        {# Smart Match Filter #}
+                        <div class="col-md-1">
+                            <div class="form-check form-switch pt-2">
+                                <input class="form-check-input" type="checkbox" id="filter-match" onchange="filterOffers()">
+                                <label class="form-check-label text-secondary small" for="filter-match">Match</label>
+                            </div>
+                        </div>
+
+                        {# Reset #}
+                        <div class="col-md-2">
+                            <button class="btn btn-outline-secondary w-100 shadow-none" onclick="resetFilters()">
+                                <i class="bi bi-x-circle me-1"></i> Reset
+                            </button>
                         </div>
                     </div>
                 </div>
 
-                <p class="text-secondary small mb-3">Showing 2 of 2 offers</p>
+                <p class="text-secondary small mb-3" id="offers-count">
+                    Showing <span id="offers-count-num">{{ offers|length }}</span>
+                    offer{{ offers|length != 1 ? 's' : '' }}
+                </p>
 
-                <div class="d-flex flex-column gap-3">
-                    <div class="stat-card p-4">
-                        <div class="d-flex justify-content-between align-items-start">
-                            <div class="flex-grow-1">
-                                <div class="d-flex align-items-center gap-2 mb-2">
-                                    <h5 class="fw-bold mb-0">Frontend Developer Intern</h5>
-                                    <i class="bi bi-bookmark ms-2 cursor-pointer text-muted hover-primary"></i>
+                {# ══ Offers List ══ #}
+                <div class="d-flex flex-column gap-3" id="offers-container">
+
+                    {% if offers is empty %}
+                        <div class="stat-card p-5 text-center">
+                            <i class="bi bi-inbox fs-1 text-muted mb-3 d-block"></i>
+                            <h5 class="text-white-50">No offers available yet</h5>
+                            <p class="text-secondary small">Your university hasn't approved any company partners yet.</p>
+                        </div>
+                    {% endif %}
+
+                    {# ★ Smart Matching: حساب مهارات الطالب #}
+                    {% set studentSkills = user.skills|map(s => s.tagName|lower)|join(',') %}
+
+                    {% for offer in offers %}
+                        {% set isApplied = offer.id in appliedOfferIds %}
+
+                        {# حساب نسبة التوافق #}
+                        {% set matchCount = 0 %}
+                        {% set totalSkills = offer.skills|length %}
+                        {% for skill in offer.skills %}
+                            {% if skill.tagName|lower in user.skills|map(s => s.tagName|lower) %}
+                                {% set matchCount = matchCount + 1 %}
+                            {% endif %}
+                        {% endfor %}
+                        {% set matchPercent = totalSkills > 0 ? ((matchCount / totalSkills) * 100)|round : 0 %}
+                        {% set matchColor = matchPercent >= 70 ? '#22c55e' : (matchPercent >= 40 ? '#f59e0b' : '#ef4444') %}
+                        {% set matchLabel = matchPercent >= 70 ? 'Great Match' : (matchPercent >= 40 ? 'Partial Match' : 'Low Match') %}
+
+                        <div class="stat-card p-4 offer-card"
+                             data-title="{{ offer.title|lower }}"
+                             data-company="{{ (offer.company.companyName ?? offer.company.fullName)|lower }}"
+                             data-wilaya="{{ offer.wilaya|lower }}"
+                             data-type="{{ offer.locationType }}"
+                             data-skills="{{ offer.skills|map(s => s.tagName|lower)|join(',') }}"
+                             data-match="{{ matchPercent }}"
+                             id="offer-card-{{ offer.id }}">
+
+                            <div class="d-flex justify-content-between align-items-start gap-3">
+
+                                {# ═══ LEFT — Offer Info ═══ #}
+                                <div class="flex-grow-1">
+
+                                    {# Title + Status #}
+                                    <div class="d-flex align-items-center gap-2 mb-1">
+                                        {# Company Logo #}
+                                        <div style="width:36px;height:36px;border-radius:8px;background:#0f172a;border:1px solid #1e293b;display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;">
+                                            {% if offer.company.logo %}
+                                                <img src="{{ asset('uploads/logos/' ~ offer.company.logo) }}" style="width:100%;height:100%;object-fit:cover;">
+                                            {% else %}
+                                                <i class="bi bi-building text-primary" style="font-size:14px;"></i>
+                                            {% endif %}
+                                        </div>
+                                        <h5 class="fw-bold mb-0 text-white">{{ offer.title }}</h5>
+                                        <span class="badge bg-success-subtle text-success ms-1" style="font-size:0.65rem;">ACTIVE</span>
+                                    </div>
+
+                                    {# Company + Type + Level #}
+                                    <div class="mb-2">
+                            <span class="text-primary fw-bold small">
+                                {{ offer.company.companyName ?? offer.company.fullName }}
+                            </span>
+                                        <span class="text-muted mx-2">|</span>
+                                        {% if offer.locationType %}
+                                            <span class="badge bg-primary-subtle text-primary" style="font-size:0.7rem;">
+                                    {{ offer.locationType }}
+                                </span>
+                                        {% endif %}
+                                        {% if offer.level is defined and offer.level %}
+                                            <span class="badge bg-info-subtle text-info ms-1" style="font-size:0.7rem;">
+                                    {{ offer.level }}
+                                </span>
+                                        {% endif %}
+                                    </div>
+
+                                    {# Meta: location, duration, dates #}
+                                    <div class="d-flex flex-wrap gap-3 text-secondary small mb-3">
+                                        {% if offer.wilaya %}
+                                            <span><i class="bi bi-geo-alt me-1 text-primary"></i>{{ offer.wilaya }}</span>
+                                        {% endif %}
+                                        {% if offer.duration %}
+                                            <span><i class="bi bi-clock me-1 text-primary"></i>{{ offer.duration }}</span>
+                                        {% endif %}
+                                        {% if offer.deadline %}
+                                            <span><i class="bi bi-calendar-event me-1 text-danger"></i>Deadline: {{ offer.deadline|date('M d, Y') }}</span>
+                                        {% endif %}
+                                        {% if offer.internshipStart %}
+                                            <span><i class="bi bi-play-circle me-1 text-success"></i>Internship: {{ offer.internshipStart|date('M d, Y') }}</span>
+                                        {% endif %}
+                                    </div>
+
+                                    {# Description #}
+                                    {% if offer.description %}
+                                        <p class="text-secondary small mb-3" style="display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;max-width:700px;">
+                                            {{ offer.description }}
+                                        </p>
+                                    {% endif %}
+
+                                    {# Skills + Map #}
+                                    <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+                                        <div class="d-flex gap-2 flex-wrap">
+                                            {% for skill in offer.skills %}
+                                                {% set isMatched = skill.tagName|lower in user.skills|map(s => s.tagName|lower) %}
+                                                <span class="skill-badge"
+                                                      style="background:{{ isMatched ? 'rgba(34,197,94,0.1)' : '#1e293b' }};
+                                                              border:1px solid {{ isMatched ? 'rgba(34,197,94,0.4)' : '#334155' }};
+                                                              color:{{ isMatched ? '#86efac' : '#94a3b8' }};
+                                                              border-radius:20px;padding:3px 10px;font-size:11px;display:inline-flex;align-items:center;gap:4px;">
+                                        {% if isMatched %}<i class="bi bi-check-circle-fill" style="font-size:10px;"></i>{% endif %}
+                                                    {{ skill.tagName }}
+                                    </span>
+                                            {% endfor %}
+                                        </div>
+
+                                        {# Map Link #}
+                                        {% if offer.latitude and offer.longitude %}
+                                            <a href="https://www.google.com/maps?q={{ offer.latitude }},{{ offer.longitude }}"
+                                               target="_blank" class="btn btn-sm btn-outline-info border-secondary">
+                                                <i class="bi bi-map me-1"></i> View Map
+                                            </a>
+                                        {% endif %}
+                                    </div>
                                 </div>
-                                <div class="d-flex gap-3 text-secondary small mb-3">
-                                    <span><i class="bi bi-building me-1"></i> TechCorp Algeria</span>
-                                    <span><i class="bi bi-geo-alt me-1"></i> Algiers</span>
-                                    <span><i class="bi bi-clock me-1"></i> 6 months</span>
-                                    <span><i class="bi bi-calendar-event me-1"></i> Deadline: April 30, 2026</span>
+
+                                {# ═══ RIGHT — Match % + Buttons ═══ #}
+                                <div class="d-flex flex-column align-items-center gap-3" style="min-width:120px;">
+
+                                    {# ★ Smart Match Badge #}
+                                    <div class="text-center">
+                                        <div style="width:60px;height:60px;border-radius:50%;border:3px solid {{ matchColor }};display:flex;align-items:center;justify-content:center;margin:0 auto;background:rgba(0,0,0,0.3);">
+                                            <span style="font-size:14px;font-weight:700;color:{{ matchColor }};">{{ matchPercent }}%</span>
+                                        </div>
+                                        <div style="font-size:10px;color:{{ matchColor }};font-weight:600;margin-top:4px;">
+                                            {{ matchLabel }}
+                                        </div>
+                                    </div>
+
+                                    {# Apply / Withdraw #}
+                                    <button class="btn px-3 rounded-3 fw-bold w-100 apply-btn {{ isApplied ? 'btn-outline-danger' : 'btn-primary' }}"
+                                            data-offer-id="{{ offer.id }}"
+                                            data-applied="{{ isApplied ? 'true' : 'false' }}"
+                                            onclick="toggleApply(this)">
+                                        {% if isApplied %}
+                                            <i class="bi bi-x-circle me-1"></i><span class="small">Withdraw</span>
+                                        {% else %}
+                                            <i class="bi bi-send me-1"></i><span class="small">Apply Now</span>
+                                        {% endif %}
+                                    </button>
+
+                                    {# View Details #}
+                                    <button class="btn btn-outline-secondary btn-sm px-3 rounded-3 w-100"
+                                            onclick="openOfferModal(this)"
+                                            data-offer-id="{{ offer.id }}"
+                                            data-title="{{ offer.title|escape('html_attr') }}"
+                                            data-description="{{ (offer.description ?? '')|escape('html_attr') }}"
+                                            data-duration="{{ (offer.duration ?? '')|escape('html_attr') }}"
+                                            data-type="{{ offer.locationType }}"
+                                            data-level="{{ offer.level is defined ? (offer.level ?? '') : '' }}"
+                                            data-wilaya="{{ (offer.wilaya ?? '')|escape('html_attr') }}"
+                                            data-deadline="{{ offer.deadline ? offer.deadline|date('M d, Y') : '' }}"
+                                            data-internship-start="{{ offer.internshipStart ? offer.internshipStart|date('M d, Y') : '' }}"
+                                            data-lat="{{ offer.latitude ?? '' }}"
+                                            data-lng="{{ offer.longitude ?? '' }}"
+                                            data-skills="{{ offer.skills|map(s => s.tagName)|join(',')|escape('html_attr') }}"
+                                            data-matched-skills="{{ offer.skills|filter(s => s.tagName|lower in user.skills|map(u => u.tagName|lower))|map(s => s.tagName)|join(',')|escape('html_attr') }}"
+                                            data-match-percent="{{ matchPercent }}"
+                                            data-match-color="{{ matchColor }}"
+                                            data-match-label="{{ matchLabel }}"
+                                            data-applied="{{ isApplied ? 'true' : 'false' }}"
+                                            data-company-name="{{ (offer.company.companyName ?? offer.company.fullName)|escape('html_attr') }}"
+                                            data-company-email="{{ offer.company.email|escape('html_attr') }}"
+                                            data-company-phone="{{ (offer.company.phone ?? '')|escape('html_attr') }}"
+                                            data-company-industry="{{ (offer.company.industry ?? '')|escape('html_attr') }}"
+                                            data-company-wilaya="{{ (offer.company.wilaya ?? '')|escape('html_attr') }}"
+                                            data-company-website="{{ (offer.company.website ?? '')|escape('html_attr') }}"
+                                            data-company-bio="{{ (offer.company.bio ?? '')|escape('html_attr') }}"
+                                            data-company-logo="{{ offer.company.logo ? asset('uploads/logos/' ~ offer.company.logo) : '' }}"
+                                            data-company-doc="{{ offer.company.verificationFile ? asset('uploads/verification/' ~ offer.company.verificationFile) : '' }}">
+                                        <i class="bi bi-eye me-1"></i> Details
+                                    </button>
                                 </div>
-                                <p class="text-muted small mb-3">Join our team to build modern web applications using React and TypeScript...</p>
-                                <div class="d-flex gap-2 mt-2">
-                                    <span class="badge-custom badge-react">React</span>
-                                    <span class="badge-custom badge-typescript">TypeScript</span>
-                                    <span class="badge-custom badge-tailwind">Tailwind</span>
-                                </div>
-                            </div>
-                            <div class="d-flex flex-column gap-2">
-                                <button class="btn btn-primary px-4 rounded-3">Apply Now</button>
-                                <button class="btn btn-outline-secondary btn-sm px-4 rounded-3">View Details</button>
+
                             </div>
                         </div>
-                    </div>
+                    {% endfor %}
 
-                    
                 </div>
             </div>
 
-            <div id="section-profile" class="d-none mt-2">
-                <div class="row g-4">
-                    <div class="col-lg-8">
-                        <div class="d-flex justify-content-between align-items-center mb-4">
-                            <div>
-                                <h2 class="fw-bold mb-0">My Profile</h2>
-                                <p class="text-secondary small">Manage your digital CV and profile settings</p>
-                            </div>
-                            <button class="btn btn-primary px-4" onclick="saveProfileData()">
-                                <i class="bi bi-save me-2"></i> Save Changes
-                            </button>
+
+
+
+
+
+
+
+
+
+
+
+        <div id="section-profile" class="d-none mt-2">
+            <div class="row g-4">
+                <div class="col-lg-8">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <div>
+                            <h2 class="fw-bold mb-0">My Profile</h2>
+                            <p class="text-secondary small">Manage your digital CV and profile settings</p>
+                        </div>
+                        <button class="btn btn-primary px-4" onclick="saveProfileData()">
+                            <i class="bi bi-save me-2"></i> Save Changes
+                        </button>
+                    </div>
+                    <div class="position-relative d-inline-block mb-3">
+                        <div id="avatar-container" class="rounded-circle border border-primary d-flex align-items-center justify-content-center overflow-hidden bg-dark mx-auto"
+                             style="width: 100px; height: 100px; cursor: pointer;"
+                             onclick="document.getElementById('profile-upload').click()">
+
+                            {# إذا كان لدى الطالب صورة في قاعدة البيانات، نعرضها #}
+                            {% if user.profilePicture %}
+                                <img id="preview-img" src="{{ asset('uploads/profiles/' ~ user.profilePicture) }}" class="w-100 h-100 object-fit-cover">
+                            {% else %}
+                                {# إذا لم تكن لديه صورة، نعرض الحروف الأولى (الخيار الافتراضي) #}
+                                <div id="initials-placeholder" class="fw-bold fs-2 text-primary">
+                                    {{ user.firstName|first }}{{ user.lastName|first }}
+                                </div>
+                            {% endif %}
                         </div>
 
-                        <div class="stat-card mb-4">
-                            <h6 class="fw-bold mb-3 text-primary"><i class="bi bi-person me-2"></i> Personal Information</h6>
-                            <div class="row g-3">
-                                <div class="col-md-6">
-                                    <label class="label-custom">First Name</label>
-                                    <input type="text" class="form-control" value="{{ user.firstName }}">
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="label-custom">Last Name</label>
-                                    <input type="text" class="form-control" value="{{ user.lastName }}">
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="label-custom">Email</label>
-                                    <input type="email" class="form-control" value="{{ user.email }}">
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="label-custom">Phone</label>
-                                    <input type="text" id="input-phone" class="form-control" value="{{ user.phone }}" placeholder="+213 5XX XX XX XX">
-                                </div>
-                                <div class="col-md-12">
-                                    <label class="label-custom">Wilaya</label>
-                                    <input type="text" id="input-wilaya" class="form-control" value="{{ user.wilaya }}" placeholder="e.g. Algiers">
-                                </div>
-                            </div>
+                        <!-- زر الكاميرا للتعديل -->
+                        <div class="position-absolute bottom-0 end-0 bg-primary rounded-circle p-1 d-flex shadow" style="cursor: pointer;" onclick="document.getElementById('profile-upload').click()">
+                            <i class="bi bi-camera-fill text-white small" style="font-size: 0.8rem;"></i>
                         </div>
+                    </div>
 
-                        <div class="stat-card">
-                            <h6 class="fw-bold mb-3 text-primary"><i class="bi bi-mortarboard me-2"></i> Academic Information</h6>
-                            <div class="row g-3">
-                                <div class="col-md-6">
-                                    <label class="label-custom">University</label>
-                                    <input type="text" class="form-control" value="University of Constantine 2">
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="label-custom">Department</label>
-                                    <input type="text" id="input-specialty" class="form-control" value="{{ user.specialty }}" placeholder="Computer Science">
-                                </div>
-                                <div class="col-md-12">
-                                    <label class="label-custom">Current Level</label>
-                                    <input type="text" id="input-level" class="form-control" value="{{ user.level }}" placeholder="L3">
-                                </div>
-                                <div class="col-md-12">
-                                    <label class="label-custom">Bio / About Me</label>
-                                    <textarea id="input-bio" class="form-control" rows="3">{{ user.bio }}</textarea>
-                                </div>
+                    {# حقل تحميل الملف المخفي #}
+                    <input type="file" id="profile-upload" class="d-none" accept="image/*" onchange="previewImage(this)">
+                    <div class="stat-card mb-4">
+                        <h6 class="fw-bold mb-3 text-primary"><i class="bi bi-person me-2"></i> Personal Information</h6>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="label-custom">First Name</label>
+                                <input type="text" class="form-control" value="{{ user.firstName }}">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="label-custom">Last Name</label>
+                                <input type="text" class="form-control" value="{{ user.lastName }}">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="label-custom">Email</label>
+                                <input type="email" class="form-control" value="{{ user.email }}">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="label-custom">Phone</label>
+                                <input type="text" id="input-phone" class="form-control" value="{{ user.phone }}" placeholder="+213 5XX XX XX XX">
+                            </div>
+                            <div class="col-md-12">
+                                <label class="label-custom">Wilaya</label>
+                                <input type="text" id="input-wilaya" class="form-control" value="{{ user.wilaya }}" placeholder="e.g. Algiers">
+                            </div>
+
+                            {# داخل ملف dashboard.html.twig - قسم Personal Information #}
+                            <div class="col-md-6">
+                                <label class="label-custom"><i class="bi bi-github me-1"></i> GitHub Profile</label>
+                                <input type="url" id="input-github" class="form-control" value="{{ user.githubLink }}" placeholder="https://github.com/username">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="label-custom"><i class="bi bi-globe me-1"></i> Portfolio Website</label>
+                                <input type="url" id="input-portfolio" class="form-control" value="{{ user.portfolioLink }}" placeholder="https://yourportfolio.com">
                             </div>
                         </div>
                     </div>
 
-                    <div class="col-lg-4">
-                        <div class="stat-card mb-4">
-                            <h6 class="fw-bold mb-3 text-primary">Technical Skills</h6>
-                            <div id="skills-container" class="d-flex flex-wrap gap-2 mb-3">
-                                {% for skill in user.skills %}
-                                    <span class="badge badge-skill d-flex align-items-center gap-1">
+                    <div class="stat-card">
+                        <h6 class="fw-bold mb-3 text-primary"><i class="bi bi-mortarboard me-2"></i> Academic Information</h6>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="label-custom">University</label>
+                                <input type="text" id="input-university" class="form-control" value="{{ user.university }}" placeholder="e.g. University of Constantine 2">     </div>
+                            <div class="col-md-6">
+                                <label class="label-custom">Department</label>
+                                <input type="text" id="input-specialty" class="form-control" value="{{ user.specialty }}" placeholder="Computer Science">
+                            </div>
+                            <div class="col-md-12">
+                                <label class="label-custom">Current Level</label>
+                                <input type="text" id="input-level" class="form-control" value="{{ user.level }}" placeholder="L3">
+                            </div>
+                            <div class="col-md-12">
+                                <label class="label-custom">Bio / About Me</label>
+                                <textarea id="input-bio" class="form-control" rows="3">{{ user.bio }}</textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4">
+                    <div class="stat-card mb-4">
+                        <h6 class="fw-bold mb-3 text-primary">Technical Skills</h6>
+                        <div id="skills-container" class="d-flex flex-wrap gap-2 mb-3">
+                            {% for skill in user.skills %}
+                                <span class="badge badge-skill d-flex align-items-center gap-1">
                                         {{ skill }} <i class="bi bi-x cursor-pointer" onclick="this.parentElement.remove()"></i>
                                     </span>
-                                {% endfor %}
-                            </div>
-                            <div class="input-group input-group-sm">
-                                <input type="text" id="skill-input" class="form-control bg-black" placeholder="Add a skill...">
-                                <button class="btn btn-outline-primary" type="button" onclick="addSkill()">+</button>
+                            {% endfor %}
+                        </div>
+                        <div class="input-group input-group-sm">
+                            <input type="text" id="skill-input" class="form-control bg-black" placeholder="Add a skill...">
+                            <button class="btn btn-outline-primary" type="button" onclick="addSkill()">+</button>
+                        </div>
+                    </div>
+
+                    <div class="stat-card text-center border-primary hover-glow">
+                        <p class="fw-bold mb-3 text-primary">Profile Preview</p>
+
+                        <!-- الصورة الشخصية -->
+                        <div class="rounded-circle border border-primary d-flex align-items-center justify-content-center overflow-hidden bg-dark mx-auto mb-3"
+                             style="width: 80px; height: 80px;">
+                            {% if user.profilePicture %}
+                                <img class="profile-preview-img w-100 h-100 object-fit-cover" src="{{ asset('uploads/profiles/' ~ user.profilePicture) }}">
+                            {% else %}
+                                <div class="initials-preview fw-bold fs-3 text-primary">
+                                    {{ user.firstName|first }}{{ user.lastName|first }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- المعلومات الأساسية -->
+                        <h6 class="fw-bold mb-1">{{ user.firstName }} {{ user.lastName }}</h6>
+                        {#  <p id="preview-academic" class="text-muted small mb-2">
+                                <i class="fw-bold mb-3 text-primary"></i> {{ user.level }} - {{ user.specialty }}
+                            </p>#}
+                        <p id="preview-academic" class="small mb-2 py-1 px-2 rounded-2"
+                           style="background-color: rgba(51, 120, 243, 0.1); border: 1px solid rgba(51, 120, 243, 0.2); color: var(--accent-primary);">
+                            <i class="bi bi-mortarboard-fill me-2"></i>
+                            <span class="fw-bold">{{ user.level }}</span>
+                            <span class="mx-1">|</span>
+                            <span>{{ user.specialty }}</span>
+                        </p>
+
+                        <!-- الموقع والجامعة والبريد -->
+                        <div class="mt-3 text-start px-3">
+                            <div class="d-flex flex-column gap-3">
+
+                                <!-- الموقع -->
+                                <div class="d-flex align-items-center gap-3">
+                                    <div class="rounded-circle d-flex align-items-center justify-content-center"
+                                         style="width: 32px; height: 32px; background: rgba(51, 120, 243, 0.1); border: 1px solid rgba(51, 120, 243, 0.2);">
+                                        <i class="bi bi-geo-alt text-primary small"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-secondary small" style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.5px;">Location</p>
+                                        <p class="mb-0 small fw-semibold text-white">{{ user.wilaya|default('Not set') }}</p>
+                                    </div>
+                                </div>
+
+                                <!-- الجامعة -->
+                                <div class="d-flex align-items-center gap-3">
+                                    <div class="rounded-circle d-flex align-items-center justify-content-center"
+                                         style="width: 32px; height: 32px; background: rgba(51, 120, 243, 0.1); border: 1px solid rgba(51, 120, 243, 0.2);">
+                                        <i class="bi bi-bank text-primary small"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-secondary small" style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.5px;">University</p>
+                                        <p class="mb-0 small fw-semibold text-white text-truncate" style="max-width: 180px;">{{ user.university|default('Not set') }}</p>
+                                    </div>
+                                </div>
+
+                                <!-- البريد الإلكتروني -->
+                                <div class="d-flex align-items-center gap-3">
+                                    <div class="rounded-circle d-flex align-items-center justify-content-center"
+                                         style="width: 32px; height: 32px; background: rgba(51, 120, 243, 0.1); border: 1px solid rgba(51, 120, 243, 0.2);">
+                                        <i class="bi bi-envelope-at text-primary small"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-secondary small"style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.5px;">Email Address</p>
+                                        <p class="mb-0 small fw-semibold text-white">{{ user.email }}</p>
+                                    </div>
+                                </div>
+
                             </div>
                         </div>
 
-                        <div class="stat-card text-center border-primary hover-glow">
-                            <p class="small text-muted text-start mb-3">Profile Preview</p>
-                            <div class="rounded-circle bg-primary mx-auto mb-3 d-flex align-items-center justify-content-center fw-bold fs-4" style="width: 70px; height: 70px;">
-                                {{ user.firstName|first }}{{ user.lastName|first }}
-                            </div>
-                            <h6 class="fw-bold mb-1">{{ user.firstName }} {{ user.lastName }}</h6>
-                            <p id="preview-academic" class="text-muted small">
-                                {{ user.level }} - {{ user.specialty }}
-                            </p>
+                        <hr class="border-secondary my-3">
+
+                        <!-- الروابط الاجتماعية (GitHub & Portfolio) -->
+                        <div class="d-flex justify-content-center gap-3 mb-3">
+                            {% if user.githubLink %}
+                                <a href="{{ user.githubLink }}" target="_blank" class="text-white hover-primary"><i class="bi bi-github fs-5"></i></a>
+                            {% endif %}
+                            {% if user.portfolioLink %}
+                                <a href="{{ user.portfolioLink }}" target="_blank" class="text-white hover-primary"><i class="bi bi-globe fs-5"></i></a>
+                            {% endif %}
+                            {% if user.phone %}
+                                <a href="tel:{{ user.phone }}" class="text-white hover-primary"><i class="bi bi-telephone fs-5"></i></a>
+                            {% endif %}
                         </div>
+
+                        <!-- المهارات في المعاينة -->
+                        <div class="d-flex flex-wrap justify-content-center gap-1 mt-2">
+                            {% for skill in user.skills %}
+                                <span class="badge-custom" style="font-size: 0.65rem;">{{ skill.tagName }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+            <div id="section-applications" class="d-none">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h2 class="fw-bold mb-0 text-white">My Applications</h2>
+                        <p style="color:#94a3b8;font-size:0.85rem;">Track and manage your professional journey</p>
+                    </div>
+                    <div class="stat-card py-2 px-4 mb-0 d-flex align-items-center gap-2" style="border-radius:50px;">
+                        <div class="rounded-circle bg-primary" style="width:8px;height:8px;box-shadow:0 0 10px var(--accent-primary);"></div>
+                        <span class="small fw-bold text-white">{{ stats.pending }} Pending</span>
+                    </div>
+                </div>
+
+                {% if applications is empty %}
+                    <div class="stat-card p-5 text-center">
+                        <i class="bi bi-file-earmark-x fs-1 text-muted mb-3 d-block"></i>
+                        <h5 class="text-white-50">No applications yet</h5>
+                        <p class="text-secondary small">Browse internship offers and apply to get started.</p>
+                        <button class="btn btn-primary px-4 mt-2" onclick="switchTab('offers', null)">
+                            <i class="bi bi-search me-2"></i> Browse Offers
+                        </button>
+                    </div>
+                {% else %}
+                    <div class="stat-card p-0 overflow-hidden border-0 shadow-lg">
+                        <div class="table-responsive">
+                            <table class="table table-dark mb-0" style="--bs-table-bg:transparent;background:rgba(0,0,0,0.4);">
+                                <thead>
+                                <tr style="border-bottom:1px solid var(--border-color);">
+                                    <th class="p-4 small fw-bold text-white-50 uppercase-tracking">Internship & Company</th>
+                                    <th class="p-4 small fw-bold text-white-50 uppercase-tracking">Type</th>
+                                    <th class="p-4 small fw-bold text-white-50 uppercase-tracking">Date Applied</th>
+                                    <th class="p-4 small fw-bold text-white-50 uppercase-tracking">Status</th>
+                                    <th class="p-4 small fw-bold text-white-50 uppercase-tracking text-end">Action</th>
+                                </tr>
+                                </thead>
+                                <tbody class="border-0">
+
+                                {% for app in applications %}
+                                    <tr class="align-middle transition-row"
+                                        style="border-bottom:1px solid rgba(17,24,39,0.5);"
+                                        id="app-row-{{ app.id }}">
+
+                                        {# ── Company + Offer ── #}
+                                        <td class="p-4">
+                                            <div class="d-flex align-items-center gap-3">
+                                                <div class="d-flex align-items-center justify-content-center overflow-hidden"
+                                                     style="width:42px;height:42px;background:#09090b;border:1px solid var(--border-color);border-radius:10px;flex-shrink:0;">
+                                                    {% if app.offer.company.logo %}
+                                                        <img src="{{ asset('uploads/logos/' ~ app.offer.company.logo) }}"
+                                                             style="width:100%;height:100%;object-fit:cover;">
+                                                    {% else %}
+                                                        <i class="bi bi-building text-primary"></i>
+                                                    {% endif %}
+                                                </div>
+                                                <div>
+                                                    <p class="fw-bold mb-0 text-white">{{ app.offer.title }}</p>
+                                                    <small style="color:#64748b;">
+                                                        {{ app.offer.company.companyName ?? app.offer.company.fullName }}
+                                                        {% if app.offer.wilaya %}
+                                                            · <i class="bi bi-geo-alt"></i> {{ app.offer.wilaya }}
+                                                        {% endif %}
+                                                    </small>
+                                                </div>
+                                            </div>
+                                        </td>
+
+                                        {# ── Type ── #}
+                                        <td class="p-4">
+                            <span class="badge bg-primary-subtle text-primary" style="font-size:0.7rem;">
+                                {{ app.offer.locationType }}
+                            </span>
+                                        </td>
+
+                                        {# ── Date ── #}
+                                        <td class="p-4 small" style="color:#94a3b8;">
+                                            {{ app.createdAt|date('M d, Y') }}
+                                        </td>
+
+                                        {# ── Status Badge ── #}
+                                        {# ── Status Badge ── #}
+                                        <td class="p-4">
+                                            {% if app.status == 'pending' %}
+                                                <span class="badge-custom-tech">
+            <span class="dot-glow"></span> PENDING
+        </span>
+                                            {% elseif app.status == 'pending_admin' %}
+                                                {# حالة جديدة: الشركة وافقت والآن الدور على الجامعة #}
+                                                <span class="badge-custom-tech" style="color: var(--accent-info); border-color: var(--accent-info);">
+            <i class="dot-glow"></i> WAITING FOR ADMIN
+        </span>
+                                            {% elseif app.status == 'accepted' %}
+                                                <span class="badge-custom-tech-active">
+            <i class="bi bi-shield-check me-1"></i> ACCEPTED
+        </span>
+                                            {% else %}
+                                                <span class="badge-custom-rejected">
+            <span class="dot-glow-red"></span> REJECTED
+        </span>
+                                            {% endif %}
+                                        </td>
+
+                                        {# ── Actions ── #}
+                                        <td class="p-4 text-end">
+                                            <div class="d-flex justify-content-end gap-2">
+
+                                                {# زر التراجع — فقط إذا pending #}
+                                                {% if app.status == 'pending' %}
+                                                    <button class="btn-tech-outline-danger"
+                                                            onclick="withdrawApp({{ app.offer.id }}, {{ app.id }}, this)">
+                                                        <i class="bi bi-x-circle me-1"></i> Withdraw
+                                                    </button>
+                                                {% endif %}
+
+                                                {# زر تحميل الاتفاقية — إذا accepted وفيه ملف #}
+                                                {% if app.status == 'accepted' and app.conventionFile %}
+                                                    <a href="{{ path('app_student_download_convention', {'id': app.id}) }}"
+                                                       class="btn-tech-outline" style="text-decoration:none;">
+                                                        <i class="bi bi-download me-1"></i> Convention
+                                                    </a>
+                                                {% endif %}
+                                                {# التأكد من عرض سبب الرفض إذا وجد على شكل زر #}
+                                    {# إذا كان الطلب قيد الانتظار: يظهر زر التراجع #}
+                                    {% if app.status == 'pending' %}
+                                    <button class="btn-tech-outline-danger"
+                                            onclick="handleApplicationAction({{ app.offer.id }}, {{ app.id }}, 'withdraw', this)">
+                                        <i class="bi bi-x-circle me-1"></i> Withdraw
+                                    </button>
+
+                                    {# إذا كان الطلب مرفوضاً: يظهر زر الحذف #}
+                                    {% elseif app.status == 'refused' %}
+                                        <button class="btn-tech-outline-danger"
+                                                style="border-color: #ef4444; color: #ef4444;"
+                                                onclick="handleApplicationAction({{ app.offer.id }}, {{ app.id }},  'delete', this)">
+                                            <i class="bi bi-trash3 me-1"></i> Delete Record
+                                        </button>
+                                        {% endif %}
+                                                {% if app.rejectionReason %}
+                                                    <button class="btn-tech-outline-danger"
+                                                            onclick="showRejectionReason(this)"
+                                                            data-offer="{{ app.offer.title }}"
+                                                            data-reason="{{ app.rejectionReason }}">
+                                                        <i class="bi bi-exclamation-triangle me-1"></i> View Reason
+                                                    </button>
+                                                {% endif %}
+
+                                                {# View Offer Details #}
+                                                <button class="btn-tech-outline"
+                                                        onclick="openOfferModal(this)"
+                                                        data-offer-id="{{ app.offer.id }}"
+                                                        data-title="{{ app.offer.title|escape('html_attr') }}"
+                                                        data-description="{{ (app.offer.description ?? '')|escape('html_attr') }}"
+                                                        data-duration="{{ (app.offer.duration ?? '')|escape('html_attr') }}"
+                                                        data-type="{{ app.offer.locationType }}"
+                                                        data-level="{{ app.offer.level ?? '' }}"
+                                                        data-wilaya="{{ (app.offer.wilaya ?? '')|escape('html_attr') }}"
+                                                        data-deadline="{{ app.offer.deadline ? app.offer.deadline|date('M d, Y') : '' }}"
+                                                        data-internship-start="{{ app.offer.internshipStart ? app.offer.internshipStart|date('M d, Y') : '' }}"
+                                                        data-lat="{{ app.offer.latitude ?? '' }}"
+                                                        data-lng="{{ app.offer.longitude ?? '' }}"
+                                                        data-skills="{{ app.offer.skills|map(s => s.tagName)|join(',')|escape('html_attr') }}"
+                                                        data-matched-skills="{{ app.offer.skills|filter(s => s.tagName|lower in user.skills|map(u => u.tagName|lower))|map(s => s.tagName)|join(',')|escape('html_attr') }}"
+                                                        {# استبدل القيم القديمة بهذه القيم الديناميكية #}
+                                                        data-match-percent="{{ app.getMatchingScore }}"
+                                                        data-match-color="{% if app.getMatchingScore >= 70 %}#22c55e{% elseif app.getMatchingScore >= 40 %}#f59e0b{% else %}#ef4444{% endif %}"
+                                                        data-match-label="{% if app.getMatchingScore >= 70 %}High Match{% elseif app.getMatchingScore >= 40 %}Average Match{% else %}Low Match{% endif %}"
+                                                        data-applied="true"
+                                                        data-company-name="{{ (app.offer.company.companyName ?? app.offer.company.fullName)|escape('html_attr') }}"
+                                                        data-company-email="{{ app.offer.company.email|escape('html_attr') }}"
+                                                        data-company-phone="{{ (app.offer.company.phone ?? '')|escape('html_attr') }}"
+                                                        data-company-industry="{{ (app.offer.company.industry ?? '')|escape('html_attr') }}"
+                                                        data-company-wilaya="{{ (app.offer.company.wilaya ?? '')|escape('html_attr') }}"
+                                                        data-company-website="{{ (app.offer.company.website ?? '')|escape('html_attr') }}"
+                                                        data-company-bio="{{ (app.offer.company.bio ?? '')|escape('html_attr') }}"
+                                                        data-company-logo="{{ app.offer.company.logo ? asset('uploads/logos/' ~ app.offer.company.logo) : '' }}"
+                                                        data-company-doc="{{ app.offer.company.verificationFile ? asset('uploads/verification/' ~ app.offer.company.verificationFile) : '' }}">
+                                                    <i class="bi bi-eye me-1"></i> Details
+                                                </button>
+
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+
+            {# ── Rejection Reason Modal ── #}
+            <div class="modal fade" id="rejectionReasonModal" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" style="max-width:480px;">
+                    <div class="modal-content border-0" style="background:#09090b;border:1px solid rgba(239,68,68,0.3);border-radius:14px;">
+                        <div class="modal-header border-0 pb-0">
+                            <h6 class="modal-title text-danger fw-bold">
+                                <i class="bi bi-x-octagon me-2"></i> Rejection Reason
+                            </h6>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body px-4 pb-4">
+                            <p class="text-white-50 small mb-2" id="rejection-offer-name"></p>
+                            <div style="background:#0f172a;border-radius:10px;padding:16px;border:1px solid rgba(239,68,68,0.2);">
+                                <p id="rejection-reason-text" class="text-secondary mb-0" style="line-height:1.8;"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+    <!-- ★ Offer Detail + Company Preview Modal -->
+    <div class="modal fade" id="offerDetailModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-xl" style="max-width:920px;">
+            <div class="modal-content border-0" style="background:#09090b;border:1px solid #1e293b;border-radius:16px;">
+                <div class="modal-header border-0 px-4 pt-4 pb-0">
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body px-4 pb-4">
+                    <div class="row g-4">
+
+                        <!-- ═══ LEFT: Offer Info ═══ -->
+                        <div class="col-md-7">
+                            <!-- Title + Match -->
+                            <div class="d-flex align-items-start justify-content-between mb-2">
+                                <div>
+                                    <h4 id="od-title" class="fw-bold text-white mb-1"></h4>
+                                    <div class="d-flex gap-2 flex-wrap">
+                                        <span id="od-type-badge" class="badge"></span>
+                                        <span id="od-level-badge" class="badge bg-info-subtle text-info"></span>
+                                    </div>
+                                </div>
+                                <!-- Match Circle -->
+                                <div class="text-center ms-3">
+                                    <div id="od-match-circle" style="width:64px;height:64px;border-radius:50%;border:3px solid #22c55e;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.4);">
+                                        <span id="od-match-pct" style="font-size:15px;font-weight:700;color:#22c55e;">0%</span>
+                                    </div>
+                                    <div id="od-match-label" style="font-size:10px;font-weight:600;margin-top:4px;color:#22c55e;"></div>
+                                </div>
+                            </div>
+
+                            <!-- Meta -->
+                            <div class="d-flex flex-wrap gap-3 text-secondary small mb-4 mt-3">
+                                <span id="od-wilaya-w"><i class="bi bi-geo-alt me-1 text-primary"></i><span id="od-wilaya"></span></span>
+                                <span id="od-duration-w"><i class="bi bi-clock me-1 text-primary"></i><span id="od-duration"></span></span>
+                                <span id="od-deadline-w"><i class="bi bi-calendar-event me-1 text-danger"></i>Deadline: <span id="od-deadline"></span></span>
+                                <span id="od-start-w"><i class="bi bi-play-circle me-1 text-success"></i>Internship: <span id="od-start"></span></span>
+                            </div>
+
+                            <!-- Description -->
+                            <div style="background:#0f172a;border-radius:10px;padding:16px;border:1px solid #1e293b;" class="mb-3">
+                                <div class="text-white-50 small mb-2 fw-bold"><i class="bi bi-text-paragraph me-1"></i> Description</div>
+                                <p id="od-description" class="text-secondary small mb-0" style="line-height:1.8;"></p>
+                            </div>
+
+                            <!-- Skills with match highlight -->
+                            <div class="mb-3">
+                                <div class="text-white-50 small fw-bold mb-2"><i class="bi bi-tags me-1"></i> Required Skills</div>
+                                <div id="od-skills" class="d-flex flex-wrap gap-2"></div>
+                            </div>
+
+                            <!-- Map -->
+                            <div id="od-map-wrap" class="mb-4 d-none">
+                                <a id="od-map-link" href="#" target="_blank"
+                                   class="btn btn-sm btn-outline-info border-secondary">
+                                    <i class="bi bi-map me-1"></i> View on Google Maps
+                                </a>
+                            </div>
+
+                            <!-- Apply Button -->
+                            <button id="od-apply-btn" class="btn btn-primary px-5 fw-bold rounded-3"
+                                    onclick="toggleApplyFromModal(this)">
+                                <i class="bi bi-send me-2"></i> Apply Now
+                            </button>
+                        </div>
+
+                        <!-- ═══ RIGHT: Company Live Preview ═══ -->
+                        <div class="col-md-5">
+                            <div class="stat-card p-4 h-100">
+                            <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-2 text-uppercase fw-bold mb-4 d-block"
+                                  style="font-size:0.7rem;width:fit-content;">
+                                <i class="bi bi-eye me-1"></i> Company Preview
+                            </span>
+
+                                <!-- Logo + Name -->
+                                <div class="text-center mb-4">
+                                    <div class="mx-auto mb-3"
+                                         style="width:70px;height:70px;border-radius:12px;background:#020617;border:2px solid #3b82f6;display:flex;align-items:center;justify-content:center;overflow:hidden;">
+                                        <img id="cp-logo-img" src="" style="width:100%;height:100%;object-fit:cover;" class="d-none">
+                                        <i id="cp-logo-icon" class="bi bi-building fs-2 text-primary"></i>
+                                    </div>
+                                    <h6 id="cp-name" class="fw-bold text-white mb-1"></h6>
+                                    <span id="cp-industry" class="badge bg-primary-subtle text-primary py-1 px-3"></span>
+                                </div>
+
+                                <!-- Info -->
+                                <div class="preview-info small d-flex flex-column gap-2 mb-3">
+                                    <div class="d-flex align-items-center">
+                                        <i class="bi bi-envelope me-3 text-primary"></i>
+                                        <span id="cp-email" class="text-light"></span>
+                                    </div>
+                                    <div id="cp-phone-row" class="d-flex align-items-center">
+                                        <i class="bi bi-telephone me-3 text-primary"></i>
+                                        <span id="cp-phone" class="text-light"></span>
+                                    </div>
+                                    <div id="cp-loc-row" class="d-flex align-items-center">
+                                        <i class="bi bi-geo-alt me-3 text-primary"></i>
+                                        <span id="cp-wilaya" class="text-light"></span>
+                                    </div>
+                                    <div id="cp-web-row" class="d-flex align-items-center">
+                                        <i class="bi bi-globe me-3 text-primary"></i>
+                                        <a id="cp-website" href="#" target="_blank"
+                                           class="text-info text-decoration-none small"></a>
+                                    </div>
+                                </div>
+
+                                <hr class="border-secondary opacity-25 my-3">
+                                <p id="cp-bio" class="text-secondary small mb-3" style="line-height:1.7;"></p>
+
+                                <div id="cp-doc-wrap" class="d-none">
+                                    <a id="cp-doc" href="#" target="_blank"
+                                       class="btn btn-sm btn-primary w-100 fw-bold rounded-3">
+                                        <i class="bi bi-shield-check me-2"></i> View Verification Docs
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
     <script>
+
+
         function switchTab(tab, element) {
             document.getElementById('section-dashboard').classList.add('d-none');
             document.getElementById('section-profile').classList.add('d-none');
             document.getElementById('section-offers').classList.add('d-none');
+            document.getElementById('section-applications').classList.add('d-none'); // القسم الجديد
+
+
             document.querySelectorAll('.nav-link-custom').forEach(el => el.classList.remove('active'));
 
             if (tab === 'dashboard') document.getElementById('section-dashboard').classList.remove('d-none');
             else if (tab === 'profile') document.getElementById('section-profile').classList.remove('d-none');
             else if (tab === 'offers') document.getElementById('section-offers').classList.remove('d-none');
+            else if (tab === 'applications') document.getElementById('section-applications').classList.remove('d-none');
 
             element.classList.add('active');
         }
@@ -462,33 +1343,460 @@
         });
 
         function saveProfileData() {
+            // 1. جمع المهارات
             const skills = [];
             document.querySelectorAll('#skills-container .badge').forEach(badge => {
                 skills.push(badge.textContent.replace('x', '').trim());
             });
 
-            const formData = {
-                firstName: document.querySelector('input[value="{{ user.firstName }}"]').value,
-                lastName: document.querySelector('input[value="{{ user.lastName }}"]').value,
-                phone: document.querySelector('input[placeholder="+213 5XX XX XX XX"]').value,
-                wilaya: document.querySelector('input[placeholder="e.g. Algiers"]').value,
-                bio: document.querySelector('textarea').value,
-                specialty: document.getElementById('input-specialty').value,
-                level: document.getElementById('input-level').value,
-                skills: skills
-            };
+            // 2. استخدام FormData بدلاً من JSON العادي لدعم إرسال الملفات
+            const formData = new FormData();
+// جلب الإيميل لاستخراج الدومين
+            const emailValue = document.querySelector('input[value="{{ user.email }}"]').value;
+            const domain = emailValue.split('@')[1]; // استخراج ما بعد @
+            // إضافة البيانات النصية
+            // نستخدم معرفات العناصر (id) أو الانتقاء الدقيق لضمان جلب القيم المكتوبة حالياً
+            formData.append('firstName', document.querySelector('input[value="{{ user.firstName }}"]').value);
+            formData.append('lastName', document.querySelector('input[value="{{ user.lastName }}"]').value);
+            formData.append('phone', document.getElementById('input-phone').value);
+            formData.append('wilaya', document.getElementById('input-wilaya').value);
+            formData.append('bio', document.getElementById('input-bio').value);
+            formData.append('specialty', document.getElementById('input-specialty').value);
+            formData.append('level', document.getElementById('input-level').value);
+            formData.append('skills', JSON.stringify(skills)); // نرسل المصفوفة كـ string ليتم فكها في السيرفر
+            formData.append('university', document.getElementById('input-university').value);
+            formData.append('githubLink', document.getElementById('input-github').value);
+            formData.append('portfolioLink', document.getElementById('input-portfolio').value);
 
+
+            formData.append('email', emailValue);
+            formData.append('emailDomain', domain); // إرسال الدومين للسيرفر
+            // 3. إضافة ملف الصورة إذا تم اختياره
+            const imageFile = document.getElementById('profile-upload').files[0];
+            if (imageFile) {
+                formData.append('profilePicture', imageFile);
+            }
+
+            // 4. إرسال الطلب
             fetch('/student/profile/update', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
-                body: JSON.stringify(formData)
+                body: formData, // نرسل الـ formData مباشرة
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                    // ملاحظة هامة: لا تضعي Content-Type يدوياً هنا، المتصفح سيضبطه تلقائياً لـ multipart/form-data
+                }
             })
                 .then(response => response.json())
                 .then(data => {
-                    if (data.status === 'success') { alert('✅ تم حفظ التعديلات بنجاح!'); location.reload(); }
-                    else alert('❌ فشل الحفظ: ' + data.message);
+                    if (data.status === 'success') {
+                        alert('Changes have been saved successfully!');
+                        location.reload(); // لإعادة تحميل الصفحة وعرض الصورة الجديدة
+                    } else {
+                        alert('❌ Save failed: ' + data.message);
+                    }
                 })
-                .catch(error => alert('حدث خطأ في الاتصال بالسيرفر'));
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred while connecting to the server');
+                });
+        }
+
+
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const rejectionButtons = document.querySelectorAll('.btn-show-rejection');
+            const commentContainer = document.getElementById('rejectionComment');
+
+            rejectionButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // جلب التعليق من خاصية data-comment الخاصة بالزر الذي تم الضغط عليه
+                    const comment = this.getAttribute('data-comment');
+                    // وضعه داخل الـ Modal
+                    commentContainer.textContent = comment;
+                });
+            });
+        });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        // ══════════════════════════════════════════════════
+        // ★ Open Offer Modal
+        // ══════════════════════════════════════════════════
+        function openOfferModal(btn) {
+            const d = btn.dataset;
+
+            // ── Offer Info ──
+            document.getElementById('od-title').textContent       = d.title || '';
+            document.getElementById('od-description').textContent = d.description || 'No description provided.';
+            document.getElementById('od-wilaya').textContent      = d.wilaya   || '—';
+            document.getElementById('od-duration').textContent    = d.duration || '—';
+            document.getElementById('od-deadline').textContent    = d.deadline || '—';
+            document.getElementById('od-start').textContent       = d.internshipStart || '—';
+
+            // Type badge
+            const typeBadge = document.getElementById('od-type-badge');
+            typeBadge.textContent = d.type || '';
+            typeBadge.className = 'badge bg-primary-subtle text-primary border border-primary-subtle';
+
+            // Level badge
+            const lvlBadge = document.getElementById('od-level-badge');
+            if (d.level) { lvlBadge.textContent = d.level; lvlBadge.style.display = ''; }
+            else         { lvlBadge.style.display = 'none'; }
+
+            // Map
+            const mapWrap = document.getElementById('od-map-wrap');
+            if (d.lat && d.lng) {
+                document.getElementById('od-map-link').href = `https://www.google.com/maps?q=${d.lat},${d.lng}`;
+                mapWrap.classList.remove('d-none');
+            } else {
+                mapWrap.classList.add('d-none');
+            }
+
+            // ── Smart Match ──
+            const pct   = parseInt(d.matchPercent) || 0;
+            const color = d.matchColor || '#ef4444';
+            const circle = document.getElementById('od-match-circle');
+            circle.style.borderColor = color;
+            document.getElementById('od-match-pct').style.color   = color;
+            document.getElementById('od-match-pct').textContent   = pct + '%';
+            document.getElementById('od-match-label').style.color = color;
+            document.getElementById('od-match-label').textContent = d.matchLabel || '';
+
+            // ── Skills with highlight ──
+            const skillsEl   = document.getElementById('od-skills');
+            const matched    = d.matchedSkills ? d.matchedSkills.split(',').map(s => s.trim().toLowerCase()) : [];
+            skillsEl.innerHTML = '';
+            if (d.skills) {
+                d.skills.split(',').filter(s => s.trim()).forEach(skill => {
+                    const isM = matched.includes(skill.trim().toLowerCase());
+                    skillsEl.innerHTML += `
+                <span style="background:${isM ? 'rgba(34,197,94,0.1)' : '#1e293b'};
+                             border:1px solid ${isM ? 'rgba(34,197,94,0.4)' : '#334155'};
+                             color:${isM ? '#86efac' : '#94a3b8'};
+                             border-radius:20px;padding:4px 12px;font-size:12px;
+                             display:inline-flex;align-items:center;gap:5px;">
+                    ${isM ? '<i class="bi bi-check-circle-fill" style="font-size:11px;"></i>' : ''}
+                    ${skill.trim()}
+                </span>`;
+                });
+            }
+
+            // ── Apply Button ──
+            const applyBtn = document.getElementById('od-apply-btn');
+            applyBtn.dataset.offerId = d.offerId;
+            applyBtn.dataset.applied = d.applied;
+            updateApplyBtnUI(applyBtn);
+
+            // ── Company Preview ──
+            document.getElementById('cp-name').textContent     = d.companyName     || '—';
+            document.getElementById('cp-industry').textContent = d.companyIndustry || '—';
+            document.getElementById('cp-email').textContent    = d.companyEmail    || '—';
+            document.getElementById('cp-phone').textContent    = d.companyPhone    || 'Not provided';
+            document.getElementById('cp-wilaya').textContent   = d.companyWilaya   || '—';
+            document.getElementById('cp-bio').textContent      = d.companyBio      || '';
+
+            const img = document.getElementById('cp-logo-img');
+            const icon = document.getElementById('cp-logo-icon');
+            if (d.companyLogo) { img.src = d.companyLogo; img.classList.remove('d-none'); icon.classList.add('d-none'); }
+            else               { img.classList.add('d-none'); icon.classList.remove('d-none'); }
+
+            const webEl  = document.getElementById('cp-website');
+            const webRow = document.getElementById('cp-web-row');
+            if (d.companyWebsite) { webEl.href = d.companyWebsite; webEl.textContent = d.companyWebsite; webRow.style.display = 'flex'; }
+            else                  { webRow.style.display = 'none'; }
+
+            const docWrap = document.getElementById('cp-doc-wrap');
+            if (d.companyDoc) { document.getElementById('cp-doc').href = d.companyDoc; docWrap.classList.remove('d-none'); }
+            else              { docWrap.classList.add('d-none'); }
+
+            new bootstrap.Modal(document.getElementById('offerDetailModal')).show();
+        }
+
+        // ══════════════════════════════════════════════════
+        // ★ Apply / Withdraw — من البطاقة
+        // ══════════════════════════════════════════════════
+        async function toggleApply(btn) {
+            const offerId   = btn.dataset.offerId;
+            const isApplied = btn.dataset.applied === 'true';
+            const action    = isApplied ? 'withdraw' : 'apply';
+            if (isApplied && !confirm('Withdraw your application?')) return;
+
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span>';
+
+            try {
+                const res  = await fetch(`/student/offers/${offerId}/${action}`, { method: 'POST' });
+                const data = await res.json();
+                if (data.success) {
+                    const nowApplied = !isApplied;
+                    btn.dataset.applied = nowApplied ? 'true' : 'false';
+                    updateApplyBtnUI(btn);
+                    // sync modal button
+                    const mb = document.getElementById('od-apply-btn');
+                    if (mb && mb.dataset.offerId === offerId) {
+                        mb.dataset.applied = nowApplied ? 'true' : 'false';
+                        updateApplyBtnUI(mb);
+                    }
+                } else { alert(data.error || 'Failed.'); }
+            } catch { alert('Network error.'); }
+            finally  { btn.disabled = false; }
+        }
+
+        // ══════════════════════════════════════════════════
+        // ★ Apply / Withdraw — من المودال
+        // ══════════════════════════════════════════════════
+        async function toggleApplyFromModal(btn) {
+            const offerId   = btn.dataset.offerId;
+            const isApplied = btn.dataset.applied === 'true';
+            const action    = isApplied ? 'withdraw' : 'apply';
+            if (isApplied && !confirm('Withdraw your application?')) return;
+
+            btn.disabled = true;
+            try {
+                const res  = await fetch(`/student/offers/${offerId}/${action}`, { method: 'POST' });
+                const data = await res.json();
+                if (data.success) {
+                    const nowApplied = !isApplied;
+                    btn.dataset.applied = nowApplied ? 'true' : 'false';
+                    updateApplyBtnUI(btn);
+                    const cardBtn = document.querySelector(`.apply-btn[data-offer-id="${offerId}"]`);
+                    if (cardBtn) { cardBtn.dataset.applied = nowApplied ? 'true' : 'false'; updateApplyBtnUI(cardBtn); }
+                } else { alert(data.error || 'Failed.'); }
+            } catch { alert('Network error.'); }
+            finally  { btn.disabled = false; }
+        }
+
+        // ══════════════════════════════════════════════════
+        // ★ تحديث شكل زر Apply
+        // ══════════════════════════════════════════════════
+        function updateApplyBtnUI(btn) {
+            const applied = btn.dataset.applied === 'true';
+            if (applied) {
+                btn.classList.remove('btn-primary'); btn.classList.add('btn-outline-danger');
+                btn.innerHTML = '<i class="bi bi-x-circle me-1"></i> Withdraw';
+            } else {
+                btn.classList.remove('btn-outline-danger'); btn.classList.add('btn-primary');
+                btn.innerHTML = '<i class="bi bi-send me-1"></i> Apply Now';
+            }
+        }
+
+        // ══════════════════════════════════════════════════
+        // ★ Filters
+        // ══════════════════════════════════════════════════
+        function filterOffers() {
+            const search    = document.getElementById('filter-search').value.toLowerCase();
+            const wilaya    = document.getElementById('filter-wilaya').value.toLowerCase();
+            const type      = document.getElementById('filter-type').value.toLowerCase();
+            const matchOnly = document.getElementById('filter-match').checked;
+
+            const cards = document.querySelectorAll('.offer-card');
+            let visible = 0;
+
+            cards.forEach(card => {
+                const title    = card.dataset.title    || '';
+                const company  = card.dataset.company  || '';
+                const skills   = card.dataset.skills   || '';
+                const cardWil  = card.dataset.wilaya   || '';
+                const cardType = (card.dataset.type    || '').toLowerCase();
+                const match    = parseInt(card.dataset.match) || 0;
+
+                const okSearch = !search || title.includes(search) || company.includes(search) || skills.includes(search);
+                const okWilaya = !wilaya || cardWil.includes(wilaya.replace(/^\d+- /i, ''));
+                const okType   = !type   || cardType.includes(type);
+                const okMatch  = !matchOnly || match >= 50;
+
+                if (okSearch && okWilaya && okType && okMatch) {
+                    card.style.display = '';
+                    visible++;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+
+            document.getElementById('offers-count-num').textContent = visible;
+        }
+
+        function resetFilters() {
+            document.getElementById('filter-search').value = '';
+            document.getElementById('filter-wilaya').value = '';
+            document.getElementById('filter-type').value   = '';
+            document.getElementById('filter-match').checked = false;
+            document.querySelectorAll('.offer-card').forEach(c => c.style.display = '');
+            document.getElementById('offers-count-num').textContent =
+                document.querySelectorAll('.offer-card').length;
+        }
+
+
+
+
+
+
+
+
+
+
+        // ══════════════════════════════════════════════════
+        // ★ Withdraw من جدول My Applications
+        // ══════════════════════════════════════════════════
+        async function withdrawApp(offerId, appId, btn) {
+            if (!confirm('Are you sure you want to withdraw this application?')) return;
+
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span>';
+
+            try {
+                const res  = await fetch(`/student/offers/${offerId}/withdraw`, { method: 'POST' });
+                const data = await res.json();
+
+                if (data.success) {
+                    // إخفاء الصف بأنيميشن
+                    const row = document.getElementById(`app-row-${appId}`);
+                    if (row) {
+                        row.style.transition = 'opacity 0.4s, transform 0.4s';
+                        row.style.opacity    = '0';
+                        row.style.transform  = 'translateX(20px)';
+                        setTimeout(() => row.remove(), 420);
+                    }
+                    // تحديث زر Apply في قسم Browse Internships
+                    const cardBtn = document.querySelector(`.apply-btn[data-offer-id="${offerId}"]`);
+                    if (cardBtn) {
+                        cardBtn.dataset.applied = 'false';
+                        updateApplyBtnUI(cardBtn);
+                    }
+                } else {
+                    alert(data.error || 'Cannot withdraw.');
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="bi bi-x-circle me-1"></i> Withdraw';
+                }
+            } catch {
+                alert('Network error.');
+                btn.disabled = false;
+                btn.innerHTML = '<i class="bi bi-x-circle me-1"></i> Withdraw';
+            }
+        }
+
+        // ══════════════════════════════════════════════════
+        // ★ Show Rejection Reason Modal
+        // ══════════════════════════════════════════════════
+        function showRejectionReason(btn) {
+            document.getElementById('rejection-offer-name').textContent = btn.dataset.offer || '';
+            document.getElementById('rejection-reason-text').textContent = btn.dataset.reason || 'No reason provided.';
+            new bootstrap.Modal(document.getElementById('rejectionReasonModal')).show();
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        async function handleApplicationAction(offerId, appId, action, btn) {
+            const confirmMsg = action === 'delete'
+                ? 'Are you sure you want to delete this rejection record?'
+                : 'Are you sure you want to withdraw this application?';
+
+            if (!confirm(confirmMsg)) return;
+
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span>';
+
+            // نستخدم نفس المسار (Route) لكن مع تحديد الـ action (سواء withdraw أو delete)
+            // ملاحظة: تأكدي من وجود Route في Symfony يستقبل طلب الحذف
+            const url = action === 'delete'
+                ? `/student/applications/${appId}/delete`
+                : `/student/offers/${offerId}/withdraw`;
+
+            try {
+                const res = await fetch(url, { method: 'POST' });
+                const data = await res.json();
+
+                if (data.success) {
+                    // إخفاء الصف بأنيميشن سلس
+                    const row = document.getElementById(`app-row-${appId}`);
+                    if (row) {
+                        row.style.transition = 'all 0.4s ease';
+                        row.style.opacity = '0';
+                        row.style.transform = 'scale(0.95)';
+                        setTimeout(() => row.remove(), 400);
+                    }
+
+                    // إذا كان تراجعاً، نحتاج لتحديث أزرار التقديم في قسم Browse
+                    if (action === 'withdraw') {
+                        const cardBtn = document.querySelector(`.apply-btn[data-offer-id="${offerId}"]`);
+                        if (cardBtn) {
+                            cardBtn.dataset.applied = 'false';
+                            updateApplyBtnUI(cardBtn);
+                        }
+                    }
+                } else {
+                    alert(data.error || 'Operation failed.');
+                    btn.disabled = false;
+                    btn.innerHTML = action === 'delete' ? '<i class="bi bi-trash3"></i> Delete' : 'Withdraw';
+                }
+            } catch (e) {
+                alert('Server connection error.');
+                btn.disabled = false;
+            }
         }
     </script>
 {% endblock %}

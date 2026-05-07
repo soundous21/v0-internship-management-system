@@ -1,0 +1,260 @@
+{# templates/admin/validations.html.twig #}
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Validation des Demandes de Stage{% endblock %}
+
+{% block body %}
+    <div class="container-fluid py-4">
+
+        {# ══════════════════════════════════════════════════════════════════
+       1. بطاقة ختم الجامعة
+       كل أدمن جامعة لديه ختمه الخاص — يظهر في الاتفاقية تلقائياً
+    ══════════════════════════════════════════════════════════════════ #}
+        <div class="card mb-4 border-0 shadow-sm">
+            <div class="card-header d-flex align-items-center gap-2 bg-primary text-white">
+                <i class="bi bi-patch-check-fill fs-5"></i>
+                <span class="fw-semibold">Cachet officiel de l'université</span>
+            </div>
+            <div class="card-body d-flex align-items-center gap-4 flex-wrap">
+
+                {# معاينة الختم الحالي #}
+                <div id="stampPreview" class="border rounded p-2 bg-light" style="min-width:90px;min-height:90px;display:flex;align-items:center;justify-content:center;">
+                    {% if university.stampFilename %}
+                        <img src="{{ asset('uploads/stamps/' ~ university.stampFilename) }}?v={{ 'now'|date('U') }}"
+                             alt="Cachet" style="max-width:80px;max-height:80px;object-fit:contain;">
+                    {% else %}
+                        <span class="text-muted small text-center">Aucun<br>cachet</span>
+                    {% endif %}
+                </div>
+
+                <div>
+                    <p class="mb-1 fw-semibold">{{ university.universityName ?? university.companyName ?? 'Université' }}</p>
+                    <p class="text-muted small mb-2">
+                        Le cachet apparaîtra automatiquement sur toutes les conventions générées.
+                        <br>Format recommandé : PNG avec fond transparent.
+                    </p>
+                    <label class="btn btn-outline-primary btn-sm" for="stampInput">
+                        <i class="bi bi-upload me-1"></i>
+                        {{ university.stampFilename ? 'Changer le cachet' : 'Importer le cachet' }}
+                    </label>
+                    <input type="file" id="stampInput" accept="image/png,image/jpeg,image/webp"
+                           class="d-none" onchange="uploadStamp(this)">
+
+                    {% if university.stampFilename %}
+                        <span class="text-success small ms-2">
+                        <i class="bi bi-check-circle-fill"></i> Cachet défini
+                    </span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        {# ══════════════════════════════════════════════════════════════════
+       2. جدول الطلبات المعلقة
+    ══════════════════════════════════════════════════════════════════ #}
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white d-flex align-items-center justify-content-between">
+                <span class="fw-bold fs-5">Demandes en attente de validation</span>
+                <span class="badge bg-warning text-dark fs-6">{{ pendingApps|length }}</span>
+            </div>
+
+            <div class="card-body p-0">
+                {% if pendingApps is empty %}
+                    <div class="text-center text-muted py-5">
+                        <i class="bi bi-inbox fs-1 d-block mb-2"></i>
+                        Aucune demande en attente.
+                    </div>
+                {% else %}
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-light">
+                            <tr>
+                                <th class="ps-3">#</th>
+                                <th>Étudiant</th>
+                                <th>Spécialité</th>
+                                <th>Offre</th>
+                                <th>Entreprise</th>
+                                <th>Date de dépôt</th>
+                                <th class="text-center pe-3">Actions</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for app in pendingApps %}
+                                <tr id="row-{{ app.id }}">
+                                    <td class="ps-3 text-muted small">{{ app.id }}</td>
+
+                                    <td>
+                                        <div class="d-flex align-items-center gap-2">
+                                            {% if app.student.profilePicture %}
+                                                <img src="{{ asset('uploads/profiles/' ~ app.student.profilePicture) }}"
+                                                     class="rounded-circle" width="36" height="36"
+                                                     style="object-fit:cover;" alt="">
+                                            {% else %}
+                                                <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center text-white"
+                                                     style="width:36px;height:36px;font-size:14px;">
+                                                    {{ app.student.firstName|first|upper }}
+                                                </div>
+                                            {% endif %}
+                                            <div>
+                                                <div class="fw-semibold">{{ app.student.firstName }} {{ app.student.lastName }}</div>
+                                                <div class="text-muted small">{{ app.student.email }}</div>
+                                            </div>
+                                        </div>
+                                    </td>
+
+                                    <td class="small">{{ app.student.specialty ?? '—' }}</td>
+                                    <td>{{ app.offer.title }}</td>
+                                    <td>
+                                        <span class="fw-semibold">{{ app.offer.company.companyName ?? app.offer.company.firstName }}</span>
+                                        <br><span class="text-muted small">{{ app.offer.wilaya ?? '' }}</span>
+                                    </td>
+                                    <td class="small text-muted">
+                                        {{ app.createdAt ? app.createdAt|date('d/m/Y') : '—' }}
+                                    </td>
+
+                                    <td class="text-center pe-3">
+                                        {# زر الموافقة #}
+                                        <button class="btn btn-success btn-sm me-1"
+                                                id="btn-approve-{{ app.id }}"
+                                                onclick="approveApplication({{ app.id }}, this)"
+                                                title="Approuver et générer la convention DOCX">
+                                            <i class="bi bi-check-circle me-1"></i>Approuver
+                                        </button>
+
+                                        {# زر الرفض #}
+                                        <button class="btn btn-outline-danger btn-sm"
+                                                id="btn-reject-{{ app.id }}"
+                                                onclick="rejectApplication({{ app.id }}, this)"
+                                                title="Rejeter la demande">
+                                            <i class="bi bi-x-circle me-1"></i>Rejeter
+                                        </button>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    {# Toast #}
+    <div class="position-fixed bottom-0 end-0 p-3" style="z-index:1100">
+        <div id="toast" class="toast align-items-center text-white border-0" role="alert" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body fw-semibold" id="toastMsg"></div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}{{ parent() }}
+    <script>
+        // ── Helpers ──────────────────────────────────────────────────────────────────
+        function notify(msg, type = 'success') {
+            const el = document.getElementById('toast');
+            document.getElementById('toastMsg').textContent = msg;
+            el.className = `toast align-items-center text-white border-0 bg-${type === 'success' ? 'success' : 'danger'}`;
+            bootstrap.Toast.getOrCreateInstance(el, { delay: 4000 }).show();
+        }
+
+        function setBtn(btn, loading, originalHTML) {
+            btn.disabled = loading;
+            btn.innerHTML = loading
+                ? '<span class="spinner-border spinner-border-sm me-1"></span>...'
+                : originalHTML;
+        }
+
+        // ── Approuver ─────────────────────────────────────────────────────────────────
+        async function approveApplication(id, btn) {
+            if (!confirm('Confirmer la validation et générer la convention de stage ?')) return;
+
+            const orig = btn.innerHTML;
+            setBtn(btn, true);
+
+            const res  = await fetch(`/admin/applications/${id}/approve`, { method: 'POST' }).catch(() => null);
+            if (!res) { notify('Erreur réseau.', 'error'); setBtn(btn, false, orig); return; }
+
+            const data = await res.json();
+
+            if (data.success) {
+                const row = document.getElementById(`row-${id}`);
+                // إخفاء أزرار الموافقة والرفض + عرض زر التحميل
+                row.querySelector('td:last-child').innerHTML = `
+            <span class="badge bg-success me-2">
+                <i class="bi bi-check-circle-fill me-1"></i>Approuvée
+            </span>
+            ${data.downloadUrl
+                    ? `<a href="${data.downloadUrl}" class="btn btn-primary btn-sm" download>
+                       <i class="bi bi-file-earmark-word me-1"></i>Convention DOCX
+                   </a>`
+                    : '<span class="text-muted small">Fichier non disponible</span>'}
+        `;
+                row.classList.add('table-success');
+                notify('Demande approuvée ! La convention a été générée avec succès.');
+            } else {
+                notify(data.error || 'Une erreur est survenue.', 'error');
+                setBtn(btn, false, orig);
+            }
+        }
+
+        // ── Rejeter ───────────────────────────────────────────────────────────────────
+        async function rejectApplication(id, btn) {
+            const reason = prompt('Motif du rejet (optionnel) :');
+            if (reason === null) return;   // المستخدم ضغط إلغاء
+
+            const orig = btn.innerHTML;
+            setBtn(btn, true);
+
+            const res  = await fetch(`/admin/applications/${id}/reject`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ reason }),
+            }).catch(() => null);
+
+            if (!res) { notify('Erreur réseau.', 'error'); setBtn(btn, false, orig); return; }
+
+            const data = await res.json();
+
+            if (data.success) {
+                const row = document.getElementById(`row-${id}`);
+                row.querySelector('td:last-child').innerHTML =
+                    '<span class="badge bg-danger"><i class="bi bi-x-circle-fill me-1"></i>Rejetée</span>';
+                row.classList.add('table-danger');
+                notify('Demande rejetée.');
+            } else {
+                notify(data.error || 'Erreur.', 'error');
+                setBtn(btn, false, orig);
+            }
+        }
+
+        // ── Rفع الختم ─────────────────────────────────────────────────────────────────
+        async function uploadStamp(input) {
+            const file = input.files[0];
+            if (!file) return;
+
+            const fd = new FormData();
+            fd.append('file', file);
+
+            const res  = await fetch('/admin/stamp', { method: 'POST', body: fd }).catch(() => null);
+            if (!res) { notify('Erreur réseau.', 'error'); return; }
+
+            const data = await res.json();
+
+            if (data.success) {
+                const preview = document.getElementById('stampPreview');
+                preview.innerHTML = `<img src="${data.url}?v=${Date.now()}"
+                                  alt="Cachet"
+                                  style="max-width:80px;max-height:80px;object-fit:contain;">`;
+                notify('Cachet mis à jour avec succès !');
+            } else {
+                notify(data.error || 'Erreur lors du téléchargement.', 'error');
+            }
+
+            // إعادة تعيين الـ input
+            input.value = '';
+        }
+    </script>
+{% endblock %}

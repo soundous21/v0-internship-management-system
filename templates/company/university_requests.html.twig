@@ -1,0 +1,140 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}University Affiliation | Stag.io{% endblock %}
+
+{% block body %}
+    <div class="d-flex shadow-lg overflow-hidden" style="min-height: 100vh; background: #0f172a;">
+        {# 1. Sidebar الاستيراد من مكان الـ Dashboard تعك #}
+        {% include 'partials/_sidebar.html.twig' %}
+
+        {# 2. Content Area #}
+        <div class="flex-grow-1 p-4 p-md-5" style="overflow-y: auto; max-height: 100vh;">
+
+            {# Header Section #}
+            <div class="d-flex justify-content-between align-items-center mb-5">
+                <div>
+                    <h2 class="display-6 fw-bold text-white mb-2">University Affiliation</h2>
+                    <p class="text-secondary mb-0">Build bridges between your company and academic institutions.</p>
+                </div>
+                <div class="d-none d-md-block">
+                <span class="badge bg-primary-soft text-primary p-2 px-3 rounded-pill">
+                    <i class="bi bi-shield-check me-1"></i> Official Partner Portal
+                </span>
+                </div>
+            </div>
+
+            <div class="row g-4">
+                {# Form Section #}
+                <div class="col-xl-4 col-lg-5">
+                    <div class="card border-0 shadow-sm h-100" style="background: #1e293b; border-radius: 20px;">
+                        <div class="card-body p-4">
+                            <div class="icon-box mb-4 bg-primary bg-opacity-10 d-inline-flex p-3 rounded-4">
+                                <i class="bi bi-building-add text-primary fs-4"></i>
+                            </div>
+                            <h5 class="text-white fw-bold mb-3">Send New Request</h5>
+                            <p class="text-muted small mb-4">Choose a university to share your credentials and internship offers with their students.</p>
+
+                            <form action="{{ path('app_company_send_verification_request') }}" method="POST">
+                                <div class="mb-4">
+                                    <label class="form-label text-secondary small fw-bold">SELECT UNIVERSITY</label>
+                                    <select name="university_id" class="form-select custom-select-dark" required>
+                                        <option value="" disabled selected>-- Search University --</option>
+                                        {% for uni in universities %}
+                                            <option value="{{ uni.id }}">{{ uni.universityName }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+
+                                <div class="alert border-0 mb-4" style="background: rgba(59, 130, 246, 0.05); border-left: 4px solid #3b82f6 !important;">
+                                    <div class="d-flex">
+                                        <i class="bi bi-info-circle text-primary me-3 mt-1"></i>
+                                        <p class="small text-secondary mb-0">
+                                            Your legal documents and company profile will be visible to the university administration for review.
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <button type="submit" class="btn btn-primary w-100 py-3 fw-bold rounded-3 shadow-sm mt-2">
+                                    <i class="bi bi-send-fill me-2"></i> Submit Request
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                {# Table Section #}
+                <div class="col-xl-8 col-lg-7">
+                    <div class="card border-0 shadow-sm h-100" style="background: #1e293b; border-radius: 20px;">
+                        <div class="card-body p-4">
+                            <div class="d-flex align-items-center justify-content-between mb-4">
+                                <h5 class="text-white fw-bold mb-0">Request History</h5>
+                                <button class="btn btn-sm btn-outline-secondary rounded-pill px-3">
+                                    <i class="bi bi-filter me-1"></i> Filter
+                                </button>
+                            </div>
+
+                            <div class="table-responsive">
+                                <table class="table table-dark table-hover align-middle mb-0">
+                                    <thead class="bg-transparent">
+                                    <tr>
+                                        <th class="border-0 text-secondary small py-3">UNIVERSITY NAME</th>
+                                        <th class="border-0 text-secondary small py-3">SUBMISSION DATE</th>
+                                        <th class="border-0 text-secondary small py-3">STATUS</th>
+                                        <th class="border-0 text-secondary small py-3 text-end">ACTION</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {# مثال للبيانات - سيتم ربطها بالـ Loop لاحقاً #}
+                                    <tr style="border-bottom: 1px solid #2d3748;">
+                                        <td class="py-4">
+                                            <div class="d-flex align-items-center">
+                                                <div class="avatar-sm me-3 bg-white bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center text-white fw-bold">
+                                                    C2
+                                                </div>
+                                                <span class="text-white fw-medium">Constantine 2 University</span>
+                                            </div>
+                                        </td>
+                                        <td class="text-secondary small">May 02, 2026</td>
+                                        <td>
+                                            <span class="badge rounded-pill bg-warning bg-opacity-10 text-warning px-3 py-2">
+                                                <i class="bi bi-clock me-1"></i> Pending
+                                            </span>
+                                        </td>
+                                        <td class="text-end">
+                                            <button class="btn btn-link text-secondary p-0"><i class="bi bi-three-dots-vertical"></i></button>
+                                        </td>
+                                    </tr>
+                                    {# نهاية المثال #}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        /* CSS مخصص لتعزيز مظهر الصفحة */
+        .custom-select-dark {
+            background-color: #0f172a !important;
+            border: 1px solid #334155 !important;
+            color: #f8fafc !important;
+            padding: 0.8rem 1rem !important;
+            border-radius: 12px !important;
+        }
+        .custom-select-dark:focus {
+            border-color: #3b82f6 !important;
+            box-shadow: 0 0 0 0.25rem rgba(59, 130, 246, 0.15) !important;
+        }
+        .bg-primary-soft { background-color: rgba(59, 130, 246, 0.1); }
+        .avatar-sm { width: 40px; height: 40px; font-size: 12px; }
+
+        /* إلغاء الـ Scrollbar الجانبي بشكل جمالي */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #475569; }
+    </style>
+{% endblock %}

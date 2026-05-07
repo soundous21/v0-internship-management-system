@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="container mt-5">
+        <div class="stat-card">
+            <h4 class="text-white mb-4">Candidates for: {{ offer.title }}</h4>
+
+            <div class="table-responsive">
+                <table class="table table-borderless text-white">
+                    <thead class="text-muted small border-bottom border-secondary">
+                    <tr>
+                        <th>STUDENT NAME</th>
+                        <th>APPLIED DATE</th>
+                        <th>DOCUMENTS</th>
+                        <th>ACTION</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {# هنا تضع حلقة loop للمترشحين #}
+                    <tr>
+                        <td class="py-3">Nom Prenom</td>
+                        <td>25 Apr 2026</td>
+                        <td>
+                            <a href="#" class="text-primary text-decoration-none">
+                                <i class="bi bi-file-earmark-pdf me-1"></i> CV.pdf
+                            </a>
+                        </td>
+                        <td>
+                            <button class="btn btn-sm btn-success">Accept</button>
+                            <button class="btn btn-sm btn-danger">Refuse</button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}

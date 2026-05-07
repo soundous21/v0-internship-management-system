@@ -1,56 +1,327 @@
 <?php
+// src/Controller/StudentController.php
+// ── فقط الجزء المتعلق بربط الطالب بالأدمين ──────────────────────────────────
+// أضف هذا الـ route لصفحة اختيار الجامعة (يُستدعى عند أول دخول للطالب)
 
 namespace App\Controller;
 
+use App\Entity\Application;
+use App\Entity\Skills;
+use App\Entity\User;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Repository\ApplicationRepository;
 
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Doctrine\ORM\EntityManagerInterface;
-
-#[IsGranted('ROLE_STUDENT')] // حماية الصفحة (فقط للطلاب)
+#[IsGranted('ROLE_STUDENT')]
 class StudentController extends AbstractController
 {
+    // ─── Dashboard ────────────────────────────────────────────────────────────
+
     #[Route('/student/dashboard', name: 'app_student_dashboard')]
-    public function index(): Response
+    public function index(EntityManagerInterface $em): Response
     {
-        $user = $this->getUser(); // جلب بيانات الطالب المسجل حالياً
+        /** @var User $user */
+        $user = $this->getUser();
+
+        $acceptedApplication = $em->getRepository(Application::class)->findOneBy([
+            'student' => $user, 'status' => 'accepted',
+        ]);
+        $myInternship = $acceptedApplication?->getOffer();
+
+        $applications = $em->getRepository(Application::class)->findBy(['student' => $user]);
+
+        $stats = ['total' => count($applications), 'pending' => 0, 'accepted' => 0, 'refused' => 0];
+        foreach ($applications as $app) {
+            $status = strtolower($app->getStatus());
+            if (isset($stats[$status])) $stats[$status]++;
+        }
+
+        $profileFields     = [$user->getPhone(), $user->getBio(), $user->getUniversity(), $user->getSpecialty(), $user->getProfilePicture()];
+        $completionPercent = (count(array_filter($profileFields)) / count($profileFields)) * 100;
+
+        // ★ العروض المتاحة: فقط من شركات شريكة مع جامعة الطالب
+        $offers = [];
+        $appliedOfferIds = [];
+
+        $universityAdmin = $user->getUniversityEntity();
+        if ($universityAdmin) {
+            $partnerCompanies = $universityAdmin->getPartnerCompanies();
+            if (!$partnerCompanies->isEmpty()) {
+                $offers = $em->getRepository(\App\Entity\Offers::class)
+                    ->createQueryBuilder('o')
+                    ->where('o.company IN (:companies)')
+                    ->andWhere('o.status = :status')
+                    ->setParameter('companies', $partnerCompanies->toArray())
+                    ->setParameter('status', 'Active')
+                    ->orderBy('o.createdAt', 'DESC')
+                    ->getQuery()
+                    ->getResult();
+            }
+        }
+
+        // ★ IDs العروض التي تقدّم إليها الطالب مسبقاً
+        foreach ($applications as $app) {
+            if ($app->getOffer()) {
+                $appliedOfferIds[] = $app->getOffer()->getId();
+            }
+        }
 
         return $this->render('student/dashboard.html.twig', [
-            'user' => $user,
+            'user'              => $user,
+            'stats'             => $stats,
+            'completionPercent' => $completionPercent,
+            'myInternship'      => $myInternship,
+            'myUniversity'      => $user->getUniversityEntity(),
+            // ★ جديد
+            'offers'            => $offers,
+            'appliedOfferIds'   => $appliedOfferIds,
+            'applications'      => $applications,  // ★ أضف هذا
         ]);
     }
+    // ─── ★ ربط الطالب بأدمين جامعته ──────────────────────────────────────────
+    /**
+     * POST /student/select-university
+     * body JSON: { "universityId": 5 }
+     *
+     * الطالب يختار جامعته مرة واحدة (أو يغيّرها).
+     * يُحفظ في User.universityEntity → يظهر للأدمين في قائمة طلابه.
+     */
+    #[Route('/student/select-university', name: 'app_student_select_university', methods: ['POST'])]
+    public function selectUniversity(Request $request, EntityManagerInterface $em): JsonResponse
+    {
+        /** @var User $student */
+        $student = $this->getUser();
+
+        $data         = json_decode($request->getContent(), true);
+        $universityId = $data['universityId'] ?? null;
+
+        if (!$universityId) {
+            return $this->json(['error' => 'universityId manquant.'], 400);
+        }
+
+        $admin = $em->getRepository(User::class)->find($universityId);
+
+        if (!$admin || !in_array('ROLE_ADMIN', $admin->getRoles(), true)) {
+            return $this->json(['error' => 'Université introuvable.'], 404);
+        }
+
+        $student->setUniversityEntity($admin);
+        $em->flush();
+
+        return $this->json([
+            'success'        => true,
+            'universityName' => $admin->getUniversityName() ?? $admin->getCompanyName(),
+        ]);
+    }
+
+    // ─── تحديث الملف الشخصي ──────────────────────────────────────────────────
+
+    #[Route('/student/profile/update', name: 'app_student_profile_update', methods: ['POST'])]
+    public function updateProfile(Request $request, EntityManagerInterface $em): JsonResponse
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+
+        $user->setFirstName($request->request->get('firstName')    ?? $user->getFirstName());
+        $user->setLastName($request->request->get('lastName')      ?? $user->getLastName());
+        $user->setPhone($request->request->get('phone')            ?? $user->getPhone());
+        $user->setWilaya($request->request->get('wilaya')          ?? $user->getWilaya());
+        $user->setUniversity($request->request->get('university')  ?? $user->getUniversity());
+        $user->setSpecialty($request->request->get('specialty')    ?? $user->getSpecialty());
+        $user->setBio($request->request->get('bio')                ?? $user->getBio());
+        $user->setLevel($request->request->get('level')            ?? $user->getLevel());
+        $user->setGithubLink($request->request->get('githubLink')  ?? $user->getGithubLink());
+        $user->setPortfolioLink($request->request->get('portfolioLink') ?? $user->getPortfolioLink());
+
+        // صورة الملف الشخصي
+        $imageFile = $request->files->get('profilePicture');
+        if ($imageFile) {
+            $newFilename = uniqid() . '.' . $imageFile->guessExtension();
+            $imageFile->move($this->getParameter('kernel.project_dir') . '/public/uploads/profiles', $newFilename);
+            $user->setProfilePicture($newFilename);
+        }
+
+        // المهارات
+        $skillsData = json_decode($request->request->get('skills', '[]'), true);
+        if (!empty($skillsData)) {
+            foreach ($user->getSkills() as $old) $user->removeSkill($old);
+            foreach ($skillsData as $skillName) {
+                $skillName = trim($skillName);
+                if (!$skillName) continue;
+                $skill = $em->getRepository(Skills::class)->findOneBy(['tagName' => $skillName]);
+                if (!$skill) {
+                    $skill = new Skills();
+                    $skill->setTagName($skillName);
+                    $em->persist($skill);
+                }
+                $user->addSkill($skill);
+            }
+        }
+
+
+
+
+
+        // المنطق التلقائي لتحديد الجامعة حسب الدومين
+        $emailDomain = $request->request->get('emailDomain');
+        if ($emailDomain) {
+            // البحث عن أدمين (جامعة) ينتهي إيميله بـ @domain.com
+            $universityAdmin = $em->getRepository(User::class)->createQueryBuilder('u')
+                ->where('u.roles LIKE :role')
+                ->andWhere('u.email LIKE :domain')
+                ->setParameter('role', '%"ROLE_ADMIN"%')
+                ->setParameter('domain', '%@' . $emailDomain)
+                ->setMaxResults(1)
+                ->getQuery()
+                ->getOneOrNullResult();
+
+            if ($universityAdmin) {
+                // ربط الطالب بكيان الجامعة تلقائياً[cite: 24, 26]
+                $user->setUniversityEntity($universityAdmin);
+                // تحديث الحقل النصي لاسم الجامعة ليتوافق مع اسم جامعة الأدمين
+                $user->setUniversity($universityAdmin->getUniversityName() ?? $universityAdmin->getCompanyName());
+            }
+        }
+
+        $em->flush();
+        return new JsonResponse(['status' => 'success']);
+    }
+
+
+
+    #[Route('/student/offers/{id}/apply', name: 'app_student_apply', methods: ['POST'])]
+    public function apply(int $id, EntityManagerInterface $em): JsonResponse
+    {
+        /** @var User $student */
+        $student = $this->getUser();
+
+        $offer = $em->getRepository(\App\Entity\Offers::class)->find($id);
+        if (!$offer) {
+            return $this->json(['error' => 'Offer not found.'], 404);
+        }
+
+        // تأكد أنه لم يتقدم مسبقاً
+        $existing = $em->getRepository(Application::class)->findOneBy([
+            'student' => $student,
+            'offer'   => $offer,
+        ]);
+        if ($existing) {
+            return $this->json(['error' => 'Already applied.'], 400);
+        }
+
+        $application = new Application();
+        $application->setStudent($student);
+        $application->setOffer($offer);
+        $application->setStatus('pending');
+
+        $em->persist($application);
+        $em->flush();
+
+        return $this->json(['success' => true]);
+    }
+
+    #[Route('/student/offers/{id}/withdraw', name: 'app_student_withdraw', methods: ['POST'])]
+    public function withdraw(int $id, EntityManagerInterface $em): JsonResponse
+    {
+        /** @var User $student */
+        $student = $this->getUser();
+
+        $offer = $em->getRepository(\App\Entity\Offers::class)->find($id);
+        $application = $em->getRepository(Application::class)->findOneBy([
+            'student' => $student,
+            'offer'   => $offer,
+        ]);
+
+        if (!$application) {
+            return $this->json(['error' => 'Application not found.'], 404);
+        }
+        if ($application->getStatus() !== 'pending') {
+            return $this->json(['error' => 'Cannot withdraw after processing.'], 400);
+        }
+
+        $em->remove($application);
+        $em->flush();
+
+        return $this->json(['success' => true]);
+    }
+
+
+
+
+
+
+
+
+    #[Route('/student/applications/{id}/convention', name: 'app_student_download_convention')]
+    public function downloadConvention(int $id, EntityManagerInterface $em): Response
+    {
+        /** @var User $student */
+        $student = $this->getUser();
+
+        $application = $em->getRepository(Application::class)->find($id);
+
+        if (!$application || $application->getStudent() !== $student) {
+            throw $this->createNotFoundException();
+        }
+        if (!$application->getConventionFile()) {
+            throw $this->createNotFoundException('Convention file not found.');
+        }
+
+        $filePath = $this->getParameter('kernel.project_dir')
+            . '/public/conventions/' . $application->getConventionFile();
+
+        if (!file_exists($filePath)) {
+            throw $this->createNotFoundException('File not found on disk.');
+        }
+
+        $response = new \Symfony\Component\HttpFoundation\BinaryFileResponse($filePath);
+        $response->setContentDisposition(
+            \Symfony\Component\HttpFoundation\ResponseHeaderBag::DISPOSITION_ATTACHMENT,
+            'convention_' . $application->getStudent()->getLastName() . '.docx'
+        );
+        $response->headers->set(
+            'Content-Type',
+            'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+        );
+        return $response;
+    }
+
+
+
+
+
+
+
+
+
+
+
 
 
 
 
     // src/Controller/StudentController.php
 
-    #[Route('/student/profile/update', name: 'app_student_profile_update', methods: ['POST'])]
-    public function updateProfile(Request $request, EntityManagerInterface $entityManager): JsonResponse
+    #[Route('/student/applications/{id}/delete', name: 'app_student_application_delete', methods: ['POST'])]
+    public function deleteApplication(int $id, ApplicationRepository $appRepo, EntityManagerInterface $em): JsonResponse
     {
-        $data = json_decode($request->getContent(), true);
-        $user = $this->getUser();
+        $application = $appRepo->find($id);
 
-        if (!$user) {
-            return new JsonResponse(['status' => 'error', 'message' => 'User not found'], 403);
+        // تأكدي أن الطلب يخص الطالب المسجل حالياً ومرفوض فعلياً
+        if (!$application || $application->getStudent() !== $this->getUser()) {
+            return new JsonResponse(['success' => false, 'error' => 'Application not found'], 404);
         }
 
-        // تفعيل وتحديث كل الحقول التي أضفتها
-        $user->setFirstName($data['firstName'] ?? $user->getFirstName());
-        $user->setLastName($data['lastName'] ?? $user->getLastName());
-        $user->setPhone($data['phone'] ?? $user->getPhone()); // تفعيل هذا السطر
-        $user->setWilaya($data['wilaya'] ?? $user->getWilaya()); // إضافة هذا السطر
-        $user->setBio($data['bio'] ?? $user->getBio()); // إضافة هذا السطر
-        $user->setSkills($data['skills'] ?? []); // تفعيل هذا السطر
-        $user->setSpecialty($data['specialty'] ?? $user->getSpecialty());
-        $user->setLevel($data['level'] ?? $user->getLevel());
+        $em->remove($application);
+        $em->flush();
 
-        $entityManager->persist($user);
-        $entityManager->flush();
+        return new JsonResponse(['success' => true]);
+    }
+}
 
-        return new JsonResponse(['status' => 'success', 'message' => 'Profile updated successfully!']);
-    }}
+

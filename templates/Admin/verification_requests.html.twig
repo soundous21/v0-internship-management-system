@@ -1,0 +1,206 @@
+{# templates/admin/verification_requests.html.twig #}
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Demandes de Partenariat{% endblock %}
+
+{% block body %}
+    <div class="container-fluid py-4">
+
+        {# ══ رأس الصفحة ══════════════════════════════════════════════════════════ #}
+        <div class="d-flex align-items-center justify-content-between mb-4">
+            <div>
+                <h4 class="fw-bold mb-0">Demandes de Partenariat</h4>
+                <p class="text-muted small mb-0">
+                    Les entreprises souhaitant collaborer avec
+                    <strong>{{ admin.universityName ?? admin.companyName ?? 'votre université' }}</strong>
+                </p>
+            </div>
+            <span class="badge bg-warning text-dark fs-6">
+            {{ allRequests|filter(r => r.status == 'Pending')|length }} en attente
+        </span>
+        </div>
+
+        {# ══ جدول الطلبات ═════════════════════════════════════════════════════════ #}
+        <div class="card border-0 shadow-sm">
+            <div class="card-body p-0">
+                {% if allRequests is empty %}
+                    <div class="text-center text-muted py-5">
+                        <i class="bi bi-building fs-1 d-block mb-2 opacity-25"></i>
+                        Aucune demande de partenariat reçue.
+                    </div>
+                {% else %}
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-light">
+                            <tr>
+                                <th class="ps-3">Entreprise</th>
+                                <th>Secteur</th>
+                                <th>Wilaya</th>
+                                <th>Document</th>
+                                <th>Date</th>
+                                <th class="text-center pe-3">Statut / Action</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for vr in allRequests %}
+                                <tr id="vr-{{ vr.id }}" class="
+                            {% if vr.status == 'Accepted' %}table-success{% elseif vr.status == 'Rejected' %}table-danger{% endif %}
+                        ">
+                                    {# Entreprise #}
+                                    <td class="ps-3">
+                                        <div class="d-flex align-items-center gap-2">
+                                            {% if vr.company.logo %}
+                                                <img src="{{ asset('uploads/logos/' ~ vr.company.logo) }}"
+                                                     width="36" height="36" class="rounded border object-fit-cover" alt="">
+                                            {% else %}
+                                                <div class="bg-secondary rounded d-flex align-items-center justify-content-center text-white"
+                                                     style="width:36px;height:36px;font-size:14px">
+                                                    {{ vr.company.companyName|first|upper ?? '?' }}
+                                                </div>
+                                            {% endif %}
+                                            <div>
+                                                <div class="fw-semibold">{{ vr.company.companyName ?? vr.company.fullName }}</div>
+                                                <div class="text-muted small">{{ vr.company.email }}</div>
+                                            </div>
+                                        </div>
+                                    </td>
+
+                                    <td class="small">{{ vr.company.industry ?? '—' }}</td>
+                                    <td class="small">{{ vr.company.wilaya ?? '—' }}</td>
+
+                                    {# وثيقة الشركة #}
+                                    <td>
+                                        {% if vr.company.verificationFile %}
+                                            <a href="{{ asset('uploads/verification/' ~ vr.company.verificationFile) }}"
+                                               target="_blank" class="btn btn-outline-secondary btn-sm">
+                                                <i class="bi bi-file-earmark-text me-1"></i>Voir
+                                            </a>
+                                        {% else %}
+                                            <span class="text-muted small">—</span>
+                                        {% endif %}
+                                    </td>
+
+                                    <td class="small text-muted">{{ vr.createdAt|date('d/m/Y') }}</td>
+
+                                    {# Actions #}
+                                    <td class="text-center pe-3" id="action-{{ vr.id }}">
+                                        {% if vr.status == 'Pending' %}
+                                            <button class="btn btn-success btn-sm me-1"
+                                                    onclick="handleVerification({{ vr.id }}, 'accept', this)"
+                                                    title="Accepter et créer le partenariat">
+                                                <i class="bi bi-check-circle me-1"></i>Accepter
+                                            </button>
+                                            <button class="btn btn-outline-danger btn-sm"
+                                                    onclick="handleVerification({{ vr.id }}, 'reject', this)"
+                                                    title="Rejeter">
+                                                <i class="bi bi-x-circle me-1"></i>Rejeter
+                                            </button>
+
+                                        {% elseif vr.status == 'Accepted' %}
+                                            <span class="badge bg-success fs-6">
+                                        <i class="bi bi-patch-check-fill me-1"></i>Partenaire
+                                    </span>
+
+                                        {% else %}
+                                            <span class="badge bg-danger">Rejetée</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        {# ══ شركاء حاليون ════════════════════════════════════════════════════════ #}
+        {% if admin.partnerCompanies|length > 0 %}
+            <div class="card border-0 shadow-sm mt-4">
+                <div class="card-header bg-white fw-bold">
+                    <i class="bi bi-buildings me-2 text-success"></i>
+                    Entreprises Partenaires ({{ admin.partnerCompanies|length }})
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        {% for company in admin.partnerCompanies %}
+                            <div class="col-md-4 col-lg-3">
+                                <div class="border rounded p-3 d-flex align-items-center gap-2">
+                                    {% if company.logo %}
+                                        <img src="{{ asset('uploads/logos/' ~ company.logo) }}"
+                                             width="40" height="40" class="rounded object-fit-cover" alt="">
+                                    {% else %}
+                                        <div class="bg-primary rounded text-white d-flex align-items-center justify-content-center"
+                                             style="width:40px;height:40px;font-size:16px">
+                                            {{ company.companyName|first|upper ?? '?' }}
+                                        </div>
+                                    {% endif %}
+                                    <div>
+                                        <div class="fw-semibold small">{{ company.companyName ?? company.fullName }}</div>
+                                        <div class="text-muted" style="font-size:11px">{{ company.industry ?? '' }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+
+    {# Toast #}
+    <div class="position-fixed bottom-0 end-0 p-3" style="z-index:1100">
+        <div id="toast" class="toast align-items-center text-white border-0" role="alert" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body fw-semibold" id="toastMsg"></div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}{{ parent() }}
+    <script>
+        function notify(msg, type = 'success') {
+            const el = document.getElementById('toast');
+            document.getElementById('toastMsg').textContent = msg;
+            el.className = `toast align-items-center text-white border-0 bg-${type === 'success' ? 'success' : 'danger'}`;
+            bootstrap.Toast.getOrCreateInstance(el, { delay: 4000 }).show();
+        }
+
+        async function handleVerification(id, action, btn) {
+            const label = action === 'accept' ? 'Accepter' : 'Rejeter';
+            if (!confirm(`Confirmer : ${label} cette demande ?`)) return;
+
+            const orig = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span>';
+
+            const url = `/admin/verification-requests/${id}/${action}`;
+            const res = await fetch(url, { method: 'POST' }).catch(() => null);
+
+            if (!res) { notify('Erreur réseau.', 'error'); btn.disabled = false; btn.innerHTML = orig; return; }
+
+            const data = await res.json();
+
+            if (data.success) {
+                const actionCell = document.getElementById(`action-${id}`);
+                const row        = document.getElementById(`vr-${id}`);
+
+                if (action === 'accept') {
+                    actionCell.innerHTML = '<span class="badge bg-success fs-6"><i class="bi bi-patch-check-fill me-1"></i>Partenaire</span>';
+                    row.classList.add('table-success');
+                    notify(`Partenariat accepté avec ${data.companyName} !`);
+                } else {
+                    actionCell.innerHTML = '<span class="badge bg-danger">Rejetée</span>';
+                    row.classList.add('table-danger');
+                    notify('Demande rejetée.');
+                }
+            } else {
+                notify(data.error || 'Erreur.', 'error');
+                btn.disabled = false;
+                btn.innerHTML = orig;
+            }
+        }
+    </script>
+{% endblock %}

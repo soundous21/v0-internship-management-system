@@ -1,0 +1,589 @@
+{# templates/company/candidates_list.html.twig #}
+
+{% extends 'base.html.twig' %}
+
+{% block title %}Candidats — {{ offer.title }}{% endblock %}
+
+{% block body %}
+    <style>
+        nav.navbar { display: none !important; }
+        :root {
+            --bg-main: #030712;
+            --bg-sidebar: #09090b;
+            --card-bg: #000000;
+            --border-color: rgb(17, 24, 39);
+            --text-muted: #94a3b8;
+            --accent-primary: #3378f3;
+            --accent-success: #10b981;
+            --accent-warning: #f59e0b;
+            --accent-danger: #ef4444;
+            --glow-color: rgba(59, 130, 246, 0.3);
+        }
+        body { background-color: var(--bg-main); color: white; font-family: 'Inter', sans-serif; margin: 0; }
+
+        .sidebar {
+            width: 260px; height: 100vh; position: fixed;
+            background: var(--bg-sidebar); border-right: 1px solid var(--border-color);
+            padding: 1.5rem; z-index: 1000; top: 0; display: flex; flex-direction: column;
+        }
+        .main-content { margin-left: 260px; padding: 2rem; min-height: 100vh; }
+
+        .tab-btn {
+            background: transparent; border: none; color: var(--text-muted);
+            padding: 10px 20px; border-radius: 8px; font-size: 0.875rem; font-weight: 600;
+            cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 8px;
+        }
+        .tab-btn.active, .tab-btn:hover { background: #1e293b; color: white; }
+        .tab-btn.active { border-bottom: 2px solid var(--accent-primary); }
+
+        .stat-card {
+            background: var(--card-bg); border: 1px solid var(--border-color);
+            border-radius: 16px; padding: 1.5rem; transition: all 0.3s ease;
+        }
+        .stat-card:hover { border-color: var(--accent-primary); box-shadow: 0 10px 30px var(--glow-color); }
+
+        .intern-card {
+            background: rgba(255,255,255,0.02); border: 1px solid var(--border-color);
+            border-radius: 12px; padding: 1.2rem; transition: 0.2s;
+        }
+        .intern-card:hover { border-color: var(--accent-success); background: rgba(16,185,129,0.04); }
+
+        .badge-status-pending  { background: rgba(245,158,11,0.12); border: 1px solid rgba(245,158,11,0.35); color: #f59e0b; padding: 4px 12px; border-radius: 50px; font-size: 0.7rem; font-weight: 700; }
+        .badge-status-accepted { background: rgba(16,185,129,0.12); border: 1px solid rgba(16,185,129,0.35); color: #10b981; padding: 4px 12px; border-radius: 50px; font-size: 0.7rem; font-weight: 700; }
+        .badge-status-pending_admin { background: rgba(51,120,243,0.12); border: 1px solid rgba(51,120,243,0.35); color: #60a5fa; padding: 4px 12px; border-radius: 50px; font-size: 0.7rem; font-weight: 700; }
+        .badge-status-refused  { background: rgba(239,68,68,0.12);  border: 1px solid rgba(239,68,68,0.35);  color: #ef4444; padding: 4px 12px; border-radius: 50px; font-size: 0.7rem; font-weight: 700; }
+
+        .btn-accept {
+            background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.4); color: #10b981;
+            padding: 6px 16px; border-radius: 8px; font-size: 0.78rem; font-weight: 600;
+            cursor: pointer; transition: 0.2s; display: inline-flex; align-items: center; gap: 6px;
+        }
+        .btn-accept:hover { background: rgba(16,185,129,0.2); border-color: #10b981; }
+
+        .btn-refuse {
+            background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.3); color: #ef4444;
+            padding: 6px 14px; border-radius: 8px; font-size: 0.78rem; font-weight: 600;
+            cursor: pointer; transition: 0.2s; display: inline-flex; align-items: center; gap: 6px;
+        }
+        .btn-refuse:hover { background: rgba(239,68,68,0.15); border-color: #ef4444; }
+
+        .match-bar { height: 6px; background: rgba(255,255,255,0.06); border-radius: 99px; overflow: hidden; margin-top: 6px; }
+        .match-fill { height: 100%; border-radius: 99px; transition: width 0.8s ease; }
+
+        .tab-panel { display: none; }
+        .tab-panel.active { display: block; }
+
+        .avatar-circle {
+            width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center;
+            justify-content: center; font-weight: 700; font-size: 0.85rem; flex-shrink: 0;
+            background: #09090b; border: 1px solid var(--border-color); color: var(--accent-primary);
+        }
+        .dot-glow {
+            display: inline-block; width: 7px; height: 7px; border-radius: 50%;
+            background: var(--accent-primary); box-shadow: 0 0 6px var(--accent-primary);
+            animation: pulse-dot 2s infinite;
+        }
+        @keyframes pulse-dot { 0%,100%{opacity:1;transform:scale(1);} 50%{opacity:.5;transform:scale(.8);} }
+
+        .section-accent-bar { width: 4px; height: 26px; border-radius: 2px; background: var(--accent-primary); box-shadow: 0 0 10px var(--accent-primary); flex-shrink: 0; }
+        .uppercase-tracking { text-transform: uppercase; letter-spacing: 0.08em; }
+
+        /* ─── Row fade-out animation ─── */
+        @keyframes fadeOutRow {
+            0%   { opacity: 1; transform: scaleY(1); max-height: 200px; }
+            60%  { opacity: 0; transform: scaleY(0.95); }
+            100% { opacity: 0; transform: scaleY(0); max-height: 0; padding: 0; margin: 0; }
+        }
+        .row-removing {
+            overflow: hidden;
+            animation: fadeOutRow 0.45s ease forwards;
+            pointer-events: none;
+        }
+
+        /* Reject Modal */
+        .modal-dark { background: rgba(0,0,0,0.85); }
+        .modal-content-dark {
+            background: #09090b; border: 1px solid var(--border-color); border-radius: 16px;
+            padding: 2rem; max-width: 480px; width: 100%; position: relative;
+        }
+
+        /* Toast notification */
+        #toast-container {
+            position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 99999;
+            display: flex; flex-direction: column; gap: 10px;
+        }
+        .toast-msg {
+            background: #09090b; border: 1px solid var(--border-color); border-radius: 12px;
+            padding: 12px 18px; font-size: 0.85rem; font-weight: 600; color: white;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+            animation: slideInToast 0.3s ease, fadeOutToast 0.4s ease 2.6s forwards;
+            display: flex; align-items: center; gap: 10px;
+        }
+        .toast-msg.toast-error { border-color: rgba(239,68,68,0.4); color: #ef4444; }
+        @keyframes slideInToast  { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:none; } }
+        @keyframes fadeOutToast  { to   { opacity:0; transform:translateY(8px); } }
+    </style>
+
+    <div class="d-flex">
+        <!-- SIDEBAR -->
+
+
+        <!-- MAIN CONTENT -->
+        <div class="main-content">
+
+            <!-- Header -->
+            <div class="d-flex align-items-start justify-content-between mb-4">
+                <div>
+                    <a href="{{ path('app_company_dashboard') }}" class="text-muted small text-decoration-none mb-2 d-inline-block">
+                        <i class="bi bi-arrow-left me-1"></i> Back to Dashboard
+                    </a>
+                    <div class="d-flex align-items-center gap-3 mt-1">
+                        <div class="section-accent-bar"></div>
+                        <div>
+                            <h2 class="fw-bold mb-0 text-white">{{ offer.title }}</h2>
+                            <p class="text-muted small mb-0">{{ offer.company.companyName }} · {{ offer.wilaya }} · {{ offer.locationType }}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="d-flex gap-2 align-items-center">
+                    {# Count only non-refused pending #}
+                    {% set pendingCount = candidates|filter(c => c.status == 'pending')|length %}
+                    {% set acceptedCount = candidates|filter(c => c.status == 'accepted')|length %}
+                    <div class="stat-card py-2 px-4 d-flex align-items-center gap-2" style="border-radius:50px;height:auto;">
+                        <div class="dot-glow"></div>
+                        <span class="small fw-bold text-white" id="counter-pending">
+                            {{ pendingCount }} En attente
+                        </span>
+                    </div>
+                    <div class="stat-card py-2 px-4 d-flex align-items-center gap-2" style="border-radius:50px;height:auto;border-color:rgba(16,185,129,0.3);">
+                        <div class="dot-glow" style="background:#10b981;box-shadow:0 0 6px #10b981;animation:none;"></div>
+                        <span class="small fw-bold text-white">
+                            {{ acceptedCount }} Acceptés
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tabs -->
+            <div class="d-flex gap-2 mb-4" style="border-bottom:1px solid var(--border-color); padding-bottom: 0;">
+                <button class="tab-btn active" id="btn-applicants" onclick="switchTab('applicants')">
+                    <i class="bi bi-person-lines-fill"></i> Applicants
+                    {# Badge shows only active (non-refused) pending #}
+                    <span class="badge bg-warning text-dark ms-1" id="badge-pending" style="font-size:0.65rem;">
+                        {{ pendingCount }}
+                    </span>
+                </button>
+                <button class="tab-btn" id="btn-interns" onclick="switchTab('interns')">
+                    <i class="bi bi-mortarboard-fill"></i> Interns
+                    <span class="badge ms-1" style="background:rgba(16,185,129,0.2);color:#10b981;font-size:0.65rem;">
+                        {# Count accepted whose internship has started #}
+                        {% set now = "now"|date("U") %}
+                        {{ candidates|filter(c =>
+                            c.status == 'accepted'
+                            and offer.internshipStart is not null
+                            and offer.internshipStart|date("U") <= now
+                        )|length }}
+                    </span>
+                </button>
+            </div>
+
+            <!-- ═══════════════════════════════════
+                 TAB 1 – APPLICANTS
+                 Shows only pending & pending_admin (hides refused)
+            ════════════════════════════════════ -->
+            <div id="tab-applicants" class="tab-panel active">
+                {# Filter out refused/rejected — they are hidden from this view #}
+                {% set activeApplicants = candidates|filter(c => c.status not in ['refused','rejected']) %}
+
+                {% if activeApplicants|length == 0 %}
+                    <div class="stat-card text-center py-5">
+                        <i class="bi bi-inbox text-muted fs-1 d-block mb-3"></i>
+                        <p class="text-muted mb-0">Aucun candidat actif pour cette offre pour le moment.</p>
+                    </div>
+                {% else %}
+                    <div class="stat-card p-0 overflow-hidden" style="background:#000;">
+                        <div class="table-responsive">
+                            <table class="table table-dark mb-0" style="--bs-table-bg:transparent;">
+                                <thead>
+                                <tr style="border-bottom:1px solid var(--border-color);background:rgba(255,255,255,0.02);">
+                                    <th class="p-4 small fw-bold text-white-50 uppercase-tracking">ÉTUDIANT</th>
+                                    <th class="p-4 small fw-bold text-white-50 uppercase-tracking">SPÉCIALITÉ</th>
+                                    <th class="p-4 small fw-bold text-white-50 uppercase-tracking text-center">COMPATIBILITÉ</th>
+                                    <th class="p-4 small fw-bold text-white-50 uppercase-tracking text-center">STATUT</th>
+                                    <th class="p-4 small fw-bold text-white-50 uppercase-tracking text-end">ACTIONS</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for candidate in activeApplicants %}
+                                    <tr class="align-middle" id="row-{{ candidate.id }}"
+                                        style="border-bottom:1px solid rgba(17,24,39,0.5);transition:background 0.15s;">
+                                        <td class="p-4">
+                                            <div class="d-flex align-items-center gap-3">
+                                                <div class="avatar-circle">
+                                                    {{ candidate.student.firstName|first|upper }}{{ candidate.student.lastName|first|upper }}
+                                                </div>
+                                                <div>
+                                                    <p class="fw-bold mb-0 text-white">
+                                                        {{ candidate.student.firstName }} {{ candidate.student.lastName }}
+                                                    </p>
+                                                    <small class="text-muted">{{ candidate.student.email }}</small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="p-4">
+                                            <span class="text-white-75">{{ candidate.student.specialty ?? '—' }}</span><br>
+                                            <small class="text-muted">{{ candidate.student.level ?? '' }}</small>
+                                        </td>
+                                        <td class="p-4 text-center">
+                                            {% set score = candidate.matchingScore %}
+                                            <span class="fw-bold" style="color:{% if score >= 70 %}#10b981{% elseif score >= 40 %}#f59e0b{% else %}#ef4444{% endif %};">
+                                                {{ score }}%
+                                            </span>
+                                            <div class="match-bar mx-auto" style="max-width:80px;">
+                                                <div class="match-fill" style="width:{{ score }}%;background:{% if score >= 70 %}#10b981{% elseif score >= 40 %}#f59e0b{% else %}#ef4444{% endif %};"></div>
+                                            </div>
+                                        </td>
+                                        <td class="p-4 text-center">
+                                            {% if candidate.status == 'pending' %}
+                                                <span class="badge-status-pending">En attente</span>
+                                            {% elseif candidate.status == 'pending_admin' %}
+                                                <span class="badge-status-pending_admin"><i class="bi bi-hourglass-split me-1"></i>Chez l'Admin</span>
+                                            {% elseif candidate.status == 'accepted' %}
+                                                <span class="badge-status-accepted"><i class="bi bi-check-circle me-1"></i>Accepté</span>
+                                            {% endif %}
+                                        </td>
+                                        <td class="p-4 text-end">
+                                            <div class="d-flex justify-content-end gap-2 flex-wrap">
+                                                {% if candidate.status == 'pending' %}
+                                                    {# ── Accept → send to Admin ── #}
+                                                    <form method="POST"
+                                                          action="{{ path('app_company_application_validate', {id: candidate.id}) }}"
+                                                          onsubmit="return confirm('Envoyer ce dossier à l\'administration pour validation finale ?')">
+                                                        <button type="submit" class="btn-accept">
+                                                            <i class="bi bi-check2-circle"></i> Accepter
+                                                        </button>
+                                                    </form>
+                                                    {# ── Refuse → AJAX, card disappears instantly ── #}
+                                                    <button class="btn-refuse"
+                                                            onclick="openRefuseModal({{ candidate.id }}, '{{ candidate.student.firstName }} {{ candidate.student.lastName }}')">
+                                                        <i class="bi bi-x-lg"></i> Refuser
+                                                    </button>
+                                                {% elseif candidate.status == 'pending_admin' %}
+                                                    <span class="text-muted small"><i class="bi bi-hourglass-split me-1"></i>En attente admin</span>
+                                                {% elseif candidate.status == 'accepted' %}
+                                                    {% if candidate.conventionFile %}
+                                                        <a href="{{ path('app_student_download_convention', {id: candidate.id}) }}"
+                                                           class="btn-accept" style="text-decoration:none;">
+                                                            <i class="bi bi-file-earmark-word"></i> Convention
+                                                        </a>
+                                                    {% else %}
+                                                        <span class="badge-status-accepted"><i class="bi bi-check-circle me-1"></i>Validé</span>
+                                                    {% endif %}
+                                                {% endif %}
+                                                <a href="{{ path('app_student_profile_view', {id: candidate.student.id}) }}"
+                                                   class="btn-refuse" style="color:var(--text-muted);border-color:var(--border-color);">
+                                                    <i class="bi bi-person-badge"></i>
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- ═══════════════════════════════════
+                 TAB 2 – INTERNS
+                 Shows ONLY accepted candidates whose internship has started
+            ════════════════════════════════════ -->
+            <div id="tab-interns" class="tab-panel">
+
+                {% set now = "now"|date("U") %}
+                {% set internshipStarted = offer.internshipStart is not null and offer.internshipStart|date("U") <= now %}
+                {% set interns = internshipStarted ? candidates|filter(c => c.status == 'accepted') : [] %}
+
+                {% if not internshipStarted %}
+                    <div class="text-center py-5 rounded-4 shadow-sm" style="background: rgba(255,255,255,0.02); border: 1px dashed rgba(59, 130, 246, 0.3);">
+                        <div class="mb-4">
+                            <div class="spinner-grow text-primary" role="status" style="width: 3rem; height: 3rem;"></div>
+                        </div>
+                        <h5 class="text-white fw-bold mb-2">Le stage n'a pas encore commencé</h5>
+                        <p class="text-muted small mx-auto" style="max-width: 400px;">
+                            Les stagiaires acceptés apparaîtront ici automatiquement à partir du
+                            <span class="badge bg-primary-subtle text-primary fs-6">{{ offer.internshipStart|date('d/m/Y') }}</span>
+                        </p>
+                    </div>
+
+                {% elseif interns|length == 0 %}
+                    <div class="text-center py-5">
+                        <img src="https://cdn-icons-png.flaticon.com/512/5058/5058432.png" style="width: 80px; opacity: 0.5; filter: grayscale(1);" class="mb-3">
+                        <p class="text-muted">Aucun stagiaire n'est actuellement en poste.</p>
+                    </div>
+
+                {% else %}
+                    <div class="row g-4">
+                        {% for candidate in interns %}
+                            <div class="col-md-6 col-lg-4">
+                                <div class="intern-card p-4 h-100 position-relative"
+                                     style="background: #0d1117; border: 1px solid #30363d; border-radius: 16px; transition: transform 0.3s ease;">
+
+                                    <div class="text-center mb-4">
+                                        <div class="avatar-circle mx-auto mb-3"
+                                             style="width: 65px; height: 65px; background: linear-gradient(135deg, #3b82f6, #1d4ed8); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: bold; box-shadow: 0 0 15px rgba(59, 130, 246, 0.4);">
+                                            {{ candidate.student.firstName|first|upper }}{{ candidate.student.lastName|first|upper }}
+                                        </div>
+                                        <h6 class="text-white fw-bold mb-1 fs-5">
+                                            {{ candidate.student.firstName }} {{ candidate.student.lastName }}
+                                        </h6>
+                                        <span class="text-primary small fw-semibold">
+                                <i class="bi bi-briefcase me-1"></i> {{ candidate.student.specialty ?? 'Stagiaire' }}
+                            </span>
+                                    </div>
+
+                                    <div class="p-3 rounded-3 mb-4" style="background: rgba(255,255,255,0.03);">
+                                        <div class="row g-2">
+                                            <div class="col-12 border-bottom border-secondary pb-2 mb-2 d-flex align-items-center">
+                                                <i class="bi bi-bank text-muted me-2"></i>
+                                                <span class="text-white small text-truncate">{{ candidate.student.universityName ?? 'Université' }}</span>
+                                            </div>
+                                            <div class="col-6 d-flex align-items-center">
+                                                <i class="bi bi-layers text-muted me-2 small"></i>
+                                                <span class="text-muted small">{{ candidate.student.level ?? 'Niveau' }}</span>
+                                            </div>
+                                            <div class="col-6 d-flex align-items-center">
+                                                <i class="bi bi-calendar-check text-muted me-2 small"></i>
+                                                <span class="text-muted small">{{ candidate.approvedAt|date('d/m/Y') }}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-4">
+                                        {% set score = candidate.matchingScore %}
+                                        <div class="d-flex justify-content-between mb-1">
+                                            <small class="text-muted">Indice de compatibilité</small>
+                                            <small class="fw-bold text-success">{{ score }}%</small>
+                                        </div>
+                                        <div class="progress" style="height: 6px; background: #161b22;">
+                                            <div class="progress-bar" style="width: {{ score }}%; background: #10b981;"></div>
+                                        </div>
+                                    </div>
+
+                                    <div class="d-grid gap-2">
+                                        {% if candidate.conventionFile %}
+                                            <a href="{{ path('app_company_download_convention', {id: candidate.id}) }}"
+                                               class="btn btn-success btn-sm py-2 fw-bold"
+                                               style="background: #10b981; border: none; border-radius: 10px;">
+                                                <i class="bi bi-download me-2"></i> Convention
+                                            </a>
+                                        {% endif %}
+                                        {# تأكد أنك داخل حلقة {% for candidate in candidates %} #}
+
+                                        <button type="button"
+                                                onclick="showStudentProfile({{ candidate.student.id }})"
+                                                class="btn btn-sm btn-outline-light border-secondary rounded-pill px-3">
+                                            <i class="bi bi-person-bounding-box me-1"></i> Voir Profile
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+        </div><!-- /main-content -->
+    </div>
+
+    <!-- Toast container -->
+    <div id="toast-container"></div>
+
+    <!-- ════════════════════════════════════════
+         REFUSE MODAL
+    ════════════════════════════════════════ -->
+    <div id="refuseOverlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:9999;align-items:center;justify-content:center;">
+        <div style="background:#09090b;border:1px solid #1e293b;border-radius:16px;padding:2rem;max-width:480px;width:90%;position:relative;">
+            <h5 class="fw-bold text-white mb-1">Refuser la candidature</h5>
+            <p class="text-muted small mb-4">Candidat : <strong id="refuseStudentName" class="text-white"></strong></p>
+
+            <label class="text-muted small fw-bold mb-2 d-block uppercase-tracking">Motif du refus</label>
+            <textarea id="refuseReason" rows="4" class="form-control mb-4"
+                      style="background:#030712;border:1px solid #1e293b;color:white;border-radius:10px;resize:none;"
+                      placeholder="Expliquez brièvement la raison du refus…"></textarea>
+
+            <div class="d-flex gap-3">
+                <button onclick="submitRefuse()" id="confirmRefuseBtn" class="btn-refuse flex-fill justify-content-center" style="padding:10px;">
+                    <i class="bi bi-x-octagon me-1"></i> Confirmer le refus
+                </button>
+                <button onclick="closeRefuseModal()" class="btn btn-sm"
+                        style="background:transparent;border:1px solid #1e293b;color:var(--text-muted);flex:1;border-radius:8px;">
+                    Annuler
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="profileModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content bg-dark text-white border-secondary">
+                <div class="modal-header border-secondary">
+                    <h5 class="modal-title">Détails du Candidat</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <div id="modal-loader" class="py-4">
+                        <div class="spinner-border text-primary" role="status"></div>
+                    </div>
+                    <div id="modal-content" class="d-none">
+                        <div class="avatar-circle mb-3 mx-auto" id="p-avatar" style="width:80px; height:80px; background:#3378f3; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:30px; font-weight:bold;"></div>
+                        <h4 id="p-full-name"></h4>
+                        <p class="text-muted" id="p-email"></p>
+                        <hr class="bg-secondary">
+                        <div class="text-start p-3">
+                            <p class="mb-1"><span class="text-muted">Spécialité:</span> <span id="p-specialty"></span></p>
+                            <p class="mb-1"><span class="text-muted">Université:</span> <span id="p-university"></span></p>
+                            <div class="mt-3">
+                                <p class="text-muted mb-2">Compétences:</p>
+                                <div id="p-skills" class="d-flex flex-wrap gap-2"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        let _refuseId   = null;
+        let _pendingVal = {{ candidates|filter(c => c.status == 'pending')|length }};
+
+        // ── Tab switching ──────────────────────────────────────────────
+        function switchTab(tab) {
+            document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('tab-' + tab).classList.add('active');
+            document.getElementById('btn-' + tab).classList.add('active');
+        }
+
+        // ── Modal helpers ──────────────────────────────────────────────
+        function openRefuseModal(id, name) {
+            _refuseId = id;
+            document.getElementById('refuseStudentName').textContent = name;
+            document.getElementById('refuseReason').value = '';
+            document.getElementById('refuseOverlay').style.display = 'flex';
+        }
+
+        function closeRefuseModal() {
+            document.getElementById('refuseOverlay').style.display = 'none';
+            _refuseId = null;
+        }
+
+        // ── Show toast ─────────────────────────────────────────────────
+        function showToast(msg, type = '') {
+            const container = document.getElementById('toast-container');
+            const el = document.createElement('div');
+            el.className = 'toast-msg' + (type ? ' toast-' + type : '');
+            el.innerHTML = `<i class="bi bi-${type === 'error' ? 'x-circle' : 'check-circle'}"></i> ${msg}`;
+            container.appendChild(el);
+            setTimeout(() => el.remove(), 3100);
+        }
+
+        // ── Submit refuse via AJAX — card disappears without redirect ──
+        async function submitRefuse() {
+            const reason = document.getElementById('refuseReason').value.trim();
+            if (!reason) { alert('Veuillez indiquer un motif de refus.'); return; }
+
+            const btn = document.getElementById('confirmRefuseBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="bi bi-hourglass-split me-1"></i> En cours…';
+
+            try {
+                const formData = new FormData();
+                formData.append('rejection_reason', reason);
+
+                const res = await fetch(`/company/application/${_refuseId}/refuse`, {
+                    method: 'POST',
+                    body: formData,
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                });
+
+                if (!res.ok) throw new Error('Server error ' + res.status);
+
+                // ── Close modal ──
+                closeRefuseModal();
+
+                // ── Animate & remove the table row ──
+                const row = document.getElementById('row-' + _refuseId);
+                if (row) {
+                    row.classList.add('row-removing');
+                    row.addEventListener('animationend', () => {
+                        row.remove();
+
+                        // Update pending counter badge
+                        _pendingVal = Math.max(0, _pendingVal - 1);
+                        const badge = document.getElementById('badge-pending');
+                        if (badge) badge.textContent = _pendingVal;
+
+                        const counter = document.getElementById('counter-pending');
+                        if (counter) counter.textContent = _pendingVal + ' En attente';
+                    });
+                }
+
+                showToast('Candidature refusée avec succès.', 'error');
+
+            } catch (err) {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="bi bi-x-octagon me-1"></i> Confirmer le refus';
+                showToast('Erreur lors du refus. Veuillez réessayer.', 'error');
+            }
+        }
+
+        // Close overlay on outside click
+        document.getElementById('refuseOverlay').addEventListener('click', function(e) {
+            if (e.target === this) closeRefuseModal();
+        });
+
+
+
+
+
+
+
+
+
+
+            async function showStudentProfile(studentId) {
+            const modal = new bootstrap.Modal(document.getElementById('profileModal'));
+            const content = document.getElementById('modal-content');
+            const loader = document.getElementById('modal-loader');
+
+            content.classList.add('d-none');
+            loader.classList.remove('d-none');
+            modal.show();
+
+            try {
+            const response = await fetch(`/company/student-data/${studentId}`);
+            const data = await response.json();
+
+            document.getElementById('p-full-name').textContent = data.firstName + ' ' + data.lastName;
+            document.getElementById('p-email').textContent = data.email;
+            document.getElementById('p-specialty').textContent = data.specialty;
+            document.getElementById('p-university').textContent = data.university;
+            document.getElementById('p-avatar').textContent = data.firstName.charAt(0) + data.lastName.charAt(0);
+
+            // إضافة المهارات
+            const skillsDiv = document.getElementById('p-skills');
+            skillsDiv.innerHTML = '';
+            data.skills.forEach(skill => {
+            skillsDiv.innerHTML += `<span class="badge bg-primary rounded-pill" style="font-weight: 500;">${skill}</span>`;
+        });
+
+            loader.classList.add('d-none');
+            content.classList.remove('d-none');
+        } catch (error) {
+            alert('Erreur lors du chargement des données.');
+        }
+        }
+    </script>
+{% endblock %}

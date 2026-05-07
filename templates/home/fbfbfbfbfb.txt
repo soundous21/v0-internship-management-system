@@ -1,0 +1,29 @@
+
+
+            function updateProfileCoords(lat, lng) {
+                // 1. تحريك الماركر على الخريطة
+                profileMarker.setLatLng([lat, lng]);
+
+                // 2. تحديث الحقول المخفية التي تُرسل لقاعدة البيانات
+                document.getElementById('profile-lat').value = lat.toFixed(6);
+                document.getElementById('profile-lng').value = lng.toFixed(6);
+
+                // 3. تحديث رابط Google Maps في المعاينة (Preview)
+                const mapLink = document.getElementById('prev-map-link');
+                const linkContainer = document.getElementById('prev-map-link-container');
+
+                if (mapLink) {
+                    // الرابط الصحيح لخرائط جوجل هو باستخدام الإحداثيات q=lat,lng
+                    mapLink.href = `https://www.google.com/maps?q=${lat},${lng}`;
+
+                    // إظهار الحاوية إذا كانت مخفية
+                    if (linkContainer) {
+                        linkContainer.classList.remove('d-none');
+                    }
+                }
+            }
+
+
+
+            google.charts.load('current', {'packages':['timeline']});
+            google.charts.setOnLoadCallback(drawChart);

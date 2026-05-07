@@ -3,96 +3,152 @@
 {% block title %}Stag.io - Company{% endblock %}
 
 {% block body %}
-    <style>
-        :root {
-            --bg-main: #030712;
-            --bg-sidebar: #09090b;
-            --card-bg: #0f172a;
-            --border-color: #1e293b;
-            --text-main: #ffffff;
-            --text-muted: #94a3b8;
-            --accent-primary: #3b82f6;
-        }
 
-        body {
-            background-color: var(--bg-main);
-            color: var(--text-main);
-            font-family: 'Inter', sans-serif;
-            overflow-x: hidden;
-            -webkit-font-smoothing: antialiased;
-        }
+    {% block stylesheets %}
+        {# رابط مكتبة الخرائط CSS #}
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+        <link rel="stylesheet" type="text/css" href="https://npmcdn.com/flatpickr/dist/themes/dark.css">
+        <style>
+            :root {
+                --bg-main: #000000;
+                --bg-sidebar: #09090b;
+                --card-bg: #000000;
+                --border-color: #1e293b;
+                --text-main: #ffffff;
+                --text-muted: #94a3b8;
+                --accent-primary: #3b82f6;
+            }
 
-        header, .navbar, .navbar-top { display: none !important; }
+            body {
+                background-color: var(--bg-main);
+                color: var(--text-main);
+                font-family: 'Inter', sans-serif;
+                overflow-x: hidden;
+                -webkit-font-smoothing: antialiased;
+            }
 
-        .sidebar {
-            width: 260px; height: 100vh; position: fixed;
-            background: var(--bg-sidebar); border-right: 1px solid var(--border-color);
-            padding: 1.5rem; z-index: 1000; left: 0; top: 0;
-        }
+            header, .navbar, .navbar-top { display: none !important; }
 
-        .main-content { margin-left: 260px; padding: 2rem; width: calc(100% - 260px); }
+            .sidebar {
+                width: 260px; height: 100vh; position: fixed;
+                background: var(--bg-sidebar); border-right: 1px solid var(--border-color);
+                padding: 1.5rem; z-index: 1000; left: 0; top: 0;
+            }
 
-        .nav-link-custom {
-            display: flex; align-items: center; gap: 12px;
-            color: var(--text-muted); text-decoration: none;
-            padding: 12px 15px; border-radius: 8px; margin-bottom: 5px;
-            transition: all 0.2s;
-        }
+            .main-content { margin-left: 260px; padding: 2rem; width: calc(100% - 260px); }
 
-        .nav-link-custom:hover, .nav-link-custom.active {
-            background: rgba(59, 130, 246, 0.1);
-            color: var(--accent-primary);
-        }
+            .nav-link-custom {
+                display: flex; align-items: center; gap: 12px;
+                color: var(--text-muted); text-decoration: none;
+                padding: 12px 15px; border-radius: 8px; margin-bottom: 5px;
+                transition: all 0.2s;
+            }
 
-        .stat-card {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 1.5rem;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
+            .nav-link-custom:hover, .nav-link-custom.active {
+                background: rgba(59, 130, 246, 0.1);
+                color: var(--accent-primary);
+            }
 
-        .stat-card:hover {
-            transform: translateY(-5px);
-            border-color: var(--accent-primary);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-        }
+            .stat-card {
+                background: var(--card-bg);
+                border: 1px solid var(--border-color);
+                border-radius: 12px;
+                padding: 1.5rem;
+                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            }
 
-        .form-control {
-            background: #020617;
-            border: 1px solid #334155; color: white; border-radius: 8px; padding: 12px;
-        }
+            .stat-card:hover {
+                transform: translateY(-5px);
+                border-color: var(--accent-primary);
+                box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            }
 
-        .form-control:focus {
-            background: #020617;
-            color: white; border-color: var(--accent-primary); box-shadow: none;
-        }
+            .form-control {
+                background: #020617;
+                border: 1px solid #334155; color: white; border-radius: 8px; padding: 12px;
+            }
 
-        .label-custom { color: #cbd5e1; font-weight: 500; font-size: 0.85rem; margin-bottom: 8px; display: block; }
+            .form-control:focus {
+                background: #020617;
+                color: white; border-color: var(--accent-primary); box-shadow: none;
+            }
 
-        .logo-preview-circle {
-            width: 80px; height: 80px; border-radius: 12px;
-            background: #020617; border: 1px dashed var(--border-color);
-            display: flex; align-items: center; justify-content: center; overflow: hidden;
-        }
+            .label-custom { color: #cbd5e1; font-weight: 500; font-size: 0.85rem; margin-bottom: 8px; display: block; }
 
-        .btn-save-custom {
-            background: linear-gradient(135deg, #3b82f6 0%, #10b981 100%);
-            border: none; color: white;
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
+            .logo-preview-circle {
+                width: 80px; height: 80px; border-radius: 12px;
+                background: #020617; border: 1px dashed var(--border-color);
+                display: flex; align-items: center; justify-content: center; overflow: hidden;
+            }
 
-        .btn-save-custom:hover {
-            transform: scale(1.05);
-            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
-        }
-    </style>
+            .btn-save-custom {
+                background: linear-gradient(135deg, #3b82f6 0%, #10b981 100%);
+                border: none; color: white;
+                transition: transform 0.2s, box-shadow 0.2s;
+            }
+
+            .btn-save-custom:hover {
+                transform: scale(1.05);
+                box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+            }
+
+
+            .skill-badge {
+                background: rgba(59, 130, 246, 0.1);
+                color: #3b82f6;
+                border: 1px solid rgba(59, 130, 246, 0.3);
+                padding: 5px 12px;
+                border-radius: 20px;
+                font-size: 0.8rem;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+            .skill-badge i { cursor: pointer; }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            .status-badge {
+                padding: 6px 14px;
+                border-radius: 50px;
+                font-size: 11px;
+                font-weight: 600;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+            }
+            .status-badge.warning { background: rgba(255, 193, 7, 0.1); color: #ffc107; border: 1px solid rgba(255, 193, 7, 0.2); }
+            .status-badge.success { background: rgba(40, 167, 69, 0.1); color: #28a745; border: 1px solid rgba(40, 167, 69, 0.2); }
+            .status-badge.danger  { background: rgba(220, 53, 69, 0.1); color: #dc3545; border: 1px solid rgba(220, 53, 69, 0.2); }
+
+            .request-row:hover {
+                background: rgba(255, 255, 255, 0.02) !important;
+                transform: scale(1.002);
+            }
+
+            .btn-outline-danger:hover {
+                background: #dc3545 !important;
+                color: white !important;
+                box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+            }
+        </style>
+    {% endblock %}
 
     <div class="sidebar">
         <div class="d-flex align-items-center gap-2 mb-4 px-2">
-            <div class="bg-primary rounded p-1">
-                <i class="bi bi-layers-half text-white"></i>
-            </div>
+
             <span class="fw-bold fs-5 text-white">Stag<span class="text-primary">.io</span></span>
         </div>
 
@@ -102,14 +158,24 @@
                 <i class="bi bi-grid"></i> Dashboard
             </a>
 
-            <a href="{{ path('app_company_profile') }}"
-               class="nav-link-custom {{ app.request.attributes.get('_route') == 'app_company_profile' ? 'active' : '' }}">
-                <i class="bi bi-person-circle"></i> My Profile
+            <a href="{{ path('app_company_offers') }}"
+               class="nav-link-custom {{ app.request.attributes.get('_route') == 'app_company_offers' ? 'active' : '' }}">
+                <i class="bi bi-briefcase"></i> Manage Offers
             </a>
 
-            <a href="#" class="nav-link-custom"><i class="bi bi-briefcase"></i> My Offers</a>
-            <a href="#" class="nav-link-custom"><i class="bi bi-people"></i> Applicants</a>
+            <a href="{{ path('app_company_applicants') }}"
+               class="nav-link-custom {{ app.request.attributes.get('_route') == 'app_company_applicants' ? 'active' : '' }}">
+                <i class="bi bi-people"></i> Applicants
+            </a>
 
+            <a href="{{ path('app_company_profile') }}"
+               class="nav-link-custom {{ app.request.attributes.get('_route') == 'app_company_profile' ? 'active' : '' }}">
+                <i class="bi bi-person-circle"></i> Company Profile
+            </a>
+            <a href="{{ path('app_company_university_requests') }}"
+               class="nav-link-custom {{ app.request.attributes.get('_route') == 'app_company_university_requests' ? 'active' : '' }}">
+                <i class="bi bi-bank"></i> University Requests
+            </a>
             <hr class="border-secondary my-4 opacity-25">
 
             <a href="{{ path('app_logout') }}" class="nav-link-custom text-danger">
@@ -119,198 +185,2071 @@
     </div>
 
     <div class="main-content">
-        {# تحديد المسار الحالي #}
-        {% set current_route = app.request.attributes.get('_route') %}
+    {% set current_route = app.request.attributes.get('_route') %}
 
-        {% if current_route == 'app_company_dashboard' %}
-            {# --- محتوى الداشبورد الفوارغ --- #}
-            <div class="dashboard-header mb-4">
-                <h2 class="fw-bold text-white">Dashboard Overview</h2>
-                <p class="text-secondary">Welcome back! Here is a summary of your activity.</p>
-            </div>
+    {# --- 1. Dashboard Overview --- #}
+    {% if current_route == 'app_company_dashboard' %}
+        <div class="dashboard-header mb-4">
+            <h2 class="fw-bold text-white">Company Dashboard</h2>
+            <p class="text-secondary">Welcome back! Here is a summary of your activity.</p>
+        </div>
 
-            <div class="row g-4">
+
+
+
+        <div class="row g-3 mb-4">
+
+
+            {# تنبيه انعدام المشاركة #}
+            {% if noApplicants is not empty %}
                 <div class="col-md-4">
-                    <div class="stat-card text-center">
-                        <i class="bi bi-briefcase text-primary fs-1 mb-2"></i>
-                        <h3 class="text-white fw-bold">0</h3>
-                        <p class="text-muted mb-0">Active Offers</p>
+                    <div class="card border-danger bg-danger bg-opacity-10 h-100">
+                        <div class="card-body">
+                            <h6 class="text-danger d-flex align-items-center">
+                                <i class="bi bi-people-fill me-2"></i> No Applicants Yet
+                            </h6>
+                            <p class="small text-muted mb-1">Consider updating:</p>
+                            <div class="d-flex flex-wrap gap-1">
+                                {% for offer in noApplicants %}
+                                    <span class="badge bg-danger">{{ offer.title }}</span>
+                                {% endfor %}
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="col-md-4">
-                    <div class="stat-card text-center">
-                        <i class="bi bi-people text-success fs-1 mb-2"></i>
-                        <h3 class="text-white fw-bold">0</h3>
-                        <p class="text-muted mb-0">Total Applicants</p>
+            {% endif %}
+        </div>
+
+
+        <div class="row g-3">
+            <!-- Total Offers -->
+            <div class="col">
+                <div class="stat-card text-center h-100">
+                    <i class="bi bi-briefcase text-info fs-2 mb-2"></i>
+                    <h3 class="text-white fw-bold mb-0">{{ total_offers }}</h3>
+                    <p class="label-custom small">Total Offers</p>
+                </div>
+            </div>
+
+            <!-- Active Offers -->
+            <div class="col">
+                <div class="stat-card text-center h-100">
+                    <i class="bi bi-lightning-charge text-info fs-2 mb-2"></i>
+                    <h3 class="text-white fw-bold mb-0">{{ active_offers }}</h3>
+                    <p class="label-custom small">Active Offers</p>
+                </div>
+            </div>
+
+            <!-- Total Applicants -->
+            <div class="col">
+                <div class="stat-card text-center h-100">
+                    <i class="bi bi-people text-info fs-2 mb-2"></i>
+                    <h3 class="text-white fw-bold mb-0">{{ total_applicants }}</h3>
+                    <p class="label-custom small">Total Applicants</p>
+                </div>
+            </div>
+
+            <!-- Pending Review -->
+            <div class="col">
+                <div class="stat-card text-center h-100">
+                    <i class="bi bi-clock-history text-info fs-2 mb-2"></i>
+                    <h3 class="text-white fw-bold mb-0">{{ pending_applicants }}</h3>
+                    <p class="label-custom small">Pending Review</p>
+                </div>
+            </div>
+
+            <!-- Accepted Interns -->
+            <div class="col">
+                <div class="stat-card text-center h-100">
+                    <i class="bi bi-person-check text-info fs-2 mb-2"></i>
+                    <h3 class="text-white fw-bold mb-0">{{ accepted_applicants }}</h3>
+                    <p class="label-custom small">Accepted Interns</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- قسم الرسم البياني -->
+        <div class="row mt-4">
+            <div class="col-md-6">
+                <div class="stat-card">
+                    <h6 class="text-white fw-bold mb-4">Application Status Ratio</h6>
+                    <div id="status_chart" style="width: 100%; height: 300px;"></div>
+                </div>
+            </div>
+        </div>
+
+        {# قسم التربصات النشطة بتصميم ممزوج بالأزرق والأخضر #}
+        <div class="row mt-5">
+            <div class="col-12 mb-4">
+                <h5 class="text-white d-flex align-items-center fw-bold">
+                    <i class="bi bi-activity text-info me-2"></i>
+                    Active Internships
+                </h5>
+            </div>
+
+            {% for offer in internshipStarted %}
+                <div class="col-md-4 mb-4">
+                    {# البطاقة مع خلفية داكنة وحدود متدرجة من اليمين لليسار #}
+                    <div class="stat-card h-100 position-relative overflow-hidden"
+                         style="border: 1px solid #1e293b; border-left: 4px solid #3b82f6; background: linear-gradient(145deg, #09090b 0%, #020617 100%);">
+
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            {# شارة ملونة تجمع بين الأزرق والأخضر #}
+                            <span class="badge rounded-pill px-3 py-2"
+                                  style="background: rgba(16, 185, 129, 0.1); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.2);">
+                        <i class="bi bi-check2-circle me-1"></i> Running
+                    </span>
+                            <small style="color: #cbd5e1;"> {# أبيض رمادي واضح #}
+                                {{ offer.internshipStart|date('d M Y') }}
+                            </small>
+                        </div>
+
+                        {# عنوان العرض بأبيض ناصع #}
+                        <h5 class="text-white fw-bold mb-3" style="letter-spacing: -0.025em;">
+                            {{ offer.title }}
+                        </h5>
+
+                        {#<div class="d-flex align-items-center mb-4" style="color: #94a3b8;">
+                            <i class="bi bi-calendar-check me-2 text-info"></i>
+                            <span class="small">Deadline: <b class="text-light">{{ offer.deadline|date('d M Y') }}</b></span>
+                        </div>#}
+
+                        <div class="mt-auto pt-3 border-top" style="border-color: rgba(255,255,255,0.05) !important;">
+                            <div class="mb-3 p-2 rounded" style="background: rgba(59, 130, 246, 0.05); border: 1px dashed rgba(59, 130, 246, 0.2);">
+                                <div class="row g-0 text-center">
+                                    <div class="col-6 border-end" style="border-color: rgba(255,255,255,0.1) !important;">
+                                        <small class= "small"style="font-size: 0.7rem;">Start internship</small>
+                                        <span class="small fw-bold text-info">
+                    <i class="bi bi-calendar-event me-1"></i>
+                    {{ offer.startDate|date('d/m/Y') }}
+                </span>
+                                    </div>
+                                    <div class="col-6">
+                                        <small class="small" style="font-size: 0.7rem;">Duration</small>
+                                        <span class="small fw-bold text-info">
+                    <i class="bi bi-clock-history me-1"></i>
+                    {{ offer.duration }}
+                </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="d-flex justify-content-between align-items-center">
+                                <a href="{{ path('app_company_offer_manage', {'id': offer.id}) }}"
+                                   class="btn btn-sm btn-outline-info rounded-pill px-3 fw-semibold transition-all">
+                                    <i class="bi bi-gear-fill me-1"></i>Manage Offer
+                                </a>
+
+                                <a href="{{ path('app_company_offer_candidates', {'id': offer.id}) }}"
+                                   class="btn btn-sm px-3 rounded-pill fw-bold"
+                                   style="background: #3b82f6; color: #ffffff; border: none; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);">
+                                    <i class="bi bi-people-fill me-1"></i>interns
+                                </a>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
-
-        {% else %}
-            {# --- محتوى الملف الشخصي (Profile) --- #}
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <div>
-                    <h2 class="fw-bold mb-0 text-white">Company Profile</h2>
-                    <p class="text-secondary small">Complete your profile to attract the best students.</p>
+            {% else %}
+                <div class="col-12 text-center py-5 stat-card" style="border-style: dashed;">
+                    <p style="color: #94a3b8;">No internships currently running.</p>
                 </div>
-                <button class="btn btn-save-custom px-4 shadow-sm fw-bold" onclick="saveProfile()">
-                    <i class="bi bi-save me-2"></i> Save Changes
-                </button>
-            </div>
+            {% endfor %}
+        </div>
 
-            <div class="row g-4">
-                <div class="col-lg-8">
-                    <div class="stat-card mb-4">
-                        <h6 class="fw-bold mb-3 text-white">Company Logo</h6>
-                        <div class="d-flex align-items-center gap-4">
-                            <div class="logo-preview-circle" id="logo-container">
-                                {% if company.logo %}
-                                    <img src="{{ asset('uploads/logos/' ~ company.logo) }}" id="logo-img" style="width: 100%; height: 100%; object-fit: cover;">
-                                    <i class="bi bi-building fs-1 text-secondary d-none" id="logo-icon"></i>
-                                {% else %}
-                                    <i class="bi bi-building fs-1 text-secondary" id="logo-icon"></i>
-                                    <img src="" id="logo-img" class="d-none" style="width: 100%; height: 100%; object-fit: cover;">
+        {# --- 2. Manage Offers Page --- #}
+    {% elseif current_route == 'app_company_offers' %}
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h2 class="fw-bold text-white">Manage Offers</h2>
+                <p class="text-secondary">Create and manage your internship positions.</p>
+            </div>
+            <a href="{{ path('app_company_offers_new') }}" class="btn btn-primary px-4 fw-bold">
+                <i class="bi bi-plus-lg me-2"></i> Create New Offer
+            </a>
+        </div>
+
+        {# <div class="stat-card mb-4 p-0 overflow-hidden">
+                <table class="table table-dark table-hover mb-0">
+                    <thead class="bg-black">
+                    <tr>
+                        <th class="p-3 border-0">Position Title</th>
+                        <th class="p-3 border-0">Applications</th>
+                        <th class="p-3 border-0">Status</th>
+                        <th class="p-3 border-0">Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr style="border-bottom: 1px solid var(--border-color);">
+                        <td class="p-3">Frontend Developer Intern</td>
+                        <td class="p-3"><span class="badge bg-secondary">18 Apps</span></td>
+                        <td class="p-3"><span class="badge bg-success">Active</span></td>
+                        <td class="p-3">
+                            <button class="btn btn-sm btn-outline-light"><i class="bi bi-pencil"></i></button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>#}
+
+
+
+
+
+
+
+
+
+
+
+
+        <div class="d-flex flex-column gap-3">
+            {% for offer in offers %}
+                <div class="stat-card p-4">
+                     <div class="d-flex justify-content-between align-items-start">
+                        <div class="flex-grow-1">
+                            <div class="d-flex align-items-center gap-2 mb-1">
+                                <h5 class="fw-bold mb-0 text-white">{{ offer.title }}</h5>
+                               {# <span class="badge bg-success-subtle text-success ms-2" style="font-size: 0.65rem;">offer.status</span>
+                            </div>#}
+
+                        {# 1. نحدد ما إذا كان التاريخ الحالي قد تجاوز تاريخ بداية التربص #}
+                        {% set is_past_start = offer.startDate|date('Y-m-d') < "now"|date('Y-m-d') %}
+
+                        {# 2. نتحقق من وجود أي طلب مقبول (هذا يتطلب وجود علاقة applications في كينونة Offer) #}
+                        {% set has_accepted = false %}
+                        {% for app in offer.applications %}
+                            {% if app.status == 'accepted' %}
+                                {% set has_accepted = true %}
+                            {% endif %}
+                        {% endfor %}
+
+                        {# 3. عرض الشارة بناءً على الشروط #}
+                        {% if not is_past_start %}
+                            {# الحالة نشطة لأن موعد البداية لم يحن بعد #}
+                            <span class="badge bg-success-subtle text-success ms-2" style="font-size: 0.65rem;">ACTIVE</span>
+                        {% elseif is_past_start and not has_accepted %}
+                            {# الحالة غير نشطة لأن الموعد مرّ ولم يتم قبول أحد #}
+                            <span class="badge bg-danger-subtle text-danger ms-2" style="font-size: 0.65rem;">INACTIVE</span>
+                        {% else %}
+                            {# الحالة مكتملة أو قيد التنفيذ (مرّ التاريخ ويوجد مقبولين) #}
+                            <span class="badge bg-info-subtle text-info ms-2" style="font-size: 0.65rem;">ONGOING</span>
+                        {% endif %}
+                    </div>
+                            {# 1. اسم الشركة والمستوى والنوع #}
+                            <div class="mb-2">
+                                <span class="text-primary fw-bold small">{{ app.user.companyName }} Algeria</span>
+                                <span class="text-muted mx-2">|</span>
+                                <span class="badge bg-primary-subtle text-primary" style="font-size: 0.7rem;">{{ offer.locationType }}</span>
+                                <span class="badge bg-info-subtle text-info ms-1" style="font-size: 0.7rem;">{{ offer.level|default('Master/Licence') }}</span>
+                            </div>
+
+                            {# 2. التواريخ والولاية #}
+                            <div class="d-flex flex-wrap gap-3 text-secondary small mb-3">
+                                <span><i class="bi bi-geo-alt me-1 text-primary"></i> {{ offer.wilaya }}</span>
+                                <span><i class="bi bi-clock me-1 text-primary"></i> {{ offer.duration }}</span>
+
+                                {% if offer.deadline %}
+                                    <span><i class="bi bi-calendar-event me-1 text-danger"></i> Deadline: {{ offer.deadline|date('M d, Y') }}</span>
+                                {% endif %}
+
+                                {# إضافة التواريخ الجديدة إذا كانت موجودة في الـ Entity #}
+                                {% if offer.startDate is defined and offer.startDate %}
+                                    <span><i class="bi bi-calendar-check me-1 text-success"></i> Starts: {{ offer.startDate|date('M d, Y') }}</span>
+                                {% endif %}
+
+                                {# السطر الجديد الذي يجب إضافته هنا #}
+                                {% if offer.internshipStart %}
+                                    <span><i class="bi bi-play-circle me-1 text-success"></i> Internship: {{ offer.internshipStart|date('M d, Y') }}</span>
                                 {% endif %}
                             </div>
-                            <div>
-                                <input type="file" id="logo-input" class="d-none" accept="image/*" onchange="previewLogo(this)">
-                                <button class="btn btn-outline-light btn-sm rounded-pill px-3" onclick="document.getElementById('logo-input').click()">
-                                    <i class="bi bi-upload me-2"></i> Upload Logo
-                                </button>
-                            </div>
-                        </div>
-                    </div>
 
-                    <div class="stat-card">
-                        <h6 class="fw-bold mb-4 text-white"><i class="bi bi-pencil-square me-2 text-primary"></i> Company Details</h6>
-                        <div class="row g-3">
-                            <div class="col-md-12">
-                                <label class="label-custom">Company Name</label>
-                                <input type="text" id="comp-name" class="form-control" value="{{ company.companyName }}" oninput="updatePreview()">
-                            </div>
-                            <div class="col-md-6">
-                                <label class="label-custom">Email Address</label>
-                                <input type="email" id="comp-email" class="form-control" value="{{ company.email }}" oninput="updatePreview()">
-                            </div>
-                            <div class="col-md-6">
-                                <label class="label-custom">Phone Number</label>
-                                <input type="text" id="comp-phone" class="form-control" value="{{ company.phone }}" oninput="updatePreview()">
-                            </div>
-                            <div class="col-md-6">
-                                <label class="label-custom">Industry</label>
-                                <input type="text" id="comp-industry" class="form-control" value="{{ company.industry }}" oninput="updatePreview()">
-                            </div>
-                            <div class="col-md-6">
-                                <label class="label-custom">Wilaya</label>
-                                <input type="text" id="comp-wilaya" class="form-control" value="{{ company.wilaya }}" oninput="updatePreview()">
-                            </div>
-                            <div class="col-md-12">
-                                <label class="label-custom">Website</label>
-                                <input type="url" id="comp-web" class="form-control" value="{{ company.website }}" oninput="updatePreview()">
-                            </div>
-                            <div class="col-md-12">
-                                <label class="label-custom">About Us</label>
-                                <textarea id="comp-desc" class="form-control" rows="4" oninput="updatePreview()">{{ company.bio }}</textarea>
+                            <div class="d-flex align-items-center justify-content-between mt-3">
+                                <div class="d-flex gap-2 flex-wrap">
+                                    {% for skill in offer.skills %}
+                                        <span class="skill-badge">{{ skill.tagName }}</span>
+                                    {% endfor %}
+                                </div>
+
+                                <div class="d-flex gap-2 align-items-center">
+                                    {# 3. رابط الخريطة #}
+                                    {% if offer.latitude and offer.longitude %}
+                                        <a href="https://www.google.com/maps?q={{ offer.latitude }},{{ offer.longitude }}"
+                                           target="_blank" class="btn btn-sm btn-outline-info border-secondary me-2">
+                                            <i class="bi bi-map"></i> View Map
+                                        </a>
+                                    {% endif %}
+
+                                    {#  <button class="btn btn-sm btn-outline-light border-secondary"><i class="bi bi-pencil me-1"></i> Edit</button>#}
+                                    {# داخل حلقة عرض العروض #}
+                                    <a href="{{ path('app_company_offer_manage', {'id': offer.id}) }}"
+                                       class="btn btn-sm btn-outline-light border-secondary">
+                                        <i class="bi bi-pencil me-1"></i> Edit
+                                    </a>
+                                    {#  <button class="btn btn-sm btn-outline-danger border-secondary"><i class="bi bi-trash"></i></button>#}
+                                    <form action="{{ path('app_company_offer_delete', {'id': offer.id}) }}"
+                                          method="POST"
+                                          style="display:inline;"
+                                          onsubmit="return confirm('Are you sure you want to delete this offer?');">
+                                        <button type="submit" class="btn btn-sm btn-outline-danger border-secondary">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
+            {% endfor %}
+        </div>
 
-                <div class="col-lg-4">
-                    <div class="stat-card sticky-top" style="top: 2rem;">
+        {# <div class="stat-card p-4 offer-card">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div class="flex-grow-1">
+                            <div class="d-flex align-items-center gap-2 mb-2">
+                                <h5 class="fw-bold mb-0 text-white">Frontend Developer Intern</h5>
+                                <span class="badge bg-success-subtle text-success ms-2" style="font-size: 0.65rem;">ACTIVE</span>
+                            </div>
+
+                            <div class="d-flex flex-wrap gap-3 text-secondary small mb-3">
+                                <span><i class="bi bi-building me-1 text-primary"></i> {{ company.companyName }} Algeria</span>
+                                <span><i class="bi bi-geo-alt me-1 text-primary"></i> Constantine</span>
+                                <span><i class="bi bi-clock me-1 text-primary"></i> 6 months</span>
+                                <span><i class="bi bi-calendar-event me-1 text-primary"></i> Deadline: April 30, 2026</span>
+                            </div>
+
+                            <p class="label-custom" style="max-width: 800px;">
+                                Join our team to build modern web applications using Symfony and React. You will work on real-world projects...
+                            </p>
+
+                            <div class="d-flex align-items-center justify-content-between">
+                                <div class="d-flex gap-2">
+                                    <span class="badge-custom">React</span>
+                                    <span class="badge-custom">Symfony</span>
+                                    <span class="badge-custom">MySQL</span>
+                                </div>
+
+                                <div class="d-flex gap-2">
+                                    <button class="btn btn-sm btn-outline-light border-secondary"><i class="bi bi-pencil me-1"></i> Edit</button>
+                                    <button class="btn btn-sm btn-outline-danger border-secondary"><i class="bi bi-trash"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>#}
+        {# نهاية البطاقة الواحدة #}
+        </div>
+
+
+
+
+        {# --- 3. Create New Offer Page --- #}
+    {% elseif current_route == 'app_company_offers_new' %}
+        <div class="mb-4">
+
+            <a href="{{ path('app_company_offers') }}" class="text-decoration-none d-flex align-items-center gap-2 mb-3 transition-opacity" style="color: #e2e8f0; opacity: 0.8;">
+                <i class="bi bi-chevron-left"></i>
+                <span style="font-size: 0.9rem; letter-spacing: 0.5px;">Back to Offers</span>
+            </a>
+
+            <h2 class="fw-bold text-white mt-2">Create New Offer</h2>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-lg-8">
+                <div class="stat-card">
+                    {#   <form id="offerForm" class="row g-3">#}
+                    {# ✅ أضف method="POST" #}
+                    <form id="publish-offer-form" method="POST" action="{{ path('app_company_offers_new') }}" class="row g-3">
+                        {#  <input type="hidden" name="latitude" id="offer-lat">
+                                <input type="hidden" name="longitude" id="offer-lng">#}
+                        <input type="hidden" name="skills" id="skills-hidden">
+
+                        <div class="col-md-12">
+                            <label class="label-custom"> Title</label>
+                            <input type="text" name="title" id="offer-title" class="form-control" placeholder="e.g. Frontend Developer Intern" oninput="updateOfferPreview()">
+                        </div>
+
+                        <div class="col-md-12 mt-4">
+                            <div class="p-3 rounded-3" style="background: #020617; border: 1px solid var(--border-color);">
+                                <label class="label-custom fw-bold text-white">Required Skills</label>
+                                <p class="label-custom">Add technical skills required for this position</p>
+                                <div class="input-group mb-3">
+                                    <input type="text" name="skills	" id="skill-input" class="form-control" placeholder="Add a required skill...">
+                                    <button class="btn btn-outline-primary" type="button" onclick="addSkillTag()"><i class="bi bi-plus-lg"></i></button>
+                                </div>
+                                <div id="skills-container" class="d-flex flex-wrap gap-2 mb-2">
+                                </div>
+
+                            </div>
+                        </div>
+
+
+
+                        <div class="col-md-12 mt-4">
+                            <label class="label-custom">Description</label>
+                            <textarea name="description" class="form-control" rows="4" placeholder="Describe the responsibilities..."></textarea>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="label-custom">Duration</label>
+                            <input type="text" name="duration" id="offer-duration" class="form-control" placeholder="e.g. 1 Months">
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="label-custom">Type de Stage</label>
+                            <select id="offer-type" name="locationType" class="form-control" onchange="updateOfferPreview()">
+                                <option value="PFE">PFE</option>
+                                <option value="Technique">Technique</option>
+                                <option value="Immersion">Stage d'Immersion</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="label-custom">Niveau d'études</label>
+                            <select id="offer-level" name="level" class="form-control" onchange="updateOfferPreview()">
+                                <option value="Master">Master</option>
+                                <option value="Licence">Licence</option>
+                                <option value="Ingénieur">Ingénieur</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="label-custom">Wilaya</label>
+                            <input type="text"  name="wilaya" id="offer-wilaya" class="form-control" placeholder="constantine..">
+
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="label-custom">Application Deadline *</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-dark border-secondary text-muted"><i class="bi bi-calendar-event"></i></span>
+                                <input type="text" id="offer-deadline"  name="deadline" class="form-control" placeholder="Select deadline date..." readonly>
+                            </div>
+                        </div>
+
+
+
+
+                        <div class="col-md-6">
+                            <label class="label-custom">Start Offer *</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-dark border-secondary text-muted"><i class="bi bi-calendar-event"></i></span>
+                                <input type="text" id="offer-start-date" name="startDate" class="form-control datepicker" placeholder="Select start date..." readonly>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="label-custom">Start internship *</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-dark border-secondary text-muted"><i class="bi bi-calendar-event"></i></span>
+                                <input type="text" id="internship-start-date" name="internshipStart" class="form-control datepicker" placeholder="Select internship date..." readonly>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12 mt-3">
+                            <label class="label-custom fw-bold"><i class="bi bi-map me-2"></i> Exact Work Location</label>
+                            <div id="map" style="height: 250px; border-radius: 12px; border: 1px solid var(--border-color); margin-bottom: 10px;"></div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <input type="text"  name="latitude" id="offer-lat" class="form-control" placeholder="Latitude" readonly>
+                                </div>
+                                <div class="col-md-6">
+                                    <input type="text" name="longitude" id="offer-lng" class="form-control" placeholder="Longitude" readonly>
+                                </div>
+                            </div>
+                            <small class="label-custom">Click on the map to set the precise office location.</small>
+                        </div>
+
+
+                        <div class="d-flex align-items-center gap-2 text-muted small">
+                            <i class="bi bi-geo-fill text-danger"></i> <a href="#" id="prev-offer-map-link" target="_blank" class="text-decoration-none text-info d-none">
+                                <i class="bi bi-box-arrow-up-right me-1"></i> View on Google Maps
+                            </a>
+                            <span id="prev-offer-coords-text">Coordinates not set</span>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+
+            <div class="col-lg-4">
+                <div class="stat-card sticky-top" style="top: 2rem;">
+                    <h6 class="text-white fw-bold mb-3">Preview</h6>
+                    <p class="label-custom">How students will see your offer</p>
+                    <div class="p-4 rounded-3 mb-4" style="background: #080808; border: 1px solid #333;">
+                        <h5 id="prev-offer-title" class="fw-bold text-white mb-1"> Title</h5>
+                        <p class="label-custom">{{ app.user.companyName }} Algeria</p>
+
+                        <div class="d-flex flex-column gap-1 mb-3">
+                            <span class="badge bg-primary-subtle text-primary w-fit-content" id="prev-offer-loc">• Hybrid</span>
+                            <small class="label-custom" id="prev-offer-wilaya"><i class="bi bi-geo-alt"></i> Location / Wilaya</small>
+                            <small class="label-custom" id="prev-offer-duration"><i class="bi bi-clock"></i> Duration not set</small>
+                            <small class="label-custom" id="prev-offer-date"><i class="bi bi-calendar"></i> No deadline</small>
+                            <small class="label-custom" id="prev-start-offer"><i class="bi bi-calendar-check"></i> Starts: Not set</small>
+                            <small class="label-custom" id="prev-start-internship"><i class="bi bi-play-circle"></i> Internship: Not set</small>
+                            <small class="text-info" id="prev-offer-coords" style="font-size: 0.7rem;"></small>
+                        </div>
+
+                        <div id="prev-skills-container" class="d-flex flex-wrap gap-1"></div>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button id="publish-btn" class="btn btn-primary fw-bold py-2">
+                            <i class="bi bi-cloud-arrow-up me-2"></i> Publish Offer
+                        </button>
+                        <button class="btn btn-outline-light py-2">
+                            <i class="bi bi-eye me-2"></i> Save as Draft
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+
+    {% elseif current_route == 'app_company_offer_manage' %}
+        <div class="mb-4">
+            <a href="{{ path('app_company_offers') }}" class="text-decoration-none d-flex align-items-center gap-2 mb-3" style="color: #e2e8f0; opacity: 0.8;">
+                <i class="bi bi-chevron-left"></i>
+                <span style="font-size: 0.9rem;">Back to Offers</span>
+            </a>
+            <h2 class="fw-bold text-white mt-2">Edit Offer</h2>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-lg-8">
+                <div class="stat-card">
+                    <form id="edit-offer-form" method="POST"
+                          action="{{ path('app_company_offer_manage', {'id': offer.id}) }}"
+                          class="row g-3">
+
+                        <input type="hidden" name="skills" id="skills-hidden-edit">
+
+                        <div class="col-md-12">
+                            <label class="label-custom">Title</label>
+                            <input type="text" name="title" class="form-control" value="{{ offer.title }}">
+                        </div>
+
+                        <div class="col-md-12 mt-4">
+                            <div class="p-3 rounded-3" style="background: #020617; border: 1px solid var(--border-color);">
+                                <label class="label-custom fw-bold text-white">Required Skills</label>
+                                <div class="input-group mb-3">
+                                    <input type="text" id="skill-input-edit" class="form-control" placeholder="Add a skill...">
+                                    <button class="btn btn-outline-primary" type="button" onclick="addSkillTagEdit()">
+                                        <i class="bi bi-plus-lg"></i>
+                                    </button>
+                                </div>
+                                <div id="skills-container-edit" class="d-flex flex-wrap gap-2 mb-2">
+                                    {% for skill in offer.skills %}
+                                        <div class="skill-badge" data-skill="{{ skill.tagName }}">
+                                            {{ skill.tagName }}
+                                            <i class="bi bi-x-circle" onclick="removeSkillEdit(this)"></i>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12 mt-4">
+                            <label class="label-custom">Description</label>
+                            <textarea name="description" class="form-control" rows="4">{{ offer.description }}</textarea>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="label-custom">Duration</label>
+                            <input type="text" name="duration" class="form-control" value="{{ offer.duration }}">
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="label-custom">Type de Stage</label>
+                            <select name="locationType" class="form-control" onchange="updateOfferPreview()">
+                                <option value="PFE" {{ offer.locationType == 'PFE' ? 'selected' : '' }}>PFE</option>
+                                <option value="Technique" {{ offer.locationType == 'Technique' ? 'selected' : '' }}>Technique</option>
+                                <option value="Immersion" {{ offer.locationType == 'Immersion' ? 'selected' : '' }}>Stage d'Immersion</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="label-custom">Niveau d'études</label>
+                            <select name="level" class="form-control" onchange="updateOfferPreview()">
+                                <option value="Master" {{ offer.level == 'Master' ? 'selected' : '' }}>Master</option>
+                                <option value="Licence" {{ offer.level == 'Licence' ? 'selected' : '' }}>Licence</option>
+                                <option value="Ingénieur" {{ offer.level == 'Ingénieur' ? 'selected' : '' }}>Ingénieur</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="label-custom">Wilaya</label>
+                            <input type="text" name="wilaya" class="form-control" value="{{ offer.wilaya }}">
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="label-custom">Application Deadline</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-dark border-secondary text-muted"><i class="bi bi-calendar-event"></i></span>
+                                <input type="text" name="deadline" id="edit-deadline" class="form-control"
+                                       value="{{ offer.deadline ? offer.deadline|date('Y-m-d') : '' }}" readonly>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="label-custom">Start Offer</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-dark border-secondary text-muted"><i class="bi bi-calendar-event"></i></span>
+                                <input type="text" name="startDate" id="edit-start-date" class="form-control"
+                                       value="{{ offer.startDate ? offer.startDate|date('Y-m-d') : '' }}" readonly>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="label-custom">Start Internship</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-dark border-secondary text-muted"><i class="bi bi-calendar-event"></i></span>
+                                <input type="text" name="internshipStart" id="edit-internship-date" class="form-control"
+                                       value="{{ offer.internshipStart ? offer.internshipStart|date('Y-m-d') : '' }}" readonly>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12 mt-3">
+                            <label class="label-custom fw-bold"><i class="bi bi-map me-2"></i> Exact Work Location</label>
+                            <div id="map-edit" style="height: 250px; border-radius: 12px; border: 1px solid var(--border-color); margin-bottom: 10px;"></div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <input type="text" name="latitude" id="edit-lat" class="form-control"
+                                           placeholder="Latitude" value="{{ offer.latitude }}" readonly>
+                                </div>
+                                <div class="col-md-6">
+                                    <input type="text" name="longitude" id="edit-lng" class="form-control"
+                                           placeholder="Longitude" value="{{ offer.longitude }}" readonly>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12 mt-3 d-flex gap-3">
+                            <button type="submit" class="btn btn-primary fw-bold px-4" onclick="syncSkillsEdit()">
+                                <i class="bi bi-save me-2"></i> Save Changes
+                            </button>
+                            <a href="{{ path('app_company_offers') }}" class="btn btn-outline-secondary px-4">Cancel</a>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="stat-card sticky-top" style="top: 2rem;">
+                    <h6 class="text-white fw-bold mb-3">Preview</h6>
+                    <div class="p-4 rounded-3" style="background: #080808; border: 1px solid #333;">
+                        <h5 class="fw-bold text-white mb-1">{{ offer.title }}</h5>
+                        <p class="label-custom">{{ company.companyName }}</p>
+                        <div class="d-flex flex-column gap-1 mb-3">
+                            <small class="label-custom"><i class="bi bi-geo-alt"></i> {{ offer.wilaya }}</small>
+                            <small class="label-custom"><i class="bi bi-clock"></i> {{ offer.duration }}</small>
+                        </div>
+                        <div class="d-flex flex-wrap gap-1">
+                            {% for skill in offer.skills %}
+                                <span class="badge bg-dark border border-secondary text-primary"
+                                      style="font-size: 0.7rem;">{{ skill.tagName }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {# --- 4. Applicants Page --- #}
+    {% elseif current_route == 'app_company_applicants' %}
+        <div class="mb-4">
+            <h2 class="fw-bold text-white">Applicants</h2>
+            <p class="text-secondary">Review and manage candidates for your positions.</p>
+        </div>
+
+        <div class="row g-3">
+            {% for app in candidates %}
+               {#  <div class="stat-card p-3 shadow-lg application-card"
+                     id="application-card-{{ app.id }}"
+                     style="background: #000000; border-radius: 16px; border: 1px solid #262626; transition: transform 0.2s;">#}
+                <div class="stat-card p-3 shadow-lg application-card"
+                     id="application-card-{{ app.id }}">
+                    {# البطاقة باللون الأسود الصافي مع حدود دقيقة جداً #}
+                    <div class="stat-card p-3 shadow-lg" style="background: #000000; border-radius: 16px; border: 1px solid #262626; transition: transform 0.2s;">
+                        <div class="d-flex align-items-center gap-3 mb-4">
+                            {# دائرة الاسم بخلفية داكنة متناسقة #}
+                            <div class="d-flex align-items-center justify-content-center text-white fw-bold shadow-sm"
+                                 style="width: 48px; height: 48px; background: #111111; border-radius: 12px; border: 1px solid #333; font-size: 0.9rem;">
+                                {{ app.student.firstName|first }}{{ app.student.lastName|first }}
+                            </div>
+
+                            <div class="flex-grow-1">
+                                <h6 class="mb-0 text-white fw-semibold" style="font-size: 0.95rem;">{{ app.student.firstName }} {{ app.student.lastName }}</h6>
+                                {# عنوان الـ Offer بلون فاتح جداً وواضح #}
+                                <small style="color: #60a5fa; font-weight: 500; font-size: 0.8rem; letter-spacing: 0.3px;">
+                                    <i class="bi bi-briefcase small me-1"></i>{{ app.offer.title }}
+                                </small>
+                            </div>
+
+                            {# نسبة التوافق بتصميم عصري (زجاجي) #}
+                            <span class="badge" style="background: rgba(59, 130, 246, 0.1); color: #3b82f6; border: 1px solid rgba(59, 130, 246, 0.2); font-size: 0.75rem;">
+                    {{ app.getMatchingScore() }}% Match
+                </span>
+                        </div>
+
+                        <div class="d-flex flex-column gap-2">
+                            {# زر معاينة الـ CV بتصميم متوافق مع الخلفية السوداء #}
+                            <button type="button"
+                                    class="btn btn-sm w-100 py-2"
+                                    style="background: #111111; color: #e2e8f0; border: 1px solid #333; border-radius: 10px;"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#studentPreviewModal"
+                                    data-name="{{ app.student.firstName }} {{ app.student.lastName }}"
+                                    data-level="{{ app.student.level }}"
+                                    data-specialty="{{ app.student.specialty|default('Student') }}"
+                                    data-location="{{ app.student.wilaya|default('Not set') }}"
+                                    data-university="{{ app.student.university|default('Not set') }}"
+                                    data-email="{{ app.student.email }}"
+                                    data-image="{{ app.student.profilePicture ? asset('uploads/profiles/' ~ app.student.profilePicture) : '' }}"
+                                    data-initials="{{ app.student.firstName|first }}{{ app.student.lastName|first }}"
+                                    data-phone="{{ app.student.phone|default('') }}"
+                                    data-portfolio="{{ app.student.portfolioLink|default('') }}"
+                                    data-github="{{ app.student.githubLink|default('') }}"
+                                    data-bio="{{ app.student.bio|default('') }}"
+                                    data-skills="{{ app.student.skills|map(s => s.tagName)|join(',') }}">
+                                <i class="bi bi-eye me-2"></i>View CV
+                            </button>
+
+                            <div class="d-flex gap-2 w-100 mt-1">
+                                <div class="flex-grow-1">
+                                    {% if app.status == 'pending' %}
+                                        <form action="{{ path('app_company_application_validate', {id: app.id}) }}" method="POST" class="m-0">
+                                            <button class="btn btn-sm w-100 fw-bold py-2" style="background: #3b82f6; color: #ffffff; border: none; border-radius: 10px;">
+                                                Accept & Send
+                                            </button>
+                                        </form>
+                                    {% elseif app.status == 'pending_admin' %}
+                                        <button class="btn btn-sm w-100 fw-bold py-2 disabled" style="background: #f59e0b; color: #ffffff; border: none; border-radius: 10px; opacity: 0.85;">
+                                            <i class="bi bi-clock-history me-1"></i> Waiting Admin
+                                        </button>
+                                    {% elseif app.status == 'accepted' %}
+                                        <button class="btn btn-sm w-100 fw-bold py-2 disabled" style="background: #10b981; color: #ffffff; border: none; border-radius: 10px;">
+                                            <i class="bi bi-check2-all me-1"></i> Accepted
+                                        </button>
+                                    {% endif %}
+                                </div>
+
+                                {# زر الرفض بشكل أيقونة دائرية أنيقة #}
+                                  <button type="button" class="btn btn-sm btn-outline-danger d-flex align-items-center justify-content-center"
+                                        style="width: 40px; border-radius: 10px; border-color: rgba(220, 38, 38, 0.4);"
+                                        data-bs-toggle="modal" data-bs-target="#refuseModal{{ app.id }}">
+                                    <i class="bi bi-x-lg"></i>
+                                </button>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+
+
+
+                <div class="modal fade" id="refuseModal{{ app.id }}" tabindex="-1" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                      {#   <form action="{{ path('app_company_application_refuse', {id: app.id}) }}" method="POST" class="w-100 m-0">#}
+                        <form id="refuse-form-{{ app.id }}"
+                              action="{{ path('app_company_application_refuse', {id: app.id}) }}"
+                              method="POST"
+                              class="w-100 m-0">
+                            <div class="modal-content" style="background: #000000; border: 1px solid #dc2626; border-radius: 16px; box-shadow: 0 10px 30px rgba(220, 38, 38, 0.1);">
+
+                                <div class="modal-header border-0 pb-0">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <i class="bi bi-exclamation-triangle-fill text-danger"></i>
+                                        <h5 class="modal-title text-white fw-bold">Refuse Application</h5>
+                                    </div>
+                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+
+                                <div class="modal-body py-4">
+                                    <div class="mb-3 text-center">
+                                        <p class="text-white mb-1">Refusing <strong>{{ app.student.firstName }} {{ app.student.lastName }}</strong></p>
+                                        <p style="color: #ef4444; font-size: 0.85rem;">This action cannot be undone.</p>
+                                    </div>
+
+                                    <div class="mb-2">
+                                        <label class="form-label text-white-50 small fw-bold">REASON FOR REJECTION</label>
+                                        {# تعديل منطقة الكتابة لتكون واضحة جداً #}
+                                        <textarea name="rejection_reason"
+                                                  class="form-control shadow-none"
+                                                  rows="3"
+                                                  required
+                                                  placeholder="Provide feedback to the student..."
+                                                  style="background: #111111; color: #ffffff; border: 1px solid #333; border-radius: 10px;"></textarea>
+                                    </div>
+                                    <p class="small text-muted" style="font-size: 0.75rem;">
+                                        <i class="bi bi-info-circle me-1"></i> The student will receive this feedback via email.
+                                    </p>
+                                </div>
+
+                                <div class="modal-footer border-0 pt-0">
+                                    <div class="d-flex gap-2 w-100">
+                                        <button type="button" class="btn btn-sm flex-grow-1 text-white"
+                                                style="background: #1a1a1a; border: 1px solid #333; border-radius: 10px;"
+                                                data-bs-dismiss="modal">Cancel</button>
+
+                                        <button type="submit" class="btn btn-sm flex-grow-1 fw-bold"
+                                                style="background: #dc2626; color: #ffffff; border: none; border-radius: 10px;">
+                                            Confirm Rejection
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            {% else %}
+                <div class="col-12 text-center py-5">
+                    <p class="text-muted">No applications found yet.</p>
+                </div>
+            {% endfor %}
+        </div>
+
+        {# --- 4b. University Requests Page (Affiliation) --- #}
+    {% elseif current_route == 'app_company_university_requests' %}
+        <div class="mb-5">
+            <h2 class="display-6 fw-bold text-white mb-2">University Affiliation</h2>
+            <p class="text-secondary mb-0">Build bridges between your company and academic institutions.</p>
+        </div>
+
+        <div class="row g-4">
+            {# Form Section #}
+            <div class="col-xl-4 col-lg-5">
+                <div class="stat-card h-100">
+                    <div class="icon-box mb-4 bg-primary bg-opacity-10 d-inline-flex p-3 rounded-4">
+                        <i class="bi bi-building-add text-primary fs-4"></i>
+                    </div>
+                    <h5 class="text-white fw-bold mb-3">Send New Request</h5>
+                    <p class="text-muted small mb-4">Choose a university to share your credentials and internship offers with their students.</p>
+
+                    <form action="{{ path('app_company_send_verification_request') }}" method="POST">
+                        <div class="mb-4">
+                            <label class="label-custom small fw-bold">SELECT UNIVERSITY</label>
+                            <select name="university_id" class="form-control custom-select-dark" required>
+                                <option value="" disabled selected>-- Search University --</option>
+                                {% for uni in universities %}
+                                    <option value="{{ uni.id }}">{{ uni.universityName }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="alert border-0 mb-4" style="background: rgba(59, 130, 246, 0.05); border-left: 4px solid #3b82f6 !important;">
+                            <div class="d-flex">
+                                <i class="bi bi-info-circle text-primary me-3 mt-1"></i>
+                                <p class="small text-secondary mb-0">
+                                    Your legal documents and company profile will be visible to the university administration.
+                                </p>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100 py-3 fw-bold rounded-3 shadow-sm mt-2">
+                            <i class="bi bi-send-fill me-2"></i> Submit Request
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="col-xl-12 col-lg-12 mt-4">
+                <div class="stat-card" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 15px; padding: 20px;">
+                    <div class="d-flex align-items-center justify-content-between mb-4">
+                        <h5 class="text-white fw-bold mb-0">
+                            <i class="bi bi-clock-history me-2 text-primary"></i> Affiliation History
+                        </h5>
+                        <span class="badge bg-primary bg-opacity-10 text-primary px-3 rounded-pill">
+                {{ university_requests|length }} Total Requests
+            </span>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-dark table-hover align-middle mb-0" style="--bs-table-bg: transparent;">
+                            <thead>
+                            <tr class="text-secondary small" style="border-bottom: 2px solid rgba(255, 255, 255, 0.05);">
+                                <th class="py-3 border-0">UNIVERSITY / INSTITUTION</th>
+                                <th class="py-3 border-0 text-center">SUBMISSION</th>
+                                <th class="py-3 border-0 text-center">STATUS</th>
+                                <th class="py-3 border-0">SYSTEM MESSAGE / REASON</th>
+                                <th class="py-3 border-0 text-end">ACTION</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for request in university_requests|default([]) %}
+                                <tr class="request-row" style="border-bottom: 1px solid rgba(255, 255, 255, 0.05); transition: all 0.3s ease;">
+                                    <td class="py-4">
+                                        <div class="d-flex align-items-center">
+                                            <div class="avatar-sm me-3 rounded-12 d-flex align-items-center justify-content-center"
+                                                 style="width: 40px; height: 40px; background: linear-gradient(135deg, var(--accent-primary), #6366f1); color: white; font-weight: bold; border-radius: 10px;">
+                                                {{ request.university.universityName|slice(0, 1)|upper }}
+                                            </div>
+                                            <div>
+                                                <div class="text-white fw-bold mb-0" style="font-size: 0.95rem;">{{ request.university.universityName }}</div>
+                                                <div class="text-muted small">Campus ID: #{{ request.university.id }}</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="text-center text-secondary small">{{ request.createdAt|date('M d, Y') }}</td>
+                                    <td class="text-center">
+                                        {% if request.status == 'Pending' %}
+                                            <span class="status-badge warning">Pending</span>
+                                        {% elseif request.status == 'Accepted' %}
+                                            <span class="status-badge success">Partnered</span>
+                                        {% elseif request.status == 'Rejected' %}
+                                            <span class="status-badge danger">Rejected</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="small">
+                                        {% if request.status|lower in ['refused', 'rejected'] %}
+                                            {#  {% if app.status in ['refused', 'rejected'] %}#}
+
+                                            {#   {% if request.status == 'Rejected' %}#}
+                                            <div class="p-2 rounded bg-danger bg-opacity-10 text-danger-emphasis border border-danger border-opacity-10" style="max-width: 250px;">
+                                                <i class="bi bi-info-circle me-1"></i> {{ request.rejectionReason|default('No specific reason provided') }}
+                                            </div>
+                                        {% elseif request.status == 'Accepted' %}
+                                            <span class="text-success small"><i class="bi bi-shield-check me-1"></i> Agreement Active</span>
+                                        {% else %}
+                                            <span class="text-muted small italic">Awaiting response...</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-end">
+                                        <button onclick="deleteRequestHistory({{ request.id }}, this)"
+                                                class="btn btn-sm btn-outline-danger border-0 rounded-circle p-2"
+                                                title="Delete from history">
+                                            {# تعديل الزر في الجدول #}
+                                            <button onclick="deleteRequestHistory({{ request.id }}, this)"
+                                                    class="btn btn-sm btn-outline-danger border-0 rounded-circle p-2"
+                                                    title="Delete from history">
+                                                <i class="bi bi-trash3"></i>
+                                            </button>
+
+                                        </button>
+                                    </td>
+                                </tr>
+                            {% else %}
+                                <tr>
+                                    <td colspan="5" class="text-center py-5">
+                                        <img src="/path/to/empty-icon.svg" alt="" style="opacity: 0.2; width: 60px; margin-bottom: 15px;">
+                                        <p class="text-muted">No records found in your history.</p>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {# --- 5. Profile Page (Original Code) --- #}
+    {% else %}
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h2 class="fw-bold mb-0 text-white">Company Profile</h2>
+                <p class="text-secondary small">Complete your profile to attract the best students.</p>
+            </div>
+            <button class="btn btn-save-custom px-4 shadow-sm fw-bold" onclick="saveProfile()">
+                <i class="bi bi-save me-2"></i> Save Changes
+            </button>
+        </div>
+        {# ... بقية كود الـ Profile الأصلي كما هو ... #}
+
+
+        <div class="row g-4">
+            <div class="col-lg-8">
+                <div class="stat-card mb-4">
+                    <h6 class="fw-bold mb-3 text-white">Company Logo</h6>
+                    <div class="d-flex align-items-center gap-4">
+                        <div class="logo-preview-circle" id="logo-container">
+                            {% if company.logo %}
+                                <img src="{{ asset('uploads/logos/' ~ company.logo) }}" id="logo-img" style="width: 100%; height: 100%; object-fit: cover;">
+                                <i class="bi bi-building fs-1 text-secondary d-none" id="logo-icon"></i>
+                            {% else %}
+                                <i class="bi bi-building fs-1 text-secondary" id="logo-icon"></i>
+                                <img src="" id="logo-img" class="d-none" style="width: 100%; height: 100%; object-fit: cover;">
+                            {% endif %}
+                        </div>
+                        <div>
+                            <input type="file" id="logo-input" class="d-none" accept="image/*" onchange="previewLogo(this)">
+                            <button class="btn btn-outline-light btn-sm rounded-pill px-3" onclick="document.getElementById('logo-input').click()">
+                                <i class="bi bi-upload me-2"></i> Upload Logo
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <h6 class="fw-bold mb-4 text-white"><i class="bi bi-pencil-square me-2 text-primary"></i> Company Details</h6>
+                    <div class="row g-3">
+                        <div class="col-md-12">
+                            <label class="label-custom">Company Name</label>
+                            <input type="text" id="comp-name" class="form-control" value="{{ company.companyName }}" oninput="updatePreview()">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="label-custom">Email Address</label>
+                            <input type="email" id="comp-email" class="form-control" value="{{ company.email }}" oninput="updatePreview()">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="label-custom">Phone Number</label>
+                            <input type="text" id="comp-phone" class="form-control" value="{{ company.phone }}" oninput="updatePreview()">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="label-custom">Industry</label>
+                            <input type="text" id="comp-industry" class="form-control" value="{{ company.industry }}" oninput="updatePreview()">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="label-custom">Wilaya</label>
+                            <input type="text" id="comp-wilaya" class="form-control" value="{{ company.wilaya }}" oninput="updatePreview()">
+                        </div>
+                        <div class="col-md-12">
+                            <label class="label-custom">Website</label>
+                            <input type="url" id="comp-web" class="form-control" value="{{ company.website }}" oninput="updatePreview()">
+                        </div>
+                        <div class="col-md-12">
+                            <label class="label-custom">About Us</label>
+                            <textarea id="comp-desc" class="form-control" rows="4" oninput="updatePreview()">{{ company.bio }}</textarea>
+                        </div>
+                        <div class="col-md-12 mt-3">
+                            <label class="label-custom fw-bold"><i class="bi bi-map me-2"></i> Exact Work Location</label>
+
+                            <div class="row g-2 mb-2">
+                                <div class="col-md-6">
+                                    <input type="text" id="profile-lat" name="latitude" value="{{ company.latitude }}" readonly class="form-control" placeholder="Latitude">
+                                </div>
+                                <div class="col-md-6">
+                                    <input type="text" id="profile-lng" name="longitude" value="{{ company.longitude }}" readonly class="form-control" placeholder="Longitude">
+                                </div>
+                            </div>
+
+                            <!-- حاوية الخريطة الوحيدة والشغالة -->
+                            <div id="profile-map" style="height: 300px; border-radius: 12px; border: 1px solid var(--border-color);"></div>
+                            <small class="label-custom">Click on the map to set your precise company location.</small>
+                        </div>
+
+                        {# داخل قسم Company Details في ملف dashboard.html.twig #}
+                        <div class="col-md-12 mt-3">
+                            <label class="label-custom">Company Verification Documents (PDF/JPG)</label>
+                            <div class="d-flex align-items-center gap-3">
+                                <input type="file" id="verification-input" class="d-none" accept=".pdf,image/*" onchange="updateVerificationPreview(this)">
+                                <button class="btn btn-outline-info btn-sm rounded-pill px-4" onclick="document.getElementById('verification-input').click()">
+                                    <i class="bi bi-file-earmark-arrow-up me-2"></i> Upload Verification File
+                                </button>
+                                <span id="v-file-name" class="text-muted small">No file selected</span>
+                            </div>
+                        </div>
+
+
+
+
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="stat-card sticky-top" style="top: 2rem;">
                         <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-2 text-uppercase fw-bold mb-4" style="font-size: 0.75rem;">
                             <i class="bi bi-eye me-2"></i> Live Preview
                         </span>
 
-                        <div class="text-center mb-4">
-                            <div class="mx-auto mb-3" id="prev-logo-container" style="width: 75px; height: 75px; border-radius: 12px; background: #020617; display: flex; align-items: center; justify-content: center; overflow: hidden; border: 2px solid #3b82f6;">
-                                {% if company.logo %}
-                                    <img src="{{ asset('uploads/logos/' ~ company.logo) }}" id="prev-logo-img" style="width: 100%; height: 100%; object-fit: cover;">
-                                    <i class="bi bi-building fs-2 text-primary d-none" id="prev-logo-icon"></i>
-                                {% else %}
-                                    <img src="" id="prev-logo-img" class="d-none" style="width: 100%; height: 100%; object-fit: cover;">
-                                    <i class="bi bi-building fs-2 text-primary" id="prev-logo-icon"></i>
-                                {% endif %}
-                            </div>
-                            <h5 id="prev-name" class="mt-3 fw-bold text-white">{{ company.companyName|default('Company Name') }}</h5>
-                            <span id="prev-industry" class="badge bg-primary-subtle text-primary py-2 px-3">{{ company.industry|default('Industry') }}</span>
+                    <div class="text-center mb-4">
+                        <div class="mx-auto mb-3" id="prev-logo-container" style="width: 75px; height: 75px; border-radius: 12px; background: #020617; display: flex; align-items: center; justify-content: center; overflow: hidden; border: 2px solid #3b82f6;">
+                            {% if company.logo %}
+                                <img src="{{ asset('uploads/logos/' ~ company.logo) }}" id="prev-logo-img" style="width: 100%; height: 100%; object-fit: cover;">
+                                <i class="bi bi-building fs-2 text-primary d-none" id="prev-logo-icon"></i>
+                            {% else %}
+                                <img src="" id="prev-logo-img" class="d-none" style="width: 100%; height: 100%; object-fit: cover;">
+                                <i class="bi bi-building fs-2 text-primary" id="prev-logo-icon"></i>
+                            {% endif %}
                         </div>
-
-                        <div class="preview-info small d-flex flex-column gap-3">
-                            <div class="d-flex align-items-center">
-                                <i class="bi bi-envelope me-3 text-primary"></i>
-                                <span id="prev-email" class="text-light">{{ company.email|default('email@company.com') }}</span>
-                            </div>
-                            <div class="d-flex align-items-center">
-                                <i class="bi bi-telephone me-3 text-primary"></i>
-                                <span id="prev-phone" class="text-light">{{ company.phone|default('Not provided') }}</span>
-                            </div>
-                            <div class="d-flex align-items-center">
-                                <i class="bi bi-geo-alt me-3 text-primary"></i>
-                                <span id="prev-wilaya" class="text-light">{{ company.wilaya|default('Location') }}</span>
-                            </div>
-                        </div>
-                        <hr class="border-secondary opacity-25 my-4">
-                        <p id="prev-desc" class="text-secondary small mb-0">{{ company.bio|default('Company description will appear here.') }}</p>
+                        <h5 id="prev-name" class="mt-3 fw-bold text-white">{{ company.companyName|default('Company Name') }}</h5>
+                        <span id="prev-industry" class="badge bg-primary-subtle text-primary py-2 px-3">{{ company.industry|default('Industry') }}</span>
                     </div>
+
+                    <div class="preview-info small d-flex flex-column gap-3">
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-envelope me-3 text-primary"></i>
+                            <span id="prev-email" class="text-light">{{ company.email|default('email@company.com') }}</span>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-telephone me-3 text-primary"></i>
+                            <span id="prev-phone" class="text-light">{{ company.phone|default('Not provided') }}</span>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-geo-alt me-3 text-primary"></i>
+                            <span id="prev-wilaya" class="text-light">{{ company.wilaya|default('Location') }}</span>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-globe me-3 text-primary"></i>
+                            <span id="prev-wilaya" class="text-light">{{ company.website|default('website') }}</span>
+                        </div>
+                        <div class="mt-2 ps-5">
+                            <a href="https://www.google.com/maps?q={{ company.latitude }},{{ company.longitude }}"
+                               id="prev-map-link"
+                               target="_blank"
+                               class="text-info small text-decoration-none {% if not company.latitude %}d-none{% endif %}">
+                                <i class="bi bi-box-arrow-up-right me-1"></i> View on Google Maps
+                            </a>
+                        </div>
+                    </div>
+                    <hr class="border-secondary opacity-25 my-4">
+                    <p id="prev-desc" class="text-secondary small mb-0">{{ company.bio|default('Company description will appear here.') }}</p>
+
+                    {# داخل div المعاينة (Live Preview)[cite: 2] #}
+                    <div id="preview-verification-section" class="mt-3 {% if not company.verificationFile %}d-none{% endif %}">
+                        <a href="{{ company.verificationFile ? asset('uploads/verification/' ~ company.verificationFile) : '#' }}"
+                           id="prev-v-link" target="_blank" class="btn btn-sm btn-primary w-100 fw-bold">
+                            <i class="bi bi-shield-check me-2"></i> View Verification Docs
+                        </a>
+                    </div>
+
+
                 </div>
             </div>
-        {% endif %}
+        </div>
+
+
+
+
+
+
+
+
+    {% endif %}
     </div>
 
-    <script>
-        function previewLogo(input) {
-            if (input.files && input.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const logoImg = document.getElementById('logo-img');
-                    const logoIcon = document.getElementById('logo-icon');
-                    const prevImg = document.getElementById('prev-logo-img');
-                    const prevIcon = document.getElementById('prev-logo-icon');
 
-                    if(logoImg) { logoImg.src = e.target.result; logoImg.classList.remove('d-none'); }
-                    if(logoIcon) { logoIcon.classList.add('d-none'); }
-                    if(prevImg) { prevImg.src = e.target.result; prevImg.classList.remove('d-none'); }
-                    if(prevIcon) { prevIcon.classList.add('d-none'); }
-                }
-                reader.readAsDataURL(input.files[0]);
-            }
-        }
 
-        function updatePreview() {
-            const name = document.getElementById('comp-name');
-            const email = document.getElementById('comp-email');
-            const industry = document.getElementById('comp-industry');
-            const desc = document.getElementById('comp-desc');
 
-            if(name) document.getElementById('prev-name').innerText = name.value || 'Company Name';
-            if(email) document.getElementById('prev-email').innerText = email.value || 'email@company.com';
-            if(industry) document.getElementById('prev-industry').innerText = industry.value || 'Industry';
-            if(desc) document.getElementById('prev-desc').innerText = desc.value || 'Description...';
-        }
 
-        function saveProfile() {
-            const formData = new FormData();
-            formData.append('companyName', document.getElementById('comp-name').value);
-            formData.append('email', document.getElementById('comp-email').value);
-            formData.append('phone', document.getElementById('comp-phone').value);
-            formData.append('industry', document.getElementById('comp-industry').value);
-            formData.append('wilaya', document.getElementById('comp-wilaya').value);
-            formData.append('website', document.getElementById('comp-web').value);
-            formData.append('bio', document.getElementById('comp-desc').value);
 
-            const logoFile = document.getElementById('logo-input').files[0];
-            if (logoFile) formData.append('logo', logoFile);
+    <!-- Modal معاينة الطالب بتصميم Stag.io -->
+    <div class="modal fade" id="studentPreviewModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" style="max-width: 480px;">
+            <div class="modal-content border-0"
+                 style="background: var(--bg-sidebar); border: 1px solid var(--border-color) !important;
+                    border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
 
-            fetch('{{ path('app_company_profile_update') }}', {
-                method: 'POST',
-                body: formData
-            })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.status === 'success') alert('✅ Changes Saved!');
-                    else alert('❌ Error: ' + data.message);
-                });
-        }
-    </script>
+                <!-- Header -->
+                <div class="modal-header border-0 pb-0 p-4">
+                    <h5 class="modal-title text-white fs-6 fw-bold" style="letter-spacing: 1px;">
+                        <i class="bi bi-person-badge text-primary me-2"></i> CANDIDATE PROFILE
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+
+                <!-- Body -->
+                <div class="modal-body p-4 pt-2">
+
+                    <!-- صورة + اسم + شارة -->
+                    <div class="text-center mb-3">
+                        <div id="modal-img-container"
+                             class="rounded-circle border border-primary d-flex align-items-center justify-content-center overflow-hidden bg-dark mx-auto mb-3"
+                             style="width:90px;height:90px;border-width:2px!important;box-shadow:0 0 15px var(--glow-color);">
+                        </div>
+                        <h5 id="modal-student-name" class="fw-bold mb-1 text-white"></h5>
+                        <p class="small mb-0 py-1 px-3 d-inline-block rounded-2"
+                           style="background:rgba(51,120,243,0.1);border:1px solid rgba(51,120,243,0.2);color:var(--accent-primary);">
+                            <i class="bi bi-mortarboard-fill me-2"></i>
+                            <span id="modal-student-level" class="fw-bold"></span>
+                            <span class="mx-1">|</span>
+                            <span id="modal-student-specialty"></span>
+                        </p>
+                    </div>
+
+                    <!-- Info: Location + University -->
+                    <div class="p-3 rounded-3 mb-3"
+                         style="background:rgba(255,255,255,0.03);border:1px solid var(--border-color);">
+                        <div class="d-flex flex-column gap-3">
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"
+                                     style="width:35px;height:35px;background:rgba(51,120,243,0.1);border:1px solid rgba(51,120,243,0.2);">
+                                    <i class="bi bi-geo-alt text-primary"></i>
+                                </div>
+                                <div>
+                                    <p class="text-muted mb-0" style="font-size:0.6rem;letter-spacing:1px;">LOCATION</p>
+                                    <p id="modal-student-location" class="mb-0 small fw-semibold text-white"></p>
+                                </div>
+                            </div>
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"
+                                     style="width:35px;height:35px;background:rgba(51,120,243,0.1);border:1px solid rgba(51,120,243,0.2);">
+                                    <i class="bi bi-bank text-primary"></i>
+                                </div>
+                                <div>
+                                    <p class="text-muted mb-0" style="font-size:0.6rem;letter-spacing:1px;">UNIVERSITY</p>
+                                    <p id="modal-student-university" class="mb-0 small fw-semibold text-white"></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bio -->
+                    <div id="modal-bio-section" class="mb-3 d-none">
+                        <p class="text-muted mb-1" style="font-size:0.65rem;letter-spacing:1px;">ABOUT</p>
+                        <p id="modal-student-bio"
+                           class="small text-white mb-0 p-3 rounded-3"
+                           style="background:rgba(255,255,255,0.03);border:1px solid var(--border-color);
+                              line-height:1.6;"></p>
+                    </div>
+
+                    <!-- Skills -->
+                    <div id="modal-skills-section" class="mb-3 d-none">
+                        <p class="text-muted mb-2" style="font-size:0.65rem;letter-spacing:1px;">SKILLS</p>
+                        <div id="modal-skills-list" class="d-flex flex-wrap gap-2"></div>
+                    </div>
+
+                    <!-- روابط التواصل: GitHub + Portfolio + Phone -->
+                    <div class="d-flex justify-content-center gap-3 mt-3">
+                        <a id="modal-github-link" href="#" target="_blank"
+                           class="text-white d-none"
+                           style="opacity:0.7;transition:opacity 0.2s;"
+                           onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.7">
+                            <i class="bi bi-github fs-5"></i>
+                        </a>
+                        <a id="modal-portfolio-link" href="#" target="_blank"
+                           class="text-white d-none"
+                           style="opacity:0.7;transition:opacity 0.2s;"
+                           onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.7">
+                            <i class="bi bi-globe fs-5"></i>
+                        </a>
+                        <a id="modal-phone-link" href="#"
+                           class="text-white d-none"
+                           style="opacity:0.7;transition:opacity 0.2s;"
+                           onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.7">
+                            <i class="bi bi-telephone fs-5"></i>
+                        </a>
+                    </div>
+                    <p id="modal-phone-text" class="text-muted text-center mt-1 small"></p>
+                </div>
+
+                <!-- Footer — زر الإيميل -->
+                <div class="modal-footer border-0 p-4 pt-0">
+                    <a id="modal-mail-link" href="#"
+                       class="btn btn-primary w-100 fw-bold py-2 shadow-sm">
+                        <i class="bi bi-envelope-at me-2"></i> CONTACT VIA EMAIL
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}
+
+
+
+    {% block javascripts %}
+        {# 1. تحميل المكتبة أولاً #}
+        <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+        <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+        <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+        <script>
+            // =============================================
+            // 1. PROFILE FUNCTIONS
+            // =============================================
+            function previewLogo(input) {
+                if (input.files && input.files[0]) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const preview = document.getElementById('logo-preview-img');
+                        const prevIcon = document.getElementById('logo-preview-icon');
+                        if (preview) {
+                            preview.src = e.target.result;
+                            preview.classList.remove('d-none');
+                        }
+                        if (prevIcon) { prevIcon.classList.add('d-none'); }
+                    }
+                    reader.readAsDataURL(input.files[0]);
+                }
+            }
+
+            function updatePreview() {
+                const name     = document.getElementById('comp-name');
+                const email    = document.getElementById('comp-email');
+                const industry = document.getElementById('comp-industry');
+                const desc     = document.getElementById('comp-desc');
+
+                if (name)     document.getElementById('prev-name').innerText     = name.value     || 'Company Name';
+                if (email)    document.getElementById('prev-email').innerText    = email.value    || 'email@company.com';
+                if (industry) document.getElementById('prev-industry').innerText = industry.value || 'Industry';
+                if (desc)     document.getElementById('prev-desc').innerText     = desc.value     || 'Description...';
+            }
+
+            function saveProfile() {
+                const formData = new FormData();
+                formData.append('companyName', document.getElementById('comp-name').value);
+                formData.append('email',       document.getElementById('comp-email').value);
+                formData.append('phone',       document.getElementById('comp-phone').value);
+                formData.append('industry',    document.getElementById('comp-industry').value);
+                formData.append('wilaya',      document.getElementById('comp-wilaya').value);
+                formData.append('website',     document.getElementById('comp-web').value);
+                formData.append('bio',         document.getElementById('comp-desc').value);
+                formData.append('latitude',  document.getElementById('profile-lat').value);
+                formData.append('longitude', document.getElementById('profile-lng').value);
+                const logoFile = document.getElementById('logo-input').files[0];
+                if (logoFile) formData.append('logo', logoFile);
+
+
+
+
+
+
+
+
+
+
+
+                fetch('{{ path("app_company_profile_update") }}', {
+                    method: 'POST',
+                    body: formData
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status === 'success') alert('✅ Changes Saved!');
+                        else alert('❌ Error: ' + data.message);
+                    })
+                    .catch(() => alert('❌ Network error, please try again.'));
+            }
+
+            // =============================================
+            // 2. SKILLS TAGS
+            // =============================================
+
+            function addSkillTag() {
+                const input     = document.getElementById('skill-input');
+                const container = document.getElementById('skills-container');
+                if (!input || input.value.trim() === '') return;
+
+                const tag = document.createElement('div');
+                tag.className     = 'skill-badge';
+                tag.dataset.skill = input.value.trim();
+                tag.innerHTML     = `${input.value.trim()} <i class="bi bi-x-circle" onclick="removeSkill(this)"></i>`;
+                container.appendChild(tag);
+
+                input.value = '';
+                syncSkillsToHidden();
+                updateOfferPreview();
+            }
+
+            function removeSkill(icon) {
+                icon.parentElement.remove();
+                syncSkillsToHidden();
+                updateOfferPreview();
+            }
+
+            function syncSkillsToHidden() {
+                const tags   = document.querySelectorAll('#skills-container .skill-badge');
+                const hidden = document.getElementById('skills-hidden');
+                if (!hidden) return;
+                hidden.value = Array.from(tags).map(t => t.dataset.skill).join(',');
+            }
+            // السماح بالإضافة عبر Enter
+            const skillInput = document.getElementById('skill-input');
+            if (skillInput) {
+                skillInput.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        addSkillTag();
+                    }
+                });
+            }
+
+            // =============================================
+            // 3. OFFER PREVIEW
+            // =============================================
+            function updateOfferPreview() {
+                const titleEl    = document.getElementById('offer-title');
+                const locEl      = document.getElementById('offer-location');
+                const wilayaEl   = document.getElementById('offer-wilaya');
+                const durationEl = document.getElementById('offer-duration');
+                const deadlineEl = document.getElementById('offer-deadline');
+                // تحديث تاريخ بداية العرض
+                const startOffer = document.getElementById('offer-start-date').value;
+                document.getElementById('prev-start-offer').innerHTML = `<i class="bi bi-calendar-check"></i> Starts: ${startOffer || 'Not set'}`;
+
+                // تحديث تاريخ بداية التربص
+                const startInternship = document.getElementById('internship-start-date').value;
+                document.getElementById('prev-start-internship').innerHTML = `<i class="bi bi-play-circle"></i> Internship: ${startInternship || 'Not set'}`;
+                const latEl      = document.getElementById('offer-lat');
+                const lngEl      = document.getElementById('offer-lng');
+
+                if (!titleEl) return; // الصفحة مش صفحة إنشاء offer
+
+                const title    = titleEl.value;
+                const loc      = locEl    ? locEl.value      : '';
+                const wilaya   = wilayaEl ? wilayaEl.value   : '';
+                const duration = durationEl ? durationEl.value : '';
+                const deadline = deadlineEl ? deadlineEl.value : '';
+                const lat      = latEl ? latEl.value : '';
+                const lng      = lngEl ? lngEl.value : '';
+
+                const prevTitle    = document.getElementById('prev-offer-title');
+                const prevLoc      = document.getElementById('prev-offer-loc');
+                const prevWilaya   = document.getElementById('prev-offer-wilaya');
+                const prevDuration = document.getElementById('prev-offer-duration');
+                const prevDate     = document.getElementById('prev-offer-date');
+                const prevCoords   = document.getElementById('prev-offer-coords');
+
+                if (prevTitle)    prevTitle.innerText    = title    || 'Position Title';
+                if (prevLoc)      prevLoc.innerText      = `• ${loc || 'Hybrid'}`;
+                if (prevWilaya)   prevWilaya.innerText   = wilaya   || 'Location / Wilaya';
+                if (prevDuration) prevDuration.innerText = duration ? `Duration: ${duration}` : 'Duration not set';
+                if (prevDate)     prevDate.innerText     = deadline ? `Until: ${deadline}`    : 'No deadline';
+
+                // إحداثيات الخريطة
+                if (prevCoords) {
+                    if (lat && lng) {
+                        const mapUrl = `https://www.google.com/maps?q=${lat},${lng}`;
+                        prevCoords.innerHTML = `
+                    <a href="${mapUrl}" target="_blank" class="text-info text-decoration-none d-flex align-items-center gap-1">
+                        <i class="bi bi-geo-fill text-danger"></i>
+                        <span>View on Map</span>
+                        <i class="bi bi-box-arrow-up-right" style="font-size:0.6rem;"></i>
+                    </a>`;
+                    } else {
+                        prevCoords.innerText = 'Coordinates not set';
+                    }
+                }
+
+
+                // الجديد
+                const prevSkills = document.getElementById('prev-skills-container');
+                const checked    = document.querySelectorAll('.skill-checkbox:checked');
+                if (prevSkills) {
+                    prevSkills.innerHTML = '';
+                    checked.forEach(cb => {
+                        const span = document.createElement('span');
+                        span.className = 'badge bg-dark border border-secondary text-primary me-1 mb-1';
+                        span.style.fontSize = '0.7rem';
+                        span.innerText = cb.parentElement.textContent.trim();
+                        prevSkills.appendChild(span);
+                    });
+                }
+            }
+            // =============================================
+            // 4. LEAFLET MAP — فقط في صفحة إنشاء offer
+            // =============================================
+            const mapContainer = document.getElementById('map');
+
+            if (mapContainer) {
+                var map    = L.map('map').setView([36.365, 6.6147], 13);
+                var marker = null;
+
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '© OpenStreetMap contributors'
+                }).addTo(map);
+
+                map.on('click', function(e) {
+                    const lat = e.latlng.lat.toFixed(6);
+                    const lng = e.latlng.lng.toFixed(6);
+
+                    document.getElementById('offer-lat').value = lat;
+                    document.getElementById('offer-lng').value = lng;
+
+                    if (marker) {
+                        marker.setLatLng(e.latlng);
+                    } else {
+                        marker = L.marker(e.latlng).addTo(map);
+                    }
+
+                    updateOfferPreview();
+                });
+                // Flatpickr للتاريخ
+                flatpickr('#offer-deadline', {
+                    dateFormat : 'Y-m-d',
+                    minDate    : 'today',
+                    onChange   : function() { updateOfferPreview(); }
+                });
+            }
+
+            // =============================================
+            // 5. PUBLISH BUTTON
+            // =============================================
+            const publishBtn = document.getElementById('publish-btn');
+
+            if (publishBtn) {
+                publishBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+
+                    const title = document.getElementById('offer-title').value.trim();
+                    const lat   = document.getElementById('offer-lat').value.trim();
+
+                    if (!title) {
+                        alert('⚠️ Please enter a position title!');
+                        document.getElementById('offer-title').focus();
+                        return;
+                    }
+
+                    if (!lat) {
+                        alert('⚠️ Please select a location on the map!');
+                        return;
+                    }
+
+                    // تجميع المهارات قبل الإرسال
+                    syncSkillsToHidden();
+
+                    // تحديث شكل الزر
+                    publishBtn.innerHTML  = '<span class="spinner-border spinner-border-sm me-2"></span> Publishing...';
+                    publishBtn.disabled   = true;
+
+                    // إرسال الفورم
+                    document.getElementById('publish-offer-form').submit();
+                });
+            }
+
+
+
+            flatpickr(".datepicker", {
+                dateFormat: "Y-m-d",
+                theme: "dark",
+                onChange: function(selectedDates, dateStr, instance) {
+                    updateOfferPreview(); // تحديث المعاينة فور اختيار التاريخ
+                }
+            });
+
+
+
+
+
+
+
+            // =============================================
+            // 6. EDIT OFFER PAGE
+            // =============================================
+            function syncSkillsEdit() {
+                const tags   = document.querySelectorAll('#skills-container-edit .skill-badge');
+                const hidden = document.getElementById('skills-hidden-edit');
+                if (!hidden) return;
+                hidden.value = Array.from(tags).map(t => t.dataset.skill).join(',');
+            }
+            // إضافة listener على form التعديل
+            const editForm = document.getElementById('edit-offer-form');
+            if (editForm) {
+                editForm.addEventListener('submit', function(e) {
+                    syncSkillsEdit(); // تأكد من تحديث الـ hidden field قبل الإرسال
+                    // لا تضيفي preventDefault هنا حتى يُرسَل الفورم
+                });
+            }
+            function addSkillTagEdit() {
+                const input     = document.getElementById('skill-input-edit');
+                const container = document.getElementById('skills-container-edit');
+                if (!input || input.value.trim() === '') return;
+                const tag = document.createElement('div');
+                tag.className     = 'skill-badge';
+                tag.dataset.skill = input.value.trim();
+                tag.innerHTML     = `${input.value.trim()} <i class="bi bi-x-circle" onclick="removeSkillEdit(this)"></i>`;
+                container.appendChild(tag);
+                input.value = '';
+                syncSkillsEdit();
+            }
+
+            function removeSkillEdit(icon) {
+                icon.parentElement.remove();
+                syncSkillsEdit();
+            }
+
+            document.getElementById('skill-input-edit')?.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') { e.preventDefault(); addSkillTagEdit(); }
+            });
+
+            // Flatpickr للتعديل
+            if (document.getElementById('edit-deadline')) {
+                flatpickr('#edit-deadline',        { dateFormat: 'Y-m-d' });
+                flatpickr('#edit-start-date',      { dateFormat: 'Y-m-d' });
+                flatpickr('#edit-internship-date', { dateFormat: 'Y-m-d' });
+            }
+
+            // Leaflet للتعديل
+            const mapEditContainer = document.getElementById('map-edit');
+            if (mapEditContainer) {
+                const lat = parseFloat(document.getElementById('edit-lat').value) || 36.365;
+                const lng = parseFloat(document.getElementById('edit-lng').value) || 6.6147;
+                const mapEdit = L.map('map-edit').setView([lat, lng], 13);
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(mapEdit);
+                let markerEdit = L.marker([lat, lng]).addTo(mapEdit);
+                mapEdit.on('click', function(e) {
+                    document.getElementById('edit-lat').value = e.latlng.lat.toFixed(6);
+                    document.getElementById('edit-lng').value = e.latlng.lng.toFixed(6);
+                    markerEdit.setLatLng(e.latlng);
+                });
+            }
+
+            // تهيئة الـ skills الموجودة
+            syncSkillsEdit();
+
+
+
+
+
+            function previewLogo(input) {
+                if (input.files && input.files[0]) {
+                    var reader = new FileReader();
+                    reader.onload = function(e) {
+                        // تحديث الصورة في منطقة الرفع
+                        document.getElementById('logo-img').src = e.target.result;
+                        document.getElementById('logo-img').classList.remove('d-none');
+                        document.getElementById('logo-icon').classList.add('d-none');
+
+                        // تحديث الصورة في الـ Live Preview (الجهة اليمنى)
+                        document.getElementById('prev-logo-img').src = e.target.result;
+                        document.getElementById('prev-logo-img').classList.remove('d-none');
+                        document.getElementById('prev-logo-icon').classList.add('d-none');
+                    }
+                    reader.readAsDataURL(input.files[0]);
+                }
+            }
+
+            function saveProfile() {
+                const btn = event.currentTarget;
+                const originalContent = btn.innerHTML;
+
+                // إظهار مؤشر تحميل بسيط
+                btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Saving...';
+                btn.disabled = true;
+
+                const formData = new FormData();
+
+                // جمع البيانات من الحقول
+                formData.append('companyName', document.getElementById('comp-name').value);
+                formData.append('email', document.getElementById('comp-email').value);
+                formData.append('phone', document.getElementById('comp-phone').value);
+                formData.append('industry', document.getElementById('comp-industry').value);
+                formData.append('wilaya', document.getElementById('comp-wilaya').value);
+                formData.append('website', document.getElementById('comp-web').value);
+                formData.append('bio', document.getElementById('comp-desc').value);
+
+                // إحداثيات الخريطة
+                formData.append('latitude', document.getElementById('profile-lat').value);
+                formData.append('longitude', document.getElementById('profile-lng').value);
+
+                // إضافة ملف اللوجو
+                const logoInput = document.getElementById('logo-input');
+                if (logoInput.files[0]) {
+                    formData.append('logo', logoInput.files[0]);
+                }
+
+                // إضافة ملف الإثبات
+                const vInput = document.getElementById('verification-input');
+                if (vInput.files[0]) {
+                    formData.append('verificationFile', vInput.files[0]);
+                }
+
+                // إرسال الطلب إلى الـ Controller
+                fetch("{{ path('app_company_profile_update') }}", {
+                    method: "POST",
+                    body: formData
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert("The profile has been updated successfully!");
+                            window.location.reload(); // لتحديث الصور والبيانات في الصفحة
+                        } else {
+                            alert("Error: " + data.message);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert("An error occurred while connecting to the server");
+                    })
+                    .finally(() => {
+                        btn.innerHTML = originalContent;
+                        btn.disabled = false;
+                    });
+            }
+
+
+
+
+
+
+
+            function drawChart() {
+                const container = document.getElementById('coverageTimeline');
+                const chart = new google.visualization.Timeline(container);
+                const dataTable = new google.visualization.DataTable();
+
+                dataTable.addColumn({ type: 'string', id: 'Offer' });
+                dataTable.addColumn({ type: 'date', id: 'Start' });
+                dataTable.addColumn({ type: 'date', id: 'End' });
+
+                const rows = rawData.map(item => [
+                    item.title,
+                    new Date(item.start),
+                    new Date(item.end)
+                ]);
+
+                dataTable.addRows(rows);
+
+                const options = {
+                    timeline: { showRowLabels: true },
+                    backgroundColor: 'transparent',
+                    colors: ['#3b82f6', '#10b981', '#f59e0b']
+                };
+
+                chart.draw(dataTable, options);
+            }
+
+
+
+
+
+
+
+
+            // تحديث اسم الملف عند الاختيار وإظهار الزر في المعاينة
+            function updateVerificationPreview(input) {
+                if (input.files && input.files[0]) {
+                    document.getElementById('v-file-name').innerText = input.files[0].name;
+
+                    // إظهار الزر في المعاينة فوراً
+                    const prevSection = document.getElementById('preview-verification-section');
+                    prevSection.classList.remove('d-none');
+
+                    // ملاحظة: لا يمكن عرض محتوى الملف قبل الرفع الحقيقي، لكن نظهر الزر كإشعار
+                    document.getElementById('prev-v-link').innerText = "File Ready: " + input.files[0].name;
+                }
+            }
+
+
+            // =============================================
+            // 5. LEAFLET MAP — خاصة بصفحة الـ Profile
+            // =============================================
+            const profileMapContainer = document.getElementById('profile-map');
+
+            if (profileMapContainer) {
+                // تحديد الإحداثيات الافتراضية (قسنطينة مثلاً) أو الإحداثيات المخزنة مسبقاً
+                const latField = document.getElementById('profile-lat');
+                const lngField = document.getElementById('profile-lng');
+
+                const defaultLat = latField.value ? parseFloat(latField.value) : 36.365;
+                const defaultLng = lngField.value ? parseFloat(lngField.value) : 6.6147;
+
+                // تهيئة الخريطة
+                var profileMap = L.map('profile-map').setView([defaultLat, defaultLng], 13);
+
+                // إضافة علامة (Marker) إذا كانت هناك إحداثيات موجودة مسبقاً
+                var profileMarker = null;
+                if (latField.value && lngField.value) {
+                    profileMarker = L.marker([defaultLat, defaultLng]).addTo(profileMap);
+                }
+
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '© OpenStreetMap contributors'
+                }).addTo(profileMap);
+
+                // عند النقر على الخريطة لتحديد موقع الشركة أو السكن
+                profileMap.on('click', function(e) {
+                    const lat = e.latlng.lat.toFixed(6);
+                    const lng = e.latlng.lng.toFixed(6);
+
+                    // تحديث الحقول النصية
+                    latField.value = lat;
+                    lngField.value = lng;
+
+                    // تحديث أو إنشاء العلامة (Marker)
+                    if (profileMarker) {
+                        profileMarker.setLatLng(e.latlng);
+                    } else {
+                        profileMarker = L.marker(e.latlng).addTo(profileMap);
+                    }
+
+                    // ملاحظة: لا داعي لاستدعاء updateOfferPreview هنا لأننا في البروفايل
+                });
+            }
+
+
+
+            {# 2. كود برمجة المخطط الدائري #}
+
+            // تحميل مكتبة المخططات من جوجل
+            google.charts.load('current', {'packages':['corechart']});
+            google.charts.setOnLoadCallback(drawStatusChart);
+
+            function drawStatusChart() {
+                // جلب البيانات الحقيقية من السيمفوني (المتغيرات التي أرسلناها من الـ Controller)[cite: 2, 3]
+                var data = google.visualization.arrayToDataTable([
+                    ['Status', 'Number of Students'],
+                    {# بعد الإصلاح #}
+                    ['Pending',  {{ pending_applicants  |default(0) }}],
+                    ['Accepted', {{ accepted_applicants |default(0) }}],
+                    ['Refused',  {{ refused_applicants  |default(0) }}]
+                ]);
+
+                var options = {
+                    title: 'Application Status Overview',
+                    titleTextStyle: { color: '#ffffff', fontSize: 16 },
+                    backgroundColor: 'transparent', // ليناسب تصميم لوحة التحكم المظلم
+                    pieHole: 0.4, // لتحويله إلى Donut Chart (اختياري)
+                    legend: { textStyle: { color: '#ffffff' } },
+                    colors: ['#f59e0b', '#10b981', '#ef4444'], // أصفر للانتظار، أخضر للقبول، أحمر للرفض
+                    chartArea: { width: '100%', height: '80%' }
+                };
+
+                var chart = new google.visualization.PieChart(document.getElementById('status_chart'));
+                chart.draw(data, options);
+            }
+
+
+
+            function deleteRequestHistory(id, button) {
+                if (confirm("هل تريد حذف هذا السجل من التاريخ نهائياً؟")) {
+                    // افترضنا أن المسار هو /admin/verification-requests/{id}/delete
+                    fetch(`/admin/verification-requests/${id}/delete`, {
+                        method: 'DELETE',
+                        headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                const row = button.closest('tr');
+                                row.style.opacity = '0';
+                                setTimeout(() => row.remove(), 400);
+                            }
+                        });
+                }
+            }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            // ابحث عن studentModal.addEventListener وابدل الكتلة كاملاً بهذا:
+            document.addEventListener('DOMContentLoaded', function() {
+                const studentModal = document.getElementById('studentPreviewModal');
+                if (studentModal) {
+                    studentModal.addEventListener('show.bs.modal', function (event) {
+                        const button = event.relatedTarget;
+
+                        // 1. استخراج البيانات الأساسية
+                        const name = button.getAttribute('data-name');
+                        const level = button.getAttribute('data-level');
+                        const specialty = button.getAttribute('data-specialty');
+                        const location = button.getAttribute('data-location');
+                        const university = button.getAttribute('data-university');
+                        const email = button.getAttribute('data-email');
+                        const image = button.getAttribute('data-image');
+                        const initials = button.getAttribute('data-initials');
+// 2. استخراج Bio و Skills
+                        const bio = button.getAttribute('data-bio');
+                        const skillsString = button.getAttribute('data-skills'); // نص مفصول بفاصلة
+                        // 2. استخراج البيانات المضافة (الهاتف والروابط)
+                        const phone = button.getAttribute('data-phone');
+                        const github = button.getAttribute('data-github');
+                        const portfolio = button.getAttribute('data-portfolio');
+
+                        // 3. تحديث النصوص الأساسية في الـ Modal
+                        this.querySelector('#modal-student-name').textContent = name;
+                        this.querySelector('#modal-student-level').textContent = level;
+                        this.querySelector('#modal-student-specialty').textContent = specialty;
+                        this.querySelector('#modal-student-location').textContent = location;
+                        this.querySelector('#modal-student-university').textContent = university;
+                        this.querySelector('#modal-mail-link').href = 'mailto:' + email;
+
+                        // 4. تحديث بيانات الهاتف والروابط التقنية
+                        this.querySelector('#modal-phone-text').textContent = phone || 'Not provided';
+                        this.querySelector('#modal-phone-link').href = phone ? 'tel:' + phone : '#';
+// 4. معالجة الـ Bio
+                        const bioSection = this.querySelector('#modal-bio-section');
+                        const bioText = this.querySelector('#modal-student-bio');
+                        if (bio && bio.trim() !== '') {
+                            bioText.textContent = bio;
+                            bioSection.classList.remove('d-none');
+                        } else {
+                            bioSection.classList.add('d-none');
+                        }
+
+                        // 5. معالجة الـ Skills
+                        const skillsSection = this.querySelector('#modal-skills-section');
+                        const skillsList = this.querySelector('#modal-skills-list');
+                        skillsList.innerHTML = ''; // تنظيف المهارات السابقة
+
+                        if (skillsString && skillsString.trim() !== '') {
+                            const skillsArray = skillsString.split(',');
+                            skillsArray.forEach(skill => {
+                                const badge = document.createElement('span');
+                                badge.className = 'badge rounded-pill px-3 py-2';
+                                badge.style.cssText = 'background:rgba(59,130,246,0.1); color:#3b82f6; border:1px solid rgba(59,130,246,0.2); font-size:0.75rem;';
+                                badge.textContent = skill.trim();
+                                skillsList.appendChild(badge);
+                            });
+                            skillsSection.classList.remove('d-none');
+                        } else {
+                            skillsSection.classList.add('d-none');
+                        }
+                        // معالجة ظهور زر GitHub
+                        const githubBtn = this.querySelector('#modal-github-link');
+                        if (github && github !== '') {
+                            githubBtn.href = github;
+                            githubBtn.classList.remove('d-none');
+                        } else {
+                            githubBtn.classList.add('d-none');
+                        }
+
+                        // معالجة ظهور زر Portfolio
+                        const portfolioBtn = this.querySelector('#modal-portfolio-link');
+                        if (portfolio && portfolio !== '') {
+                            portfolioBtn.href = portfolio;
+                            portfolioBtn.classList.remove('d-none');
+                        } else {
+                            portfolioBtn.classList.add('d-none');
+                        }
+
+                        // 5. تحديث الصورة الشخصية
+                        const imgContainer = this.querySelector('#modal-img-container');
+                        if (image && image !== '') {
+                            imgContainer.innerHTML = `<img class="w-100 h-100 object-fit-cover" src="${image}">`;
+                        } else {
+                            imgContainer.innerHTML = `<div class="fw-bold fs-2 text-primary text-uppercase">${initials}</div>`;
+                        }
+                    });
+                }
+            });
+
+
+
+
+
+
+
+            async function rejectApplication(applicationId) {
+                const reason = prompt("اكتب سبب الرفض");
+
+                if (!reason) return;
+
+                const response = await fetch(`/application/${applicationId}/reject`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body: new URLSearchParams({
+                        reason: reason
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    const card = document.getElementById(`application-card-${applicationId}`);
+
+                    if (card) {
+                        card.remove();
+                    }
+                }
+            }
+
+
+
+
+
+
+            async function handleApplication(id, action, btn) {
+                if (!confirm(`Are you sure you want to ${action} this application?`)) return;
+
+                btn.disabled = true;
+                const originalContent = btn.innerHTML;
+                btn.innerHTML = '<span class=\"spinner-border spinner-border-sm\"></span>';
+
+                try {
+                    const res = await fetch(`/company/applications/${id}/${action}`, { method: 'POST' });
+                    const data = await res.json();
+
+                    if (data.success) {
+                        // العثور على بطاقة الطلب (Card) وإخفاؤها
+                        const card = btn.closest('.application-card'); // تأكد أن الكلاس مطابق لما لديك
+                        if (card) {
+                            card.style.transition = 'all 0.4s ease';
+                            card.style.opacity = '0';
+                            card.style.transform = 'scale(0.95)';
+                            setTimeout(() => {
+                                card.remove();
+                                // تحديث العدادات إذا وجدت
+                                updateCounters();
+                            }, 400);
+                        }
+                    } else {
+                        alert(data.error || 'Operation failed');
+                        btn.disabled = false;
+                        btn.innerHTML = originalContent;
+                    }
+                } catch (err) {
+                    alert('Network error');
+                    btn.disabled = false;
+                    btn.innerHTML = originalContent;
+                }
+            }
+
+
+
+
+                document.querySelectorAll("form[id^='refuse-form-']").forEach(form => {
+
+                form.addEventListener("submit", async function(e) {
+                    e.preventDefault();
+
+                    const formData = new FormData(this);
+
+                    const response = await fetch(this.action, {
+                        method: "POST",
+                        body: formData
+                    });
+
+                    if (response.ok) {
+
+                        // استخراج id
+                        const appId = this.id.replace('refuse-form-', '');
+
+                        // حذف البطاقة
+                        const card = document.getElementById('application-card-' + appId);
+
+                        if (card) {
+                            card.remove();
+                        }
+
+                        // غلق الـ modal
+                        const modal = bootstrap.Modal.getInstance(
+                            document.getElementById('refuseModal' + appId)
+                        );
+
+                        if (modal) {
+                            modal.hide();
+                        }
+                    }
+                });
+
+            });
+        </script>
+    {% endblock %}

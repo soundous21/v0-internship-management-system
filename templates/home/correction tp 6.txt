@@ -1,0 +1,103 @@
+[27/04/2026 14:00] Soun Dous🦋: enable
+conf t
+
+bridge 1 protocol ieee
+
+interface g0/0
+no ip address
+bridge-group 1
+no shutdown
+
+interface g0/1
+no ip address
+bridge-group 1
+no shutdown
+
+interface BVI1
+ip address 192.168.1.1 255.255.255.0
+no shutdown
+
+interface g0/2
+ip address 10.0.0.1 255.255.255.0
+no shutdown
+[27/04/2026 14:01] Soun Dous🦋: enable
+conf t
+
+bridge 1 protocol ieee
+
+interface g0/0
+no ip address
+bridge-group 1
+no shutdown
+
+interface g0/1
+no ip address
+bridge-group 1
+no shutdown
+
+interface BVI1
+ip address 192.168.1.1 255.255.255.0
+no shutdown
+
+interface g0/2
+ip address 10.0.0.1 255.255.255.0
+no shutdown
+[27/04/2026 14:01] Soun Dous🦋: 5) الاختبار
+من PC1:
+ping 192.168.1.20
+ping 10.0.0.2
+من PC2:
+ping 10.0.0.2
+✅ النتيجة النهائية
+✔ PC1 ↔ PC2 يشتغل (نفس الشبكة) 
+✔ يوصلوا للسيرفر 
+✔ NAT (PAT) شغال 
+✔ بدون استعمال سويتش 
+⚡ خلاصة سريعة تحفظها
+g0/0 + g0/1 = Bridge (نفس الشبكة) 
+BVI1 = Gateway 
+
+
+
+
+
+
+
+
+لإنشاء قائمة تحكم بالوصول (ACL) تحقق الشروط التي ذكرتها (منع FTP، وPing، ومنع جهاز معين)، يجب اتباع ترتيب منطقي صارم لأن الراوتر يقرأ القواعد من الأعلى إلى الأسفل.
+إليك الأوامر الكاملة مع الشرح لكل خطوة:
+1. حذف القائمة القديمة (لضمان الترتيب الصحيح)
+يجب دائماً مسح القائمة الحالية قبل إعادة كتابتها لتجنب تداخل الأوامر:
+Bash
+Router(config)# no access-list 100 
+2. منع PC1 من الوصول تماماً
+بافتراض أن عنوان PC1 هو 192.168.2.2 (يرجى استبداله بالعنوان الفعلي لديك):
+Bash
+Router(config)# access-list 100 deny ip host 192.168.2.2 any 
+3. السماح لـ PC2 بالوصول لخدمة الويب فقط
+للسماح لـ PC2 (192.168.2.3) بالوصول لـ الخادم (192.168.3.2) عبر المنفذ 80 (HTTP):
+Bash
+Router(config)# access-list 100 permit tcp host 192.168.2.3 host 192.168.3.2 eq 80 
+4. منع بروتوكولات FTP و Ping صراحة
+لمنع Ping: نمنع بروتوكول ICMP.
+لمنع FTP: نمنع بروتوكول TCP على المنفذين 20 و 21.
+Bash
+Router(config)# access-list 100 deny icmp any any Router(config)# access-list 100 deny tcp any any eq 21 Router(config)# access-list 100 deny tcp any any eq 20 
+5. السماح لبقية حركة المرور (Any Any)
+بدون هذا الأمر، سيقوم الراوتر بمنع كل شيء آخر تلقائياً (Implicit Deny). لذا نسمح لبقية الأجهزة بالاتصال:
+Bash
+Router(config)# access-list 100 permit ip any any 
+6. تطبيق القائمة على الواجهة (Interface)
+القائمة لن تعمل حتى تربطها بالمنفذ الصحيح. أفضل ممارسة في القوائم الموسعة (Extended ACL) هي وضعها أقرب ما يمكن للمصدر:
+Bash
+Router(config)# interface g0/0 (أو اسم المنفذ المتصل بـ PC1 و PC2) Router(config-if)# ip access-group 100 in 
+ملخص الترتيب وأهميته
+الراوتر ينفذ أول قاعدة تطابق الحزمة (Packet). الترتيب الذي استخدمناه يضمن:
+أولاً: يتم فحص إذا كان الجهاز هو PC1 (سيتم منعه فوراً).
+ثانياً: يتم فحص إذا كان الطلب هو "ويب" من PC2 (سيسمح له).
+ثالثاً: يتم فحص إذا كان الطلب Ping أو FTP (سيتم منعهما).
+أخيراً: أي شيء لم يطابق ما سبق، سيُسمح به عبر القاعدة الأخيرة.
+نصيحة إضافية: يمكنك التأكد من نجاح الإعدادات بكتابة الأمر show access-lists في وضع التمكين (Privileged Mode) لرؤية العدادات (Matches) لكل قاعدة.
+g0/2 = شبكة السيرفر 
+NAT = overload 
+إذا حاب نرسمه لك رسم بسيط باش تحفظه بسرعة قبل الاختبار قولي 👍
