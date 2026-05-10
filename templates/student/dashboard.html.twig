@@ -6,7 +6,7 @@
     <style>
         :root {
             --bg-main: #030712;
-            --bg-sidebar: #09090b;
+            --bg-sidebar: #000000;
             --card-bg: #000000; /* لون خلفية للبطاقات أفتح قليلاً */
             --border-color: rgb(17, 24, 39); /* إطار شبه شفاف */
             --text-muted: #94a3b8;
@@ -690,19 +690,49 @@
                                             {{ matchLabel }}
                                         </div>
                                     </div>
+                                    {# ─── Apply / Withdraw / Seats Full ─── #}
+                                    {% set isFull = offer.seats is not null and offer.remainingSeats == 0 %}
 
-                                    {# Apply / Withdraw #}
-                                    <button class="btn px-3 rounded-3 fw-bold w-100 apply-btn {{ isApplied ? 'btn-outline-danger' : 'btn-primary' }}"
-                                            data-offer-id="{{ offer.id }}"
-                                            data-applied="{{ isApplied ? 'true' : 'false' }}"
-                                            onclick="toggleApply(this)">
-                                        {% if isApplied %}
-                                            <i class="bi bi-x-circle me-1"></i><span class="small">Withdraw</span>
-                                        {% else %}
-                                            <i class="bi bi-send me-1"></i><span class="small">Apply Now</span>
-                                        {% endif %}
-                                    </button>
+                                    {% if isFull and not isApplied %}
+                                        {# المقاعد منتهية #}
+                                        <button class="btn btn-secondary px-3 rounded-3 fw-bold w-100" disabled
+                                                style="opacity:0.7; cursor:not-allowed;">
+                                            <i class="bi bi-person-fill-slash me-1"></i>
+                                            <span class="small">Seats Full</span>
+                                        </button>
+                                    {% else %}
+                                        <button class="btn px-3 rounded-3 fw-bold w-100 apply-btn {{ isApplied ? 'btn-outline-danger' : 'btn-primary' }}"
+                                                data-offer-id="{{ offer.id }}"
+                                                data-applied="{{ isApplied ? 'true' : 'false' }}"
+                                                data-seats="{{ offer.seats }}"
+                                                data-remaining="{{ offer.remainingSeats }}"
+                                                onclick="toggleApply(this)">
+                                            {% if isApplied %}
+                                                <i class="bi bi-x-circle me-1"></i><span class="small">Withdraw</span>
+                                            {% else %}
+                                                <i class="bi bi-send me-1"></i><span class="small">Apply Now</span>
+                                            {% endif %}
+                                        </button>
+                                    {% endif %}
 
+                                    {# عدد المقاعد المتبقية #}
+                                    {% if offer.seats is not null %}
+                                        <div class="text-center mt-1" style="font-size:0.7rem;">
+                                            {% if isFull %}
+                                                <span style="color:#ef4444;">
+                <i class="bi bi-x-circle-fill me-1"></i>0 / {{ offer.seats }} seats
+            </span>
+                                            {% elseif offer.remainingSeats <= 2 %}
+                                                <span style="color:#f59e0b;">
+                <i class="bi bi-exclamation-triangle-fill me-1"></i>{{ offer.remainingSeats }} / {{ offer.seats }} left
+            </span>
+                                            {% else %}
+                                                <span style="color:#22c55e;">
+                <i class="bi bi-people-fill me-1"></i>{{ offer.remainingSeats }} / {{ offer.seats }} seats
+            </span>
+                                            {% endif %}
+                                        </div>
+                                    {% endif %}
                                     {# View Details #}
                                     <button class="btn btn-outline-secondary btn-sm px-3 rounded-3 w-100"
                                             onclick="openOfferModal(this)"
@@ -1586,7 +1616,7 @@
         // ══════════════════════════════════════════════════
         // ★ Apply / Withdraw — من المودال
         // ══════════════════════════════════════════════════
-        async function toggleApplyFromModal(btn) {
+        async function toggleApply(btn) {
             const offerId   = btn.dataset.offerId;
             const isApplied = btn.dataset.applied === 'true';
             const action    = isApplied ? 'withdraw' : 'apply';
@@ -1596,15 +1626,61 @@
             try {
                 const res  = await fetch(`/student/offers/${offerId}/${action}`, { method: 'POST' });
                 const data = await res.json();
+
                 if (data.success) {
                     const nowApplied = !isApplied;
                     btn.dataset.applied = nowApplied ? 'true' : 'false';
                     updateApplyBtnUI(btn);
-                    const cardBtn = document.querySelector(`.apply-btn[data-offer-id="${offerId}"]`);
-                    if (cardBtn) { cardBtn.dataset.applied = nowApplied ? 'true' : 'false'; updateApplyBtnUI(cardBtn); }
-                } else { alert(data.error || 'Failed.'); }
+
+                    // ✅ تحديث عداد المقاعد بعد التقديم
+                    if (!isApplied && data.remainingSeats !== undefined) {
+                        updateSeatsUI(offerId, data.remainingSeats, btn.dataset.seats);
+                    }
+
+                    // مزامنة زر المودال
+                    const mb = document.querySelector(`.modal-apply-btn[data-offer-id="${offerId}"]`);
+                    if (mb) { mb.dataset.applied = nowApplied ? 'true' : 'false'; updateApplyBtnUI(mb); }
+
+                } else if (data.error === 'seats_full') {
+                    // ✅ المقاعد انتهت — تحديث UI فوراً بدون reload
+                    showSeatsFull(btn, offerId);
+                } else {
+                    alert(data.error || 'Failed.');
+                }
             } catch { alert('Network error.'); }
             finally  { btn.disabled = false; }
+        }
+
+        // ✅ دالة جديدة: تحويل الزر لـ "Seats Full"
+        function showSeatsFull(btn, offerId) {
+            btn.disabled  = true;
+            btn.className = 'btn btn-secondary px-3 rounded-3 fw-bold w-100';
+            btn.style.opacity = '0.7';
+            btn.style.cursor  = 'not-allowed';
+            btn.innerHTML = '<i class="bi bi-person-fill-slash me-1"></i><span class="small">Seats Full</span>';
+            btn.onclick   = null;
+
+            // تحديث عداد المقاعد
+            updateSeatsUI(offerId, 0, btn.dataset.seats);
+        }
+
+        // ✅ دالة جديدة: تحديث عرض المقاعد
+        function updateSeatsUI(offerId, remaining, total) {
+            const card = document.getElementById(`offer-card-${offerId}`);
+            if (!card) return;
+            const seatsEl = card.querySelector('.seats-counter');
+            if (!seatsEl || total == null) return;
+
+            if (remaining <= 0) {
+                seatsEl.style.color = '#ef4444';
+                seatsEl.innerHTML   = `<i class="bi bi-x-circle-fill me-1"></i>0 / ${total} seats`;
+            } else if (remaining <= 2) {
+                seatsEl.style.color = '#f59e0b';
+                seatsEl.innerHTML   = `<i class="bi bi-exclamation-triangle-fill me-1"></i>${remaining} / ${total} left`;
+            } else {
+                seatsEl.style.color = '#22c55e';
+                seatsEl.innerHTML   = `<i class="bi bi-people-fill me-1"></i>${remaining} / ${total} seats`;
+            }
         }
 
         // ══════════════════════════════════════════════════

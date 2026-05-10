@@ -296,10 +296,9 @@
         {% endfor %}
     </div>
 
-    {# --- Horizontal Cards Section --- #}
     <section class="py-5">
         <h2 class="text-center fw-bold mb-5">Built for Everyone</h2>
-        {# Student #}
+
         <div class="user-card-horizontal">
             <div class="user-info">
                 <h4 class="fw-bold mb-1">For Students</h4>
@@ -511,54 +510,91 @@
                     <label class="small text-secondary fw-bold mb-1">STUDENT ID</label>
                     <input type="text" name="studentId" class="form-control v0-input" placeholder="20231234">
                 </div>
-                <div class="mb-4 text-start">
-                    <label class="small text-secondary fw-bold mb-1">PASSWORD</label>
-                    <div class="position-relative">
-                        <input type="password" name="password" class="form-control v0-input w-100" placeholder="••••••••" required>
-                        <i class="bi bi-eye position-absolute top-50 end-0 translate-middle-y me-3 eye-icon"></i>
+                <div class="mb-3 text-start">
+                    <select name="university" class="form-control v0-input" required>
+                        <option value="">Select your university</option>
+                        {% for uni in universities %}
+                            <option value="{{ uni.universityName }}">{{ uni.universityName }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="mb-3 text-start">
+                    <label class="small text-secondary fw-bold mb-1">DEPARTMENT</label>
+                    <select name="department" class="form-control v0-input" required>
+                        <option value="">Select your department</option>
+                        {% for dept in departments %}
+                            <option value="{{ dept.department }}">{{ dept.department }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="row g-2 mb-3 text-start">
+                    <div class="col-6">
+                        <label class="small text-secondary fw-bold mb-1">PASSWORD</label>
+                        <input type="password" name="password" class="form-control v0-input" required>
+                    </div>
+                    <div class="col-6">
+                        <label class="small text-secondary fw-bold mb-1">CONFIRM PASSWORD</label>
+                        <input type="password" name="confirm_password" class="form-control v0-input" required>
                     </div>
                 </div>
                 <button type="submit" class="btn-v0-white" style="background:#3b82f6;color:white;">
                     <i class="bi bi-mortarboard-fill me-2"></i>Create Student Account
                 </button>
             </form>
-
             {# --- COMPANY FORM --- #}
-            <form id="form-company" class="role-form d-none" action="{{ path('app_register') }}" method="post">
+            {# ملاحظة: أضفنا enctype للسماح برفع الملفات #}
+            <form id="form-company" class="role-form d-none" action="{{ path('app_register') }}" method="post" enctype="multipart/form-data">
                 <input type="hidden" name="role" value="ROLE_COMPANY">
+
                 <div class="role-badge mb-3 text-center">
-                        <span class="badge px-3 py-2" style="background:rgba(16,185,129,0.15);color:#34d399;border:1px solid #10b981;border-radius:20px;">
-                            <i class="bi bi-building me-1"></i> Registering as Company
-                        </span>
+        <span class="badge px-3 py-2" style="background:rgba(16,185,129,0.15);color:#34d399;border:1px solid #10b981;border-radius:20px;">
+            <i class="bi bi-building me-1"></i> Registering as Company
+        </span>
                 </div>
+
                 <div class="mb-3 text-start">
                     <label class="small text-secondary fw-bold mb-1">COMPANY NAME</label>
                     <input type="text" name="companyName" class="form-control v0-input" placeholder="Tech Solutions SPA" required>
                 </div>
+
                 <div class="mb-3 text-start">
                     <label class="small text-secondary fw-bold mb-1">PROFESSIONAL EMAIL</label>
                     <input type="email" name="email" class="form-control v0-input" placeholder="contact@company.dz" required>
                 </div>
+
                 <div class="mb-3 text-start">
                     <label class="small text-secondary fw-bold mb-1">WILAYA</label>
                     <input type="text" name="wilaya" class="form-control v0-input" placeholder="Constantine">
                 </div>
+
+                {# 1. إضافة حقل رفع ملف التحقق (جديد) #}
                 <div class="mb-3 text-start">
-                    <label class="small text-secondary fw-bold mb-1">SECTOR / DOMAIN</label>
-                    <input type="text" name="sector" class="form-control v0-input" placeholder="Web Development, AI...">
+                    <label class="small text-secondary fw-bold mb-1">VERIFICATION DOCUMENT (PDF/Image)</label>
+                    <input type="file" name="verification_file" class="form-control v0-input" accept=".pdf, .jpg, .png, .jpeg" required>
+                    <div class="form-text text-muted small">Please upload your commercial register or professional ID.</div>
                 </div>
-                <div class="mb-4 text-start">
+
+                <div class="mb-3 text-start">
                     <label class="small text-secondary fw-bold mb-1">PASSWORD</label>
                     <div class="position-relative">
                         <input type="password" name="password" class="form-control v0-input w-100" placeholder="••••••••" required>
                         <i class="bi bi-eye position-absolute top-50 end-0 translate-middle-y me-3 eye-icon"></i>
                     </div>
                 </div>
+
+                {# 2. إضافة حقل تأكيد كلمة المرور (جديد) #}
+                <div class="mb-4 text-start">
+                    <label class="small text-secondary fw-bold mb-1">CONFIRM PASSWORD</label>
+                    <div class="position-relative">
+                        <input type="password" name="confirm_password" class="form-control v0-input w-100" placeholder="••••••••" required>
+                    </div>
+                </div>
+
                 <button type="submit" class="btn-v0-white" style="background:#10b981;color:white;">
                     <i class="bi bi-building me-2"></i>Create Company Account
                 </button>
             </form>
-
             {# --- ADMIN FORM --- #}
             <form id="form-admin" class="role-form d-none" action="{{ path('app_register') }}" method="post">
                 <input type="hidden" name="role" value="ROLE_ADMIN">
@@ -638,6 +674,33 @@
                 form.classList.toggle('d-none', form.id !== 'form-' + role);
             });
         }
+
+
+
+
+
+
+
+
+        document.querySelector('select[name="university"]').addEventListener('change', function() {
+            const universityName = this.value;
+            const departmentSelect = document.querySelector('select[name="department"]');
+
+            // تفريغ القائمة الحالية
+            departmentSelect.innerHTML = '<option value="">Loading...</option>';
+
+            fetch(`/api/departments/${universityName}`)
+                .then(response => response.json())
+                .then(data => {
+                    departmentSelect.innerHTML = '<option value="">Select your department</option>';
+                    data.forEach(item => {
+                        const option = document.createElement('option');
+                        option.value = item.department;
+                        option.textContent = item.department;
+                        departmentSelect.appendChild(option);
+                    });
+                });
+        });
     </script>
 
 {% endblock %}

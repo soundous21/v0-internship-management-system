@@ -28,6 +28,10 @@ class CompanyController extends AbstractController
     public function index(EntityManagerInterface $em): Response
     {
         $company = $this->getUser();
+        // التصحيح: استعمل $company وليس $user
+        if (!$company->isApprovedByWebmaster()) {
+            return $this->render('company/pending_approval.html.twig');
+        }
         $offersRepo = $em->getRepository(Offers::class);
         $allOffers = $offersRepo->findBy(['company' => $company]);
 
@@ -190,17 +194,25 @@ class CompanyController extends AbstractController
         ]);
     }
     #[Route('/company/applicants', name: 'app_company_applicants')]
-    public function applicants(ApplicationRepository $repository): Response
+    public function applicants(ApplicationRepository $repository, EntityManagerInterface $em): Response
     {
         $company = $this->getUser();
-        $candidates = $repository->findAll();
+
+        // 1. جلب كل العروض الخاصة بهذه الشركة أولاً
+        $myOffers = $em->getRepository(Offers::class)->findBy(['company' => $company]);
+
+        // 2. جلب الطلبات الخاصة بهذه العروض فقط والتي لم تُرفض
+        $candidates = $repository->findBy([
+            'offer' => $myOffers,
+            'status' => ['pending', 'accepted', 'pending_admin']
+        ]);
 
         return $this->render('company/dashboard.html.twig', [
-            'company'    => $this->getUser(),
+            'company'    => $company,
             'candidates' => $candidates,
+            'current_route' => 'app_company_applicants' // تأكد من إرسال الرووت لتفعيل الشرط في Twig
         ]);
     }
-
     #[Route('/company/offers/new', name: 'app_company_offers_new', methods: ['GET', 'POST'])]
     public function createOffer(Request $request, EntityManagerInterface $em): Response
     {
@@ -213,6 +225,9 @@ class CompanyController extends AbstractController
             $offer->setLatitude($request->request->get('latitude'));
             $offer->setLongitude($request->request->get('longitude'));
             $offer->setLocationType($request->request->get('locationType'));
+            // في createOffer — بعد setLevel()
+            $offer->setSeats($request->request->get('seats') ? (int)$request->request->get('seats') : null);
+
             $offer->setLevel($request->request->get('level')); // تأكد من وجود setLevel في Entity
             if ($request->request->get('deadline')) {
                 $offer->setDeadline(new \DateTime($request->request->get('deadline')));
@@ -241,6 +256,15 @@ class CompanyController extends AbstractController
                     $offer->addSkill($skill);
                 }
             }
+
+
+
+            // إضافة استقبال عدد المقاعد
+            $seats = $request->request->get('seats');
+            if ($seats !== null) {
+                $offer->setSeats((int)$seats);
+            }
+
 
             $em->persist($offer);
             $em->flush();
@@ -283,6 +307,8 @@ class CompanyController extends AbstractController
             $offer->setLatitude($request->request->get('latitude'));
             $offer->setLongitude($request->request->get('longitude'));
 // داخل الدالة المسؤولة عن حفظ العرض (New or Edit)
+// في createOffer — بعد setLevel()
+            $offer->setSeats($request->request->get('seats') ? (int)$request->request->get('seats') : null);
 
 // أضف هذه الأسطر لكي يتم حفظ القيم الجديدة
             $offer->setLocationType($request->request->get('locationType'));
@@ -307,6 +333,13 @@ class CompanyController extends AbstractController
                     }
                     $offer->addSkill($skill);
                 }
+            }
+
+
+            // تحديث عدد المقاعد
+            $seats = $request->request->get('seats');
+            if ($seats !== null) {
+                $offer->setSeats((int)$seats);
             }
 
             $em->flush();

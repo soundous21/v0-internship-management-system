@@ -62,6 +62,7 @@ security:
       - { path: ^/dashboard,       roles: IS_AUTHENTICATED_FULLY }
 
       # لوحة كل دور — محمية بصلاحيتها فقط
+      - { path: ^/webmaster,       roles: ROLE_WEBMASTER }
       - { path: ^/admin,           roles: ROLE_ADMIN }
       - { path: ^/company,         roles: ROLE_COMPANY }
       - { path: ^/student,         roles: ROLE_STUDENT }

@@ -205,6 +205,11 @@ class StudentController extends AbstractController
             return $this->json(['error' => 'Offer not found.'], 404);
         }
 
+        // ✅ التحقق من المقاعد
+        if ($offer->isFull()) {
+            return $this->json(['error' => 'seats_full', 'message' => 'عذراً، لقد امتلأت جميع المقاعد لهذا العرض.'], 400);
+        }
+
         // تأكد أنه لم يتقدم مسبقاً
         $existing = $em->getRepository(Application::class)->findOneBy([
             'student' => $student,
@@ -222,9 +227,11 @@ class StudentController extends AbstractController
         $em->persist($application);
         $em->flush();
 
-        return $this->json(['success' => true]);
+        return $this->json([
+            'success'         => true,
+            'remainingSeats'  => $offer->getRemainingSeats(), // إرجاع المقاعد المتبقية للـ UI
+        ]);
     }
-
     #[Route('/student/offers/{id}/withdraw', name: 'app_student_withdraw', methods: ['POST'])]
     public function withdraw(int $id, EntityManagerInterface $em): JsonResponse
     {

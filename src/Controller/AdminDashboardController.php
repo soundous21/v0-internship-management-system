@@ -18,91 +18,188 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[IsGranted('ROLE_ADMIN')]
 class AdminDashboardController extends AbstractController
+{ #[Route('/admin/dashboard', name: 'app_admin_dashboard')]
+public function dashboard(EntityManagerInterface $em): Response
 {
-    #[Route('/admin/dashboard', name: 'app_admin_dashboard')]
-    public function dashboard(EntityManagerInterface $em): Response
-    {
-        /** @var User $admin */
-        $admin = $this->getUser();
+    /** @var User $admin */
+    $admin = $this->getUser();
 
-        // --- 1. بيانات المنحنى (Trends) - آخر 6 أشهر ---
-        $chartLabels = [];
-        $chartData = [];
-        for ($i = 5; $i >= 0; $i--) {
-            $date = (new \DateTime())->modify("-$i months");
-            $chartLabels[] = $date->format('M');
+    // --- 1. بيانات المنحنى (Trends) - آخر 6 أشهر ---
+    $chartLabels = [];
+    $chartData = [];
+    for ($i = 5; $i >= 0; $i--) {
+        $date = (new \DateTime())->modify("-$i months");
+        $chartLabels[] = $date->format('M');
 
-            $count = $em->getRepository(Application::class)->createQueryBuilder('a')
-                ->select('count(a.id)')
-                ->join('a.student', 's')
-                ->where('s.universityEntity = :admin')
-                ->andWhere('a.createdAt LIKE :date')
-                ->setParameter('admin', $admin)
-                ->setParameter('date', $date->format('Y-m') . '%')
-                ->getQuery()->getSingleScalarResult();
-            $chartData[] = (int)$count;
+        $count = $em->getRepository(Application::class)->createQueryBuilder('a')
+            ->select('count(a.id)')
+            ->join('a.student', 's')
+            ->where('s.universityEntity = :admin')
+            ->andWhere('a.createdAt LIKE :date')
+            ->setParameter('admin', $admin)
+            ->setParameter('date', $date->format('Y-m') . '%')
+            ->getQuery()->getSingleScalarResult();
+        $chartData[] = (int)$count;
+    }
+// ... الكود السابق لحساب الحالات
+    // --- 2. بيانات الدائرة (Student Status) ---
+    $statusStats = [
+        'pending' => $em->getRepository(Application::class)->count(['status' => 'pending']),
+        'accepted' => $em->getRepository(Application::class)->count(['status' => 'accepted']),
+        'rejected' => $em->getRepository(Application::class)->count(['status' => 'rejected']),
+    ];
+// 1. Fetch pending applications
+    $pendingApps = $em->getRepository(Application::class)
+        ->findPendingForUniversity($admin);
+
+    // 2. Fetch accepted applications (The missing part)
+// استبدل الكود القديم بهذا الكود:
+    $acceptedApps = $em->getRepository(Application::class)
+        ->createQueryBuilder('a')
+        ->join('a.student', 's')
+        ->where('s.universityEntity = :admin') // نستخدم universityEntity المعرف في كيان User
+        ->andWhere('a.status = :status')
+        ->setParameter('admin', $admin)
+        ->setParameter('status', 'accepted')
+        ->getQuery()
+        ->getResult();
+    //  $acceptedApps = $em->getRepository(Application::class)->findBy([
+    //    'university' => $admin,
+    //  'status' => 'accepted'
+    // ]);
+
+    // جلب كافة طلبات التحقق لتمريرها للمتغير allRequests
+    $allRequests = $em->getRepository(VerificationRequest::class)->findBy(
+        ['university' => $admin], ['createdAt' => 'DESC']
+    );
+
+    $pendingApps = $em->getRepository(Application::class)
+        ->findPendingForUniversity($admin);
+
+    $pendingVerifications = $em->getRepository(VerificationRequest::class)->findBy([
+        'university' => $admin, 'status' => 'Pending',
+    ]);
+// ★ الخطوة المفقودة: جلب كافة طلبات التحقق لتمريرها للمتغير allRequests
+    $allRequests = $em->getRepository(VerificationRequest::class)->findBy(
+        ['university' => $admin], ['createdAt' => 'DESC']
+    );
+
+
+
+    // ... (الكود الموجود مسبقاً) ...
+
+    // --- حساب إحصائيات الطلاب (Placed vs Unplaced) ---
+    // الطلاب المقبولين: هم الذين لديهم طلب واحد على الأقل بحالة 'accepted'
+    $placedCount = $em->getRepository(Application::class)->createQueryBuilder('a')
+        ->select('count(DISTINCT s.id)')
+        ->join('a.student', 's')
+        ->where('s.universityEntity = :admin')
+        ->andWhere('a.status = :status')
+        ->setParameter('admin', $admin)
+        ->setParameter('status', 'accepted')
+        ->getQuery()->getSingleScalarResult();
+
+    $totalStudents = $admin->getStudents()->count();
+    $unplacedCount = $totalStudents - $placedCount;
+
+
+
+
+
+
+
+
+
+
+
+
+    // حساب حالات الطلبات
+    $statusCounts = $em->getRepository(Application::class)->createQueryBuilder('a')
+        ->select('a.status, count(a.id) as count')
+        ->join('a.student', 's')
+        ->where('s.universityEntity = :admin')
+        ->setParameter('admin', $admin)
+        ->groupBy('a.status')
+        ->getQuery()->getArrayResult();
+        $statusData = ['pending' => 0, 'accepted' => 0, 'refused' => 0];
+        foreach ($statusCounts as $row) {
+            $statusData[$row['status']] = (int)$row['count'];
         }
 
-        // --- 2. بيانات الدائرة (Student Status) ---
-        $statusStats = [
-            'pending' => $em->getRepository(Application::class)->count(['status' => 'pending']),
-            'accepted' => $em->getRepository(Application::class)->count(['status' => 'accepted']),
-            'rejected' => $em->getRepository(Application::class)->count(['status' => 'rejected']),
-        ];
+// --- إحصائيات حالة طلبات الطلاب ---
+        $applicationRepo = $em->getRepository(Application::class);
 
-
-// 1. Fetch pending applications
-        $pendingApps = $em->getRepository(Application::class)
-            ->findPendingForUniversity($admin);
-
-        // 2. Fetch accepted applications (The missing part)
-// استبدل الكود القديم بهذا الكود:
-        $acceptedApps = $em->getRepository(Application::class)
-            ->createQueryBuilder('a')
-            ->join('a.student', 's')
-            ->where('s.universityEntity = :admin') // نستخدم universityEntity المعرف في كيان User
-            ->andWhere('a.status = :status')
-            ->setParameter('admin', $admin)
-            ->setParameter('status', 'accepted')
+// جلب الإحصائيات من قاعدة البيانات
+        $statusCounts = $applicationRepo->createQueryBuilder('a')
+            ->select('a.status, COUNT(a.id) as count')
+            ->groupBy('a.status')
             ->getQuery()
             ->getResult();
-        //  $acceptedApps = $em->getRepository(Application::class)->findBy([
-        //    'university' => $admin,
-        //  'status' => 'accepted'
-        // ]);
 
-        // جلب كافة طلبات التحقق لتمريرها للمتغير allRequests
-        $allRequests = $em->getRepository(VerificationRequest::class)->findBy(
-            ['university' => $admin], ['createdAt' => 'DESC']
-        );
+        $appStatusLabels = [];
+        $appStatusData = [];
 
-        $pendingApps = $em->getRepository(Application::class)
-            ->findPendingForUniversity($admin);
-
-        $pendingVerifications = $em->getRepository(VerificationRequest::class)->findBy([
-            'university' => $admin, 'status' => 'Pending',
-        ]);
-// ★ الخطوة المفقودة: جلب كافة طلبات التحقق لتمريرها للمتغير allRequests
-        $allRequests = $em->getRepository(VerificationRequest::class)->findBy(
-            ['university' => $admin], ['createdAt' => 'DESC']
-        );
+        foreach ($statusCounts as $stat) {
+            // ترجمة الحالات إذا أردت أو عرضها كما هي
+            $appStatusLabels[] = ucfirst($stat['status']);
+            $appStatusData[] = (int)$stat['count'];
+        }
+        // نسبة النجاح (Placement Rate)
+        $placementRate = $totalStudents > 0 ? round(($placedCount / $totalStudents) * 100) : 0;
         $stats = [
+            'placedCount' => $placedCount,
+            'unplacedCount' => $unplacedCount,
+            'placementRate' => $placementRate,
+            'totalCompanies' => $admin->getPartnerCompanies()->count(),
+            'activeAgreements' => count($acceptedApps),
+            'pendingApps' => count($pendingApps),
             'totalStudents'   => $admin->getStudents()->count(),
-            'totalCompanies'  => $admin->getPartnerCompanies()->count(),
-            'activeAgreements'=> $em->getRepository(Application::class)->count(['status' => 'accepted']),
-            'pendingApps'     => count($pendingApps),
-            'activeAgreements'=> count($acceptedApps),
+            'placedStudentsCount' => $placedCount, // تأكدي من هذا الاسم
+            'placedPercentage' => $placementRate,  // تأكدي من هذا الاسم
             'pendingPartners' => count($pendingVerifications),
             'allRequests'         => $allRequests,
-
+            'appStatusLabels' => $appStatusLabels,
+            'appStatusData' => $appStatusData,
         ];
+
+
+
+        // --- 1. إحصائيات حسب الشركة (By Company) ---
+        $companyStats = $em->getRepository(Application::class)->createQueryBuilder('a')
+            ->select('c.companyName as label, count(a.id) as count')
+            ->join('a.offer', 'o')
+            ->join('o.company', 'c')
+            ->where('a.status = :status')
+            ->setParameter('status', 'accepted')
+            ->groupBy('c.id')
+            ->setMaxResults(5) // أعلى 5 شركات توظيفاً
+            ->getQuery()->getArrayResult();
+
+
+
+        // --- 2. العروض الأكثر تقديماً (Most Applied Offers) لملء القسم الثالث ---
+        $topOffers = $em->getRepository(Application::class)->createQueryBuilder('a')
+            ->select('o.title as title, count(a.id) as total')
+            ->join('a.offer', 'o')
+            ->groupBy('o.id')
+            ->orderBy('total', 'DESC')
+            ->setMaxResults(4)
+            ->getQuery()->getArrayResult();
+        $stats['companyLabels'] = array_column($companyStats, 'label');
+        $stats['companyData'] = array_column($companyStats, 'count');
+        $stats['topOffers'] = $topOffers;
+
+
+
+
+
+
+
+
 
         return $this->render('admin/dashboard.html.twig', [
             'chartLabels' => $chartLabels,
             'chartData'    => $chartData,
-            'statusStats'  => $statusStats,
-
-            'admin'               => $admin,
             'stats'               => $stats,
             'pendingApps'         => $pendingApps,
             'acceptedApps'        => $acceptedApps,
@@ -110,6 +207,7 @@ class AdminDashboardController extends AbstractController
             'myStudents'          => $admin->getStudents(),
             'myCompanies'         => $admin->getPartnerCompanies(),
             'allRequests' => $allRequests,
+            'statusStats' => $statusData,
         ]);
     }
 

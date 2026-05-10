@@ -317,28 +317,24 @@ class Offers
 
 // src/Entity/Offers.php
 
-    public function calculateStatus(Collection $applications): string
+
+    public function isActive(): bool
     {
         $now = new \DateTime();
 
-        // 1. إذا لم يحن موعد البداية بعد، فهو نشط (Active) للتقديم
-        if ($this->startDate > $now) {
-            return 'active';
+        // 1. إذا تجاوزنا تاريخ الـ deadline، العرض غير نشط
+        if ($this->deadline < $now) {
+            return false;
         }
 
-        // 2. إذا حل موعد البداية، نبحث عن وجود أي طالب مقبول
-        foreach ($applications as $app) {
-            if ($app->getStatus() === 'accepted') {
-                // إذا وجدنا مقبولين، يمكن اعتباره "مكتمل" أو يبقى نشطاً حسب رغبتك
-                // لكن بناءً على طلبك، الحالة تصبح Inactive فقط إذا لم يوجد مقبولين
-                return 'active';
-            }
+        // 2. إذا امتلأت المقاعد، العرض غير نشط
+        if ($this->getSeats() !== null && $this->getRemainingSeats() <= 0) {
+            return false;
         }
 
-        // 3. حل الموعد ولا يوجد مقبولين
-        return 'inactive';
+        // 3. عدا ذلك، العرض يبقى نشطاً حتى لو بدأ تاريخ التربص (startDate)
+        return true;
     }
-
 
 
 
@@ -362,5 +358,47 @@ class Offers
         }
 
         return false; // تاريخ البدء مرّ ولا يوجد مقبوضين، يصبح غير نشط
+    }
+
+
+    #[ORM\Column(type: 'integer', nullable: true)]
+    private ?int $seats = null; // عدد المقاعد الإجمالية
+
+// Getter/Setter
+    public function getSeats(): ?int { return $this->seats; }
+    public function setSeats(?int $seats): static { $this->seats = $seats; return $this; }
+
+
+
+
+
+
+
+    /**
+     * حساب المقاعد المتبقية (الإجمالي - عدد المقبولين)
+     */
+    public function getRemainingSeats(): ?int
+    {
+        if ($this->seats === null) {
+            return null; // لا يوجد حد للمقاعد
+        }
+
+        $acceptedCount = 0;
+        foreach ($this->applications as $app) {
+            if ($app->getStatus() === 'accepted') {
+                $acceptedCount++;
+            }
+        }
+
+        return max(0, $this->seats - $acceptedCount);
+    }
+
+    /**
+     * هل المقاعد ممتلئة؟
+     */
+    public function isFull(): bool
+    {
+        if ($this->seats === null) return false;
+        return $this->getRemainingSeats() === 0;
     }
 }

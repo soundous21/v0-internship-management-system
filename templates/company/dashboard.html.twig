@@ -12,9 +12,9 @@
         <style>
             :root {
                 --bg-main: #000000;
-                --bg-sidebar: #09090b;
+                --bg-sidebar: #000000;
                 --card-bg: #000000;
-                --border-color: #1e293b;
+                --border-color: #111827;
                 --text-main: #ffffff;
                 --text-muted: #94a3b8;
                 --accent-primary: #3b82f6;
@@ -178,9 +178,16 @@
             </a>
             <hr class="border-secondary my-4 opacity-25">
 
-            <a href="{{ path('app_logout') }}" class="nav-link-custom text-danger">
-                <i class="bi bi-box-arrow-left"></i> Logout
-            </a>
+
+    <div class="d-flex justify-content-center mt-5 mb-4">
+        <a href="{{ path('app_logout') }}"
+           style="color: #93c5fd; border: 1px solid rgba(147, 197, 253, 0.3); background: rgba(147, 197, 253, 0.05); text-decoration: none; padding: 10px 25px; border-radius: 8px; font-weight: 500; transition: all 0.3s ease;"
+           onmouseover="this.style.background='rgba(147, 197, 253, 0.2)'; this.style.borderColor='#93c5fd';"
+           onmouseout="this.style.background='rgba(147, 197, 253, 0.05)'; this.style.borderColor='rgba(147, 197, 253, 0.3)';"
+           class="d-inline-flex align-items-center">
+            <i class="bi bi-box-arrow-right me-2"></i> Logout
+        </a>
+    </div>
         </nav>
     </div>
 
@@ -441,6 +448,8 @@
                                 <span class="text-muted mx-2">|</span>
                                 <span class="badge bg-primary-subtle text-primary" style="font-size: 0.7rem;">{{ offer.locationType }}</span>
                                 <span class="badge bg-info-subtle text-info ms-1" style="font-size: 0.7rem;">{{ offer.level|default('Master/Licence') }}</span>
+                                <span class="badge bg-info">Ramaining Seats: {{ offer.remainingSeats }} / {{ offer.seats }}
+</span>
                             </div>
 
                             {# 2. التواريخ والولاية #}
@@ -611,6 +620,17 @@
                                 <option value="Ingénieur">Ingénieur</option>
                             </select>
                         </div>
+                        <div class="mb-3">
+                            <label for="seats" class="form-label">Number of seats available</label>
+                            <input type="number"
+                                   name="seats"
+                                   id="seats"
+                                   class="form-control"
+                                   placeholder="مثال: 5"
+                                   min="1"
+                                   value="{{ offer is defined ? offer.seats : '' }}"
+                                   style="background-color: #111827; color: white; border: 1px solid #374151;">
+                        </div>
                         <div class="col-md-6">
                             <label class="label-custom">Wilaya</label>
                             <input type="text"  name="wilaya" id="offer-wilaya" class="form-control" placeholder="constantine..">
@@ -696,9 +716,6 @@
                         <button id="publish-btn" class="btn btn-primary fw-bold py-2">
                             <i class="bi bi-cloud-arrow-up me-2"></i> Publish Offer
                         </button>
-                        <button class="btn btn-outline-light py-2">
-                            <i class="bi bi-eye me-2"></i> Save as Draft
-                        </button>
                     </div>
                 </div>
             </div>
@@ -777,7 +794,17 @@
                                 <option value="Ingénieur" {{ offer.level == 'Ingénieur' ? 'selected' : '' }}>Ingénieur</option>
                             </select>
                         </div>
-
+                        <div class="mb-3">
+                            <label for="seats" class="form-label">Number of seats available</label>
+                            <input type="number"
+                                   name="seats"
+                                   id="seats"
+                                   class="form-control"
+                                   placeholder="مثال: 5"
+                                   min="1"
+                                   value="{{ offer is defined ? offer.seats : '' }}"
+                                   style="background-color: #111827; color: white; border: 1px solid #374151;">
+                        </div>
                         <div class="col-md-6">
                             <label class="label-custom">Wilaya</label>
                             <input type="text" name="wilaya" class="form-control" value="{{ offer.wilaya }}">
@@ -836,71 +863,51 @@
                 </div>
             </div>
 
-            <div class="col-lg-4">
-                <div class="stat-card sticky-top" style="top: 2rem;">
-                    <h6 class="text-white fw-bold mb-3">Preview</h6>
-                    <div class="p-4 rounded-3" style="background: #080808; border: 1px solid #333;">
-                        <h5 class="fw-bold text-white mb-1">{{ offer.title }}</h5>
-                        <p class="label-custom">{{ company.companyName }}</p>
-                        <div class="d-flex flex-column gap-1 mb-3">
-                            <small class="label-custom"><i class="bi bi-geo-alt"></i> {{ offer.wilaya }}</small>
-                            <small class="label-custom"><i class="bi bi-clock"></i> {{ offer.duration }}</small>
-                        </div>
-                        <div class="d-flex flex-wrap gap-1">
-                            {% for skill in offer.skills %}
-                                <span class="badge bg-dark border border-secondary text-primary"
-                                      style="font-size: 0.7rem;">{{ skill.tagName }}</span>
-                            {% endfor %}
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
 
         {# --- 4. Applicants Page --- #}
+
     {% elseif current_route == 'app_company_applicants' %}
-        <div class="mb-4">
-            <h2 class="fw-bold text-white">Applicants</h2>
-            <p class="text-secondary">Review and manage candidates for your positions.</p>
+        <div class="d-flex justify-content-between align-items-end mb-4">
+            <div>
+                <h2 class="fw-bold text-white">Applicants</h2>
+                <p class="text-secondary mb-0">Review and manage candidates for your positions.</p>
+            </div>
+            <div class="position-relative" style="width: 300px;">
+                <i class="bi bi-search position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"></i>
+                <input type="text" id="applicantSearch" class="form-control ps-5"
+                       placeholder="Filter by offer title..."
+                       style="background: #111; border: 1px solid #333; border-radius: 12px; color: white;">
+            </div>
         </div>
 
-        <div class="row g-3">
+        <div class="row g-3" id="applicantsContainer">
             {% for app in candidates %}
-               {#  <div class="stat-card p-3 shadow-lg application-card"
-                     id="application-card-{{ app.id }}"
-                     style="background: #000000; border-radius: 16px; border: 1px solid #262626; transition: transform 0.2s;">#}
-                <div class="stat-card p-3 shadow-lg application-card"
-                     id="application-card-{{ app.id }}">
-                    {# البطاقة باللون الأسود الصافي مع حدود دقيقة جداً #}
-                    <div class="stat-card p-3 shadow-lg" style="background: #000000; border-radius: 16px; border: 1px solid #262626; transition: transform 0.2s;">
-                        <div class="d-flex align-items-center gap-3 mb-4">
-                            {# دائرة الاسم بخلفية داكنة متناسقة #}
+                <div class="col-md-6 col-lg-4 applicant-item" data-offer-title="{{ app.offer.title|lower }}">
+                    <div class="stat-card h-100 d-flex flex-column p-3"
+                         id="application-card-{{ app.id }}"
+                         style="background: #000; border: 1px solid #262626; border-radius: 20px; transition: all 0.3s ease;">
+
+                        <div class="d-flex align-items-center gap-3 mb-3">
                             <div class="d-flex align-items-center justify-content-center text-white fw-bold shadow-sm"
-                                 style="width: 48px; height: 48px; background: #111111; border-radius: 12px; border: 1px solid #333; font-size: 0.9rem;">
+                                 style="width: 48px; height: 48px; background: #111; border-radius: 12px; border: 1px solid #333;">
                                 {{ app.student.firstName|first }}{{ app.student.lastName|first }}
                             </div>
-
                             <div class="flex-grow-1">
-                                <h6 class="mb-0 text-white fw-semibold" style="font-size: 0.95rem;">{{ app.student.firstName }} {{ app.student.lastName }}</h6>
-                                {# عنوان الـ Offer بلون فاتح جداً وواضح #}
-                                <small style="color: #60a5fa; font-weight: 500; font-size: 0.8rem; letter-spacing: 0.3px;">
-                                    <i class="bi bi-briefcase small me-1"></i>{{ app.offer.title }}
-                                </small>
+                                <h6 class="mb-0 text-white fw-bold">{{ app.student.firstName }} {{ app.student.lastName }}</h6>
+                                <div class="text-primary small fw-semibold">
+                                    <i class="bi bi-briefcase me-1"></i>{{ app.offer.title }}
+                                </div>
                             </div>
-
-                            {# نسبة التوافق بتصميم عصري (زجاجي) #}
                             <span class="badge" style="background: rgba(59, 130, 246, 0.1); color: #3b82f6; border: 1px solid rgba(59, 130, 246, 0.2); font-size: 0.75rem;">
-                    {{ app.getMatchingScore() }}% Match
-                </span>
+                            {{ app.getMatchingScore() }}% Match
+                        </span>
                         </div>
 
-                        <div class="d-flex flex-column gap-2">
-                            {# زر معاينة الـ CV بتصميم متوافق مع الخلفية السوداء #}
-                            <button type="button"
-                                    class="btn btn-sm w-100 py-2"
-                                    style="background: #111111; color: #e2e8f0; border: 1px solid #333; border-radius: 10px;"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#studentPreviewModal"
+                        <div class="d-flex flex-column gap-2 mt-auto">
+                            <button type="button" class="btn btn-sm w-100 py-2 fw-semibold"
+                                    style="background: #161616; color: #fff; border: 1px solid #333; border-radius: 12px;"
+                                    data-bs-toggle="modal" data-bs-target="#studentPreviewModal"
                                     data-name="{{ app.student.firstName }} {{ app.student.lastName }}"
                                     data-level="{{ app.student.level }}"
                                     data-specialty="{{ app.student.specialty|default('Student') }}"
@@ -914,91 +921,54 @@
                                     data-github="{{ app.student.githubLink|default('') }}"
                                     data-bio="{{ app.student.bio|default('') }}"
                                     data-skills="{{ app.student.skills|map(s => s.tagName)|join(',') }}">
-                                <i class="bi bi-eye me-2"></i>View CV
+                                <i class="bi bi-eye me-2"></i>View Profile
                             </button>
 
-                            <div class="d-flex gap-2 w-100 mt-1">
-                                <div class="flex-grow-1">
-                                    {% if app.status == 'pending' %}
-                                        <form action="{{ path('app_company_application_validate', {id: app.id}) }}" method="POST" class="m-0">
-                                            <button class="btn btn-sm w-100 fw-bold py-2" style="background: #3b82f6; color: #ffffff; border: none; border-radius: 10px;">
-                                                Accept & Send
-                                            </button>
-                                        </form>
-                                    {% elseif app.status == 'pending_admin' %}
-                                        <button class="btn btn-sm w-100 fw-bold py-2 disabled" style="background: #f59e0b; color: #ffffff; border: none; border-radius: 10px; opacity: 0.85;">
-                                            <i class="bi bi-clock-history me-1"></i> Waiting Admin
+                            <div class="d-flex gap-2">
+                                {% if app.status == 'pending' %}
+                                    <form action="{{ path('app_company_application_validate', {id: app.id}) }}" method="POST" class="flex-grow-1 m-0">
+                                        <button class="btn btn-sm w-100 fw-bold py-2" style="background: #3b82f6; color: #fff; border: none; border-radius: 10px;">
+                                            Accept
                                         </button>
-                                    {% elseif app.status == 'accepted' %}
-                                        <button class="btn btn-sm w-100 fw-bold py-2 disabled" style="background: #10b981; color: #ffffff; border: none; border-radius: 10px;">
-                                            <i class="bi bi-check2-all me-1"></i> Accepted
-                                        </button>
-                                    {% endif %}
-                                </div>
-
-                                {# زر الرفض بشكل أيقونة دائرية أنيقة #}
-                                  <button type="button" class="btn btn-sm btn-outline-danger d-flex align-items-center justify-content-center"
-                                        style="width: 40px; border-radius: 10px; border-color: rgba(220, 38, 38, 0.4);"
-                                        data-bs-toggle="modal" data-bs-target="#refuseModal{{ app.id }}">
-                                    <i class="bi bi-x-lg"></i>
-                                </button>
+                                    </form>
+                                    <button type="button" class="btn btn-sm btn-outline-danger d-flex align-items-center justify-content-center"
+                                            style="width: 42px; border-radius: 10px; border-color: rgba(220, 38, 38, 0.4);"
+                                            data-bs-toggle="modal" data-bs-target="#refuseModal{{ app.id }}">
+                                        <i class="bi bi-x-lg"></i>
+                                    </button>
+                                {% elseif app.status == 'pending_admin' %}
+                                    <div class="btn btn-sm w-100 disabled py-2 fw-bold" style="background: rgba(245, 158, 11, 0.1); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.3); border-radius: 10px;">
+                                        <i class="bi bi-clock-history me-1"></i> Waiting Admin
+                                    </div>
+                                {% elseif app.status == 'accepted' %}
+                                    <div class="btn btn-sm w-100 disabled py-2 fw-bold" style="background: rgba(16, 185, 129, 0.1); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 10px;">
+                                        <i class="bi bi-check2-all me-1"></i> Accepted
+                                    </div>
+                                {% endif %}
                             </div>
-
                         </div>
                     </div>
                 </div>
 
-
-
-
                 <div class="modal fade" id="refuseModal{{ app.id }}" tabindex="-1" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered">
-                      {#   <form action="{{ path('app_company_application_refuse', {id: app.id}) }}" method="POST" class="w-100 m-0">#}
-                        <form id="refuse-form-{{ app.id }}"
-                              action="{{ path('app_company_application_refuse', {id: app.id}) }}"
-                              method="POST"
-                              class="w-100 m-0">
-                            <div class="modal-content" style="background: #000000; border: 1px solid #dc2626; border-radius: 16px; box-shadow: 0 10px 30px rgba(220, 38, 38, 0.1);">
-
-                                <div class="modal-header border-0 pb-0">
-                                    <div class="d-flex align-items-center gap-2">
-                                        <i class="bi bi-exclamation-triangle-fill text-danger"></i>
-                                        <h5 class="modal-title text-white fw-bold">Refuse Application</h5>
-                                    </div>
+                        <form id="refuse-form-{{ app.id }}" action="{{ path('app_company_application_refuse', {id: app.id}) }}" method="POST" class="w-100 m-0">
+                            <div class="modal-content" style="background: #000; border: 1px solid #dc2626; border-radius: 24px;">
+                                <div class="modal-header border-0">
+                                    <h5 class="modal-title text-white fw-bold">Refuse Application</h5>
                                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
-
-                                <div class="modal-body py-4">
-                                    <div class="mb-3 text-center">
-                                        <p class="text-white mb-1">Refusing <strong>{{ app.student.firstName }} {{ app.student.lastName }}</strong></p>
-                                        <p style="color: #ef4444; font-size: 0.85rem;">This action cannot be undone.</p>
-                                    </div>
-
-                                    <div class="mb-2">
-                                        <label class="form-label text-white-50 small fw-bold">REASON FOR REJECTION</label>
-                                        {# تعديل منطقة الكتابة لتكون واضحة جداً #}
-                                        <textarea name="rejection_reason"
-                                                  class="form-control shadow-none"
-                                                  rows="3"
-                                                  required
-                                                  placeholder="Provide feedback to the student..."
-                                                  style="background: #111111; color: #ffffff; border: 1px solid #333; border-radius: 10px;"></textarea>
-                                    </div>
-                                    <p class="small text-muted" style="font-size: 0.75rem;">
-                                        <i class="bi bi-info-circle me-1"></i> The student will receive this feedback via email.
-                                    </p>
+                                <div class="modal-body text-center py-4">
+                                    <i class="bi bi-exclamation-circle text-danger fs-1 mb-3"></i>
+                                    <p class="text-white">Refusing application for <strong>{{ app.student.firstName }} {{ app.student.lastName }}</strong></p>
+                                    <textarea name="rejection_reason" class="form-control mt-3 shadow-none" rows="3" required
+                                              placeholder="Provide feedback (sent via email)..."
+                                              style="background: #111; color: #fff; border: 1px solid #333; border-radius: 15px;"></textarea>
                                 </div>
-
-                                <div class="modal-footer border-0 pt-0">
+                                <div class="modal-footer border-0">
                                     <div class="d-flex gap-2 w-100">
-                                        <button type="button" class="btn btn-sm flex-grow-1 text-white"
-                                                style="background: #1a1a1a; border: 1px solid #333; border-radius: 10px;"
-                                                data-bs-dismiss="modal">Cancel</button>
-
-                                        <button type="submit" class="btn btn-sm flex-grow-1 fw-bold"
-                                                style="background: #dc2626; color: #ffffff; border: none; border-radius: 10px;">
-                                            Confirm Rejection
-                                        </button>
+                                        <button type="button" class="btn btn-dark flex-grow-1 py-2" style="border-radius: 12px;" data-bs-dismiss="modal">Cancel</button>
+                                        <button type="submit" class="btn btn-danger flex-grow-1 py-2 fw-bold" style="border-radius: 12px;">Confirm Rejection</button>
                                     </div>
                                 </div>
                             </div>
@@ -1007,12 +977,15 @@
                 </div>
             {% else %}
                 <div class="col-12 text-center py-5">
-                    <p class="text-muted">No applications found yet.</p>
+                    <div class="p-5" style="background: #0a0a0a; border-radius: 20px; border: 1px dashed #333;">
+                        <i class="bi bi-people text-muted fs-1 mb-3"></i>
+                        <p class="text-muted mb-0">No applications found yet for your offers.</p>
+                    </div>
                 </div>
             {% endfor %}
         </div>
 
-        {# --- 4b. University Requests Page (Affiliation) --- #}
+       {# --- 4b. University Requests Page (Affiliation) --- #}
     {% elseif current_route == 'app_company_university_requests' %}
         <div class="mb-5">
             <h2 class="display-6 fw-bold text-white mb-2">University Affiliation</h2>
@@ -2251,5 +2224,27 @@
                 });
 
             });
+
+
+
+
+
+
+
+
+            document.getElementById('applicantSearch').addEventListener('keyup', function() {
+                let filter = this.value.toLowerCase();
+                let items = document.querySelectorAll('.applicant-item');
+
+                items.forEach(item => {
+                    let title = item.getAttribute('data-offer-title');
+                    if (title.includes(filter)) {
+                        item.style.display = "";
+                    } else {
+                        item.style.display = "none";
+                    }
+                });
+            });
+
         </script>
     {% endblock %}

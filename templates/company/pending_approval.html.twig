@@ -1,0 +1,63 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <style>
+        /* إخفاء النافبار إذا أردت التركيز على الرسالة فقط */
+        nav.navbar, .navbar-top { display: none !important; }
+
+        .pending-card {
+            background: #09090b; /* لون أسود عميق متناسق مع الداشبورد */
+            border: 1px solid #1e293b;
+            border-radius: 16px;
+            transition: transform 0.3s ease;
+        }
+
+        .icon-wrapper {
+            width: 80px;
+            height: 80px;
+            background: rgba(59, 130, 246, 0.1); /* خلفية زرقاء شفافة */
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+        }
+
+        .text-accent {
+            color: #3b82f6; /* اللون الأزرق الأساسي للمشروع */
+        }
+
+        .alert-custom {
+            background: rgba(30, 41, 59, 0.5);
+            border: 1px solid #334155;
+            color: #94a3b8;
+        }
+    </style>
+
+    <div class="container d-flex align-items-center justify-content-center" style="min-height: 90vh;">
+        <div class="card pending-card shadow-2xl p-5 text-center" style="max-width: 550px;">
+
+            <div class="icon-wrapper">
+                <i class="bi bi-patch-check text-accent" style="font-size: 2.5rem;"></i>
+            </div>
+
+            <h2 class="text-white fw-bold mb-3">Verification in Progress</h2>
+
+            <p class="text-secondary mb-4 px-3">
+                Your company account has been registered. The <strong>Web Master</strong> is currently
+                reviewing your legal documents to ensure platform safety.
+            </p>
+
+            <div class="alert alert-custom py-2 px-3 small d-inline-flex align-items-center mb-4">
+                <i class="bi bi-clock-history me-2 text-accent"></i>
+                Estimated time: 24h - 48h
+            </div>
+
+            <div class="d-grid gap-2">
+                <a href="{{ path('app_logout') }}" class="btn btn-outline-secondary border-secondary-subtle text-white">
+                    <i class="bi bi-box-arrow-left me-2"></i>Logout & Check Later
+                </a>
+            </div>
+        </div>
+    </div>
+{% endblock %}

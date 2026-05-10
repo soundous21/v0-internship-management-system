@@ -49,6 +49,9 @@ class SecurityController extends AbstractController
         if ($this->isGranted('ROLE_STUDENT')) {
             return $this->redirectToRoute('app_student_dashboard');
         }
+        if ($this->isGranted('ROLE_WEBMASTER')) {
+            return $this->redirectToRoute('app_webmaster_dashboard');
+        }
 
         return $this->redirectToRoute('app_home');
     }

@@ -9,10 +9,10 @@
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap');
 
         :root {
-            --bg-main: #030712;
-            --bg-sidebar: #09090b;
+            --bg-main: #000000;
+            --bg-sidebar: #000000;
             --card-bg: #000000;
-            --border-color: rgb(17, 24, 39);
+            --border-color: rgb(41, 55, 89);
             --text-muted: #94a3b8;
             --accent-primary: #3378f3;
             --accent-info: #0ea5e9;
@@ -296,6 +296,83 @@
 
 
 
+
+
+
+
+
+         .stamp-upload-card {
+             background: #111113;
+             border: 1px solid #27272a;
+             border-radius: 16px;
+             padding: 20px;
+             transition: transform 0.3s ease;
+         }
+
+        .icon-box {
+            width: 40px;
+            height: 40px;
+            background: rgba(51, 120, 243, 0.1);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .upload-zone {
+            border: 2px dashed #27272a;
+            border-radius: 12px;
+            height: 160px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            background: #09090b;
+        }
+
+        .upload-zone:hover {
+            border-color: var(--accent-primary);
+            background: rgba(51, 120, 243, 0.05);
+        }
+
+        .current-stamp img {
+            max-height: 130px;
+            max-width: 100%;
+            filter: drop-shadow(0 0 10px rgba(255,255,255,0.1));
+        }
+
+        .overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s;
+            color: white;
+            font-weight: 500;
+        }
+
+        .upload-zone:hover .overlay { opacity: 1; }
+
+        .status-badge {
+            font-size: 0.75rem;
+            padding: 6px 12px;
+            border-radius: 20px;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .status-badge.success { background: rgba(16, 185, 129, 0.1); color: #10b981; }
+        .status-badge.warning { background: rgba(245, 158, 11, 0.1); color: #f59e0b; }
+
+        .placeholder-content { color: #52525b; text-align: center; }
+
     </style>
 
     <div class="d-flex">
@@ -355,7 +432,221 @@
                             <p class="text-secondary small">.</p>
                         </div>
                     </div>
+                     {# --- هذا هو الجزء الأهم: يجب أن يكون في الأسفل تماماً أو داخل block javascripts --- #}
+                    {# --- جزء الختم المحدث --- #}
+                    <style>
+                        .dark-premium-card {
+                            background: #0b0b0b;
+                            border: 1px solid #1f1f1f;
+                            border-radius: 20px;
+                            padding: 20px; /* تقليل الحشو الداخلي قليلاً */
+                            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+                            transition: transform 0.3s ease;
+                        }
 
+                        /* تحسين أيقونة العنوان لتكون أصغر وأكثر تناسقاً */
+                        .icon-wrapper {
+                            background: #111;
+                            border: 1px solid #0c0c0c;
+                            width: 35px;
+                            height: 35px;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            border-radius: 8px;
+                            color: #0d6efd;
+                        }
+
+                        .custom-upload-zone {
+                            background: #050505 !important;
+                            border: 1px dashed #333 !important;
+                            border-radius: 12px;
+                            padding: 20px 10px; /* تقليل الارتفاع */
+                            transition: all 0.3s ease;
+                        }
+
+                        .stamp-preview {
+                            max-height: 70px; /* تصغير حجم عرض الختم */
+                            border-radius: 6px;
+                            background: #fff;
+                            padding: 4px;
+                        }
+
+                        .text-dimmed { color: #6c757d !important; font-size: 0.75rem; }
+                        .text-upload { color: #e0e0e0; font-weight: 500; font-size: 0.85rem; }
+                    </style>
+
+                    <!-- تم تعديل كلاس الـ Column ليكون أصغر (col-md-4) وأضفت mb-5 للمسافة السفلية -->
+                    <div class="row mb-5 mt-3">
+                        <div class="col-md-4 col-xl-3">
+                            <div class="dark-premium-card">
+                                <div class="d-flex align-items-center mb-3">
+                                    <div class="icon-wrapper me-2">
+                                        <i class="bi bi-shield-check fs-6"></i>
+                                    </div>
+                                    <div>
+                                        <h6 class="mb-0 text-white fw-bold" style="font-size: 0.9rem;">University seal</h6>
+                                        <span class="text-dimmed">Official Stamp</span>
+                                    </div>
+                                </div>
+
+                                <div class="custom-upload-zone text-center" id="dropZone" style="cursor: pointer;">
+                                    {% if app.user.stampFilename %}
+                                        <div class="current-stamp">
+                                            <img src="{{ asset('uploads/stamps/' ~ app.user.stampFilename) }}"
+                                                 class="stamp-preview mb-2" alt="Stamp">
+                                            <div>
+                                                <span class="text-primary" style="font-size: 10px; text-decoration: underline;">تغيير الملف</span>
+                                            </div>
+                                        </div>
+                                    {% else %}
+                                        <div class="upload-placeholder">
+                                            <i class="bi bi-plus-lg text-primary opacity-50 mb-1"></i>
+                                            <p class="text-upload mb-0">Lift the stamp</p>
+                                        </div>
+                                    {% endif %}
+                                    <input type="file" id="stampInput" class="d-none" accept="image/*">
+                                </div>
+
+                                <div id="uploadStatus" class="mt-3 text-center">
+                                    {% if app.user.stampFilename %}
+                                        <div class="status-pill status-ready" style="font-size: 10px; color: #2ecc71; background: rgba(46, 204, 113, 0.1); padding: 2px 10px; border-radius: 20px;">
+                                            <i class="bi bi-check-circle-fill me-1"></i>Stamp Ready
+                                        </div>
+                                    {% else %}
+                                        <div class="status-pill status-pending" style="font-size: 10px; color: #888; background: rgba(255,255,255,0.05); padding: 2px 10px; border-radius: 20px;">
+                                            <i class="bi bi-dash-circle me-1"></i>required
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <script>
+
+                        document.addEventListener('DOMContentLoaded', function() {
+
+                            const zone = document.getElementById('dropZone');
+
+                            const input = document.getElementById('stampInput');
+
+                            const statusContainer = document.getElementById('uploadStatus');
+
+
+
+                            if (zone && input) {
+
+// فتح نافذة الملفات عند الضغط على المربع
+
+                                zone.addEventListener('click', () => input.click());
+
+
+
+// معالجة اختيار الملف
+
+                                input.addEventListener('change', function() {
+
+                                    if (this.files && this.files[0]) {
+
+                                        const file = this.files[0];
+
+
+
+// إظهار مؤشر التحميل
+
+                                        statusContainer.innerHTML = '<div class="spinner-border spinner-border-sm text-primary" role="status"></div> <span class="text-white-50 ms-2" style="font-size: 11px;">جاري المعالجة...</span>';
+
+
+
+                                        const formData = new FormData();
+
+                                        formData.append('file', file);
+
+
+
+                                        fetch('/admin/stamp', {
+
+                                            method: 'POST',
+
+                                            body: formData
+
+                                        })
+
+                                            .then(response => response.json())
+
+                                            .then(data => {
+
+                                                if (data.success) {
+
+// نجاح: تحديث الصفحة لإظهار الختم الجديد
+
+                                                    window.location.reload();
+
+                                                } else {
+
+// فشل: إظهار الخطأ
+
+                                                    statusContainer.innerHTML = `<span class="text-danger small"><i class="bi bi-x-circle"></i> خطأ: ${data.error || 'فشل الرفع'}</span>`;
+
+                                                }
+
+                                            })
+
+                                            .catch(error => {
+
+                                                console.error('Error:', error);
+
+                                                statusContainer.innerHTML = '<span class="text-danger small">حدث خطأ في الاتصال بالسيرفر</span>';
+
+                                            });
+
+                                    }
+
+                                });
+
+
+
+// تحسين بصري: تأثير السحب والإفلات
+
+                                zone.addEventListener('dragover', (e) => {
+
+                                    e.preventDefault();
+
+                                    zone.style.borderColor = '#0d6efd';
+
+                                    zone.style.background = '#0f0f0f';
+
+                                });
+
+
+
+                                zone.addEventListener('dragleave', () => {
+
+                                    zone.style.borderColor = '#333';
+
+                                    zone.style.background = '#050505';
+
+                                });
+
+
+
+                                zone.addEventListener('drop', (e) => {
+
+                                    e.preventDefault();
+
+                                    input.files = e.dataTransfer.files;
+
+                                    input.dispatchEvent(new Event('change'));
+
+                                });
+
+                            }
+
+                        });
+
+                    </script>
+                    {# --- نهاية جزء الختم --- #}
                     <!-- KPI Grid -->
                     <div class="row g-4 mb-5">
                         <div class="col-md-3">
@@ -374,13 +665,12 @@
                             <div class="stat-card">
                                 <small class="text-muted fw-bold uppercase-tracking">Active Agreements</small>
                                 <div class="kpi-number mt-2">{{ stats.activeAgreements }}</div>
-                                <div class="text-warning small mt-2 fw-bold">⚠ 12 Awaiting signature</div>
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="stat-card">
                                 <small class="text-muted fw-bold uppercase-tracking">Pending internship applications</small>
-                                <div class="kpi-number mt-2">{{ stats.pendingApps }}</div>
+                                <div class="kpi-number mt-2">{{ stats.pendingApps}}</div>
                             </div>
                         </div>
                     </div>
@@ -397,7 +687,7 @@
                         </div>
                         <div class="col-lg-4">
                             <div class="stat-card">
-                                <h5 class="fw-bold mb-4">Student Status</h5>
+                                <h5 class="fw-bold mb-4">Student Applications Status</h5>
                                 <div class="chart-container" style="min-height: 250px;">
                                     <canvas id="studentStatusChart"></canvas>
                                 </div>
@@ -635,69 +925,51 @@
                     <div class="col-md-4">
                         <div class="stat-card text-center">
                             <small class="text-muted fw-bold uppercase-tracking d-block mb-3">TOTAL STUDENTS</small>
-
-                            {# عرض إجمالي عدد الطلاب من قاعدة البيانات #}
                             <div class="kpi-number" style="font-size:3rem;color:white;">
                                 {{ stats.totalStudents|default(0) }}
                             </div>
-
                             <div class="progress-bar-custom mt-3">
-                                {# شريط الإجمالي يظل مكتملاً 100% عادةً #}
                                 <div class="progress-bar-fill" style="width:100%;background:var(--accent-primary);"></div>
                             </div>
-
-                            {# عرض السنة الأكاديمية ديناميكياً إذا كانت متوفرة #}
                             <small class="text-muted mt-2 d-block">
-                                Academic year {{ "now"|date("Y") }}-{{ "now"|date_modify("+1 year")|date("Y") }}
+                                Academic year {{ "now"|date("Y") }}/{{ "now"|date_modify("+1 year")|date("Y") }}
                             </small>
                         </div>
                     </div>
+
                     <div class="col-md-4">
                         <div class="stat-card text-center" style="border-color:rgba(16,185,129,0.3);">
-                            <small class="text-success fw-bold uppercase-tracking d-block mb-3">✅ PLACED</small>
-
-                            {# عرض عدد الطلاب المثبتين ديناميكياً #}
+                            <small class="text-success fw-bold uppercase-tracking d-block mb-3">PLACED</small>
                             <div class="kpi-number" style="font-size:3rem;color:#10b981;">
                                 {{ stats.placedStudentsCount|default(0) }}
                             </div>
-
                             <div class="progress-bar-custom mt-3">
-                                {# جعل عرض الشريط (width) يتناسب مع النسبة المئوية #}
                                 <div class="progress-bar-fill"
                                      style="width: {{ stats.placedPercentage|default(0) }}%; background:#10b981;">
                                 </div>
                             </div>
-
-                            {# عرض النسبة المئوية كصيغة نصية #}
                             <small class="text-success mt-2 d-block fw-bold">
-                                {{ stats.placedPercentage|default(0) }}% of total students
+                                {{ stats.placedPercentage|default(0) }}% Success Rate
                             </small>
                         </div>
                     </div>
+
                     <div class="col-md-4">
+                        {% set total = stats.totalStudents|default(0) %}
+                        {% set placed = stats.placedStudentsCount|default(0) %}
+                        {% set unplacedCount = total - placed %}
+                        {% set unplacedPercentage = (total > 0) ? (unplacedCount / total * 100) : 0 %}
+
                         <div class="stat-card text-center" style="border-color:rgba(239,68,68,0.3);">
-                            <small class="text-danger fw-bold uppercase-tracking d-block mb-3">❌ UNPLACED</small>
-
-                            {# حساب عدد الطلاب غير المثبتين: الإجمالي - المثبتين #}
-                            {% set unplacedCount = stats.totalStudents|default(0) - stats.placedStudentsCount|default(0) %}
-
-                            {# حساب النسبة المئوية لغير المثبتين #}
-                            {% set unplacedPercentage = (stats.totalStudents|default(0) > 0)
-                                ? (unplacedCount / stats.totalStudents) * 100
-                                : 0
-                            %}
-
+                            <small class="text-danger fw-bold uppercase-tracking d-block mb-3">UNPLACED</small>
                             <div class="kpi-number" style="font-size:3rem;color:#ef4444;">
                                 {{ unplacedCount }}
                             </div>
-
                             <div class="progress-bar-custom mt-3">
-                                {# شريط التقدم لغير المثبتين #}
                                 <div class="progress-bar-fill"
                                      style="width: {{ unplacedPercentage }}%; background:#ef4444;">
                                 </div>
                             </div>
-
                             <small class="text-danger mt-2 d-block fw-bold">
                                 {{ unplacedPercentage|round(1) }}% still searching
                             </small>
@@ -1149,63 +1421,66 @@
             }
         });
 
-        // 2. Dashboard – Student Status Donut
-        new Chart(document.getElementById('studentStatusChart'), {
-            type: 'doughnut',
-            data: {
-                labels: ['Interning', 'Pending', 'Unplaced'],
-                datasets: [{
-                    data: [156, 87, 81],
-                    backgroundColor: ['#3378f3', '#0ea5e9', '#1e293b'],
-                    hoverOffset: 10,
-                    borderWidth: 0
-                }]
-            },
-            options: { ...CHART_DEFAULTS, cutout: '70%', plugins: { legend: { position: 'bottom', labels: { color: '#94a3b8', padding: 20, usePointStyle: true } } } }
-        });
 
-        // 3. Statistics – Placement Donut  ✅ NEW
-        new Chart(document.getElementById('placementDonutChart'), {
+
+
+
+
+
+        // جلب البيانات من PHP (Twig)
+        const placedCount = {{ stats.placedStudentsCount|default(0) }};
+        const totalStudents = {{ stats.totalStudents|default(0) }};
+        const searchingCount = totalStudents - placedCount;
+
+        // إعداد الرسم البياني
+        const ctxPlacement = document.getElementById('placementDonutChart').getContext('2d');
+        new Chart(ctxPlacement, {
             type: 'doughnut',
             data: {
-                labels: ['Placed ✅', 'Unplaced ❌'],
+                labels: ['Placed', 'Still Searching'],
                 datasets: [{
-                    data: [156, 168],
-                    backgroundColor: ['#10b981', '#ef4444'],
-                    hoverOffset: 10,
-                    borderWidth: 0
+                    data: [placedCount, searchingCount > 0 ? searchingCount : 0],
+                    backgroundColor: [
+                        '#10b981', // أخضر للمقبولين
+                        '#374151'  // رمادي داكن للذين يبحثون
+                    ],
+                    hoverBackgroundColor: [
+                        '#059669',
+                        '#4b5563'
+                    ],
+                    borderWidth: 0,
+                    weight: 0.5
                 }]
             },
             options: {
-                ...CHART_DEFAULTS,
-                cutout: '65%',
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '80%', // لجعل الدائرة نحيفة وأنيقة (Donut style)
                 plugins: {
-                    legend: { position: 'bottom', labels: { color: '#94a3b8', padding: 20, usePointStyle: true } }
+                    legend: {
+                        display: true,
+                        position: 'bottom',
+                        labels: {
+                            color: '#94a3b8',
+                            usePointStyle: true,
+                            padding: 20,
+                            font: { size: 12 }
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const label = context.label || '';
+                                const value = context.raw || 0;
+                                const total = placedCount + searchingCount;
+                                const percentage = total > 0 ? Math.round((value / total) * 100) : 0;
+                                return `${label}: ${value} (${percentage}%)`;
+                            }
+                        }
+                    }
                 }
             }
         });
-
-        // 4. Statistics – Industry Donut  ✅ canvas now exists
-        new Chart(document.getElementById('industryChart'), {
-            type: 'doughnut',
-            data: {
-                labels: ['Tech', 'Telecom', 'Finance', 'Gov'],
-                datasets: [{
-                    data: [45, 18, 15, 12],
-                    backgroundColor: ['#3378f3', '#10b981', '#f59e0b', '#6366f1'],
-                    borderWidth: 0
-                }]
-            },
-            options: {
-                ...CHART_DEFAULTS,
-                cutout: '60%',
-                plugins: { legend: { position: 'bottom', labels: { color: '#94a3b8', padding: 15, usePointStyle: true } } }
-            }
-        });
-
-
-
-
 
 
 
@@ -1409,12 +1684,12 @@
             new Chart(statusCtx, {
                 type: 'doughnut',
                 data: {
-                    labels: ['Pending', 'Accepted', 'Rejected'],
+                    labels: ['Pending', 'Accepted', 'Refused'],
                     datasets: [{
                         data: [
                             {{ statusStats.pending }},
                             {{ statusStats.accepted }},
-                            {{ statusStats.rejected }}
+                            {{ statusStats.refused }} // تم التغيير هنا من rejected إلى refused
                         ],
                         backgroundColor: ['#f59e0b', '#10b981', '#ef4444'],
                         borderWidth: 0,
@@ -1473,21 +1748,93 @@
 
 
 
-            function filterAgreements() {
+        function filterAgreements() {
             const input = document.getElementById('agreementSearchInput');
             const filter = input.value.toLowerCase();
             const table = document.getElementById('agreementsTable');
             const tr = table.getElementsByClassName('agreement-row');
 
             for (let i = 0; i < tr.length; i++) {
-            const studentName = tr[i].querySelector('.student-name').innerText.toLowerCase();
-            if (studentName.indexOf(filter) > -1) {
-            tr[i].style.display = "";
-        } else {
-            tr[i].style.display = "none";
+                const studentName = tr[i].querySelector('.student-name').innerText.toLowerCase();
+                if (studentName.indexOf(filter) > -1) {
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+            }
         }
-        }
-        }
+
+
+
+
+
+
+
+
+
+        // رسم بياني للشركات
+        const ctxComp = document.getElementById('companyDistributionChart').getContext('2d');
+        new Chart(ctxComp, {
+            type: 'bar',
+            data: {
+                labels: {{ stats.companyLabels|json_encode|raw }},
+                datasets: [{
+                    data: {{ stats.companyData|json_encode|raw }},
+                    backgroundColor: '#3378f3',
+                    borderRadius: 4,
+                    barThickness: 15
+                }]
+            },
+            options: {
+                indexAxis: 'y', // لجعل الأسماء تظهر بوضوح على اليسار
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    x: { grid: { display: false }, ticks: { color: '#64748b' } },
+                    y: { grid: { display: false }, ticks: { color: '#fff', font: { size: 10 } } }
+                }
+            }
+        });
+
+
+
+        // رسم بياني لحالة طلبات الطلاب
+        const ctxStatus = document.getElementById('studentStatusChart').getContext('2d');
+        new Chart(ctxStatus, {
+            type: 'doughnut', // أو 'pie'
+            data: {
+                labels: {{ stats.appStatusLabels|json_encode|raw }},
+                datasets: [{
+                    data: {{ stats.appStatusData|json_encode|raw }},
+                    backgroundColor: [
+                        '#3378f3', // Blue لجاهز/قيد الانتظار
+                        '#10b981', // Green للمقبول
+                        '#ef4444', // Red للمرفوض
+                        '#f59e0b'  // Yellow لحالات أخرى
+                    ],
+                    borderWidth: 0,
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            color: '#94a3b8',
+                            padding: 20,
+                            font: { size: 12 }
+                        }
+                    }
+                },
+                cutout: '70%' // يجعل شكل الدونات نحيفاً وعصرياً
+            }
+        });
+
+
 
 
     </script>
