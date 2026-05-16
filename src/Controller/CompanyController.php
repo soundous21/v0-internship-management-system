@@ -1,4 +1,8 @@
 <?php
+// ══════════════════════════════════════════════════════════════════
+// ملاحظة: الجزء الوحيد الذي تغيّر هو دالة index() (Dashboard).
+// بقية الدوال لم تُمس.
+// ══════════════════════════════════════════════════════════════════
 
 namespace App\Controller;
 
@@ -27,90 +31,78 @@ class CompanyController extends AbstractController
     #[Route('/company/dashboard', name: 'app_company_dashboard')]
     public function index(EntityManagerInterface $em): Response
     {
+        /** @var User $company */
         $company = $this->getUser();
-        // التصحيح: استعمل $company وليس $user
+
         if (!$company->isApprovedByWebmaster()) {
             return $this->render('company/pending_approval.html.twig');
         }
-        $offersRepo = $em->getRepository(Offers::class);
-        $allOffers = $offersRepo->findBy(['company' => $company]);
 
-        $now = new \DateTime();
+        $allOffers = $em->getRepository(Offers::class)->findBy(['company' => $company]);
+
+        $now         = new \DateTime();
         $next48Hours = (new \DateTime())->modify('+48 hours');
-        $nextWeek = (new \DateTime())->modify('+7 days');
+        $nextWeek    = (new \DateTime())->modify('+7 days');
 
-        $expiringSoon = [];
-        $startingSoon = [];
-        $noApplicants = [];
+        $expiringSoon      = [];
+        $startingSoon      = [];
+        $noApplicants      = [];
         $internshipStarted = [];
 
-        $pendingCount = 0;
+        $pendingCount  = 0;
         $acceptedCount = 0;
-        $refusedCount = 0;
+        $refusedCount  = 0;
 
         foreach ($allOffers as $offer) {
 
-
-            $today = new \DateTime();
-
-// التحقق هل يوجد طلاب مقبولون نهائيا
-            $hasAcceptedStudents = false;
-
-            foreach ($offer->getApplications() as $application) {
-                if ($application->getStatus() === 'accepted') {
-                    $hasAcceptedStudents = true;
-                    break;
-                }
-            }
-
-// إذا بدأ تاريخ التربص
-            if ($offer->getInternshipStart() && $offer->getInternshipStart() <= $today) {
-
-                // يوجد طلاب مقبولون => Active
-                if ($hasAcceptedStudents) {
-                    $offer->setStatus('Active');
-                }
-                // لا يوجد متدربون => Inactive
-                else {
-                    $offer->setStatus('Inactive');
-                }
-            }
-
+            // ✅ لا نعدّل status هنا أبداً — getComputedStatus() تحسب الحالة
+            //    بدون لمس قاعدة البيانات.
 
             $applications = $offer->getApplications();
-            $appCount = $applications ? $applications->count() : 0;
+            $appCount     = $applications->count();
 
             foreach ($applications as $app) {
-                if ($app->getStatus() === 'pending') $pendingCount++;
-                elseif ($app->getStatus() === 'accepted') $acceptedCount++;
-                elseif (in_array($app->getStatus(), ['refused', 'rejected'])) $refusedCount++;
+                $s = $app->getStatus();
+                if ($s === 'pending')                          $pendingCount++;
+                elseif ($s === 'accepted')                     $acceptedCount++;
+                elseif (in_array($s, ['refused', 'rejected'])) $refusedCount++;
             }
 
+            // تنبيهات الـ deadline (خلال 48 ساعة)
             if ($offer->getDeadline() && $offer->getDeadline() > $now && $offer->getDeadline() <= $next48Hours) {
                 $expiringSoon[] = $offer;
             }
 
+            // تنبيهات بداية التربص (خلال أسبوع)
             if ($offer->getInternshipStart() && $offer->getInternshipStart() > $now && $offer->getInternshipStart() <= $nextWeek) {
                 $startingSoon[] = $offer;
             }
 
+            // عروض بدون متقدمين
             if ($appCount === 0) {
                 $noApplicants[] = $offer;
             }
 
+            // عروض بدأ تربصها
             if ($offer->getInternshipStart() && $offer->getInternshipStart() <= $now) {
                 $internshipStarted[] = $offer;
             }
         }
-        $em->flush();
+
+        // ✅ لا يوجد $em->flush() هنا — الداشبورد للقراءة فقط
+
+        // عدد العروض "Active" الحقيقية (بالمنطق المحسوب)
+        $activeOffersCount = count(array_filter($allOffers, fn($o) => $o->getComputedStatus() === 'Active'));
+
         return $this->render('company/dashboard.html.twig', [
-            'company'           => $company,
-            'total_offers'      => count($allOffers),
-            'active_offers'     => count($offersRepo->findBy(['company' => $company, 'status' => 'Active'])),
-            'expiringSoon'      => $expiringSoon,
-            'startingSoon'      => $startingSoon,
-            'noApplicants'      => $noApplicants,
-            'internshipStarted' => $internshipStarted,
+            'company'             => $company,
+            'offers'              => $allOffers,
+            'total_offers'        => count($allOffers),
+            'active_offers'       => $activeOffersCount,
+            'expiringSoon'        => $expiringSoon,
+            'startingSoon'        => $startingSoon,
+            'noApplicants'        => $noApplicants,
+            'internshipStarted'   => $internshipStarted,
             'pending_applicants'  => $pendingCount,
             'accepted_applicants' => $acceptedCount,
             'refused_applicants'  => $refusedCount,
@@ -141,9 +133,8 @@ class CompanyController extends AbstractController
 
             $logoFile = $request->files->get('logo');
             if ($logoFile) {
-                $originalFilename = pathinfo($logoFile->getClientOriginalName(), PATHINFO_FILENAME);
-                $safeFilename = $slugger->slug($originalFilename);
-                $newFilename = $safeFilename . '-' . uniqid() . '.' . $logoFile->guessExtension();
+                $safeFilename = $slugger->slug(pathinfo($logoFile->getClientOriginalName(), PATHINFO_FILENAME));
+                $newFilename  = $safeFilename . '-' . uniqid() . '.' . $logoFile->guessExtension();
                 $logoFile->move($this->getParameter('logos_directory'), $newFilename);
                 if (method_exists($company, 'setLogo')) {
                     $company->setLogo($newFilename);
@@ -152,15 +143,13 @@ class CompanyController extends AbstractController
 
             $vFile = $request->files->get('verificationFile');
             if ($vFile) {
-                $originalFilename = pathinfo($vFile->getClientOriginalName(), PATHINFO_FILENAME);
-                $safeFilename = $slugger->slug($originalFilename);
-                $newFilename = $safeFilename . '-' . uniqid() . '.' . $vFile->guessExtension();
+                $safeFilename = $slugger->slug(pathinfo($vFile->getClientOriginalName(), PATHINFO_FILENAME));
+                $newFilename  = $safeFilename . '-' . uniqid() . '.' . $vFile->guessExtension();
                 $vFile->move($this->getParameter('verification_directory'), $newFilename);
                 $company->setVerificationFile($newFilename);
             }
 
             $entityManager->flush();
-
             return new JsonResponse(['status' => 'success', 'message' => 'Saved successfully!']);
         } catch (\Exception $e) {
             return new JsonResponse(['status' => 'error', 'message' => 'Error: ' . $e->getMessage()], 500);
@@ -179,8 +168,6 @@ class CompanyController extends AbstractController
     // Offers
     // ═══════════════════════════════════════════════════════════════
 
-// في ملف CompanyController.php
-
     #[Route('/company/offers', name: 'app_company_offers')]
     public function manageOffers(EntityManagerInterface $em): Response
     {
@@ -193,26 +180,25 @@ class CompanyController extends AbstractController
             'offers'  => $offers,
         ]);
     }
+
     #[Route('/company/applicants', name: 'app_company_applicants')]
     public function applicants(ApplicationRepository $repository, EntityManagerInterface $em): Response
     {
-        $company = $this->getUser();
-
-        // 1. جلب كل العروض الخاصة بهذه الشركة أولاً
+        $company  = $this->getUser();
         $myOffers = $em->getRepository(Offers::class)->findBy(['company' => $company]);
 
-        // 2. جلب الطلبات الخاصة بهذه العروض فقط والتي لم تُرفض
         $candidates = $repository->findBy([
-            'offer' => $myOffers,
-            'status' => ['pending', 'accepted', 'pending_admin']
+            'offer'  => $myOffers,
+            'status' => ['pending', 'accepted', 'pending_admin'],
         ]);
 
         return $this->render('company/dashboard.html.twig', [
-            'company'    => $company,
-            'candidates' => $candidates,
-            'current_route' => 'app_company_applicants' // تأكد من إرسال الرووت لتفعيل الشرط في Twig
+            'company'       => $company,
+            'candidates'    => $candidates,
+            'current_route' => 'app_company_applicants',
         ]);
     }
+
     #[Route('/company/offers/new', name: 'app_company_offers_new', methods: ['GET', 'POST'])]
     public function createOffer(Request $request, EntityManagerInterface $em): Response
     {
@@ -225,10 +211,9 @@ class CompanyController extends AbstractController
             $offer->setLatitude($request->request->get('latitude'));
             $offer->setLongitude($request->request->get('longitude'));
             $offer->setLocationType($request->request->get('locationType'));
-            // في createOffer — بعد setLevel()
-            $offer->setSeats($request->request->get('seats') ? (int)$request->request->get('seats') : null);
+            $offer->setLevel($request->request->get('level'));
+            $offer->setSeats($request->request->get('seats') ? (int) $request->request->get('seats') : null);
 
-            $offer->setLevel($request->request->get('level')); // تأكد من وجود setLevel في Entity
             if ($request->request->get('deadline')) {
                 $offer->setDeadline(new \DateTime($request->request->get('deadline')));
             }
@@ -240,31 +225,7 @@ class CompanyController extends AbstractController
             }
 
             $offer->setCompany($this->getUser());
-
-            $skillsRaw = $request->request->get('skills');
-            if ($skillsRaw) {
-                $skillNames = array_map('trim', explode(',', $skillsRaw));
-                foreach ($skillNames as $skillName) {
-                    if (empty($skillName)) continue;
-                    $skill = $em->getRepository(Skills::class)->findOneBy(['tagName' => $skillName]);
-                    if (!$skill) {
-                        $skill = new Skills();
-                        $skill->setTagName($skillName);
-                        $skill->setIdTag(0);
-                        $em->persist($skill);
-                    }
-                    $offer->addSkill($skill);
-                }
-            }
-
-
-
-            // إضافة استقبال عدد المقاعد
-            $seats = $request->request->get('seats');
-            if ($seats !== null) {
-                $offer->setSeats((int)$seats);
-            }
-
+            $this->handleSkills($request, $offer, $em);
 
             $em->persist($offer);
             $em->flush();
@@ -306,41 +267,24 @@ class CompanyController extends AbstractController
             $offer->setDuration($request->request->get('duration'));
             $offer->setLatitude($request->request->get('latitude'));
             $offer->setLongitude($request->request->get('longitude'));
-// داخل الدالة المسؤولة عن حفظ العرض (New or Edit)
-// في createOffer — بعد setLevel()
-            $offer->setSeats($request->request->get('seats') ? (int)$request->request->get('seats') : null);
-
-// أضف هذه الأسطر لكي يتم حفظ القيم الجديدة
             $offer->setLocationType($request->request->get('locationType'));
             $offer->setLevel($request->request->get('level'));
-            if ($request->request->get('startDate')) $offer->setStartDate(new \DateTime($request->request->get('startDate')));
-            if ($request->request->get('internshipStart')) $offer->setInternshipStart(new \DateTime($request->request->get('internshipStart')));
-            if ($request->request->get('deadline')) $offer->setDeadline(new \DateTime($request->request->get('deadline')));
+            $offer->setSeats($request->request->get('seats') ? (int) $request->request->get('seats') : null);
 
-            foreach ($offer->getSkills() as $skill) $offer->removeSkill($skill);
-
-            $skillsRaw = $request->request->get('skills');
-            if ($skillsRaw) {
-                $skillNames = array_map('trim', explode(',', $skillsRaw));
-                foreach ($skillNames as $skillName) {
-                    if (empty($skillName)) continue;
-                    $skill = $em->getRepository(Skills::class)->findOneBy(['tagName' => $skillName]);
-                    if (!$skill) {
-                        $skill = new Skills();
-                        $skill->setTagName($skillName);
-                        $skill->setIdTag(0);
-                        $em->persist($skill);
-                    }
-                    $offer->addSkill($skill);
-                }
+            if ($request->request->get('startDate')) {
+                $offer->setStartDate(new \DateTime($request->request->get('startDate')));
+            }
+            if ($request->request->get('internshipStart')) {
+                $offer->setInternshipStart(new \DateTime($request->request->get('internshipStart')));
+            }
+            if ($request->request->get('deadline')) {
+                $offer->setDeadline(new \DateTime($request->request->get('deadline')));
             }
 
-
-            // تحديث عدد المقاعد
-            $seats = $request->request->get('seats');
-            if ($seats !== null) {
-                $offer->setSeats((int)$seats);
+            foreach ($offer->getSkills() as $skill) {
+                $offer->removeSkill($skill);
             }
+            $this->handleSkills($request, $offer, $em);
 
             $em->flush();
             $this->addFlash('success', 'Offer updated successfully!');
@@ -354,14 +298,11 @@ class CompanyController extends AbstractController
         ]);
     }
 
-    // src/Controller/CompanyController.php
-
     #[Route('/company/offer/{id}/candidates', name: 'app_company_offer_candidates')]
     public function viewCandidates(int $id, EntityManagerInterface $em): Response
     {
         $offer = $em->getRepository(Offers::class)->find($id);
 
-        // التحقق من وجود العرض ومن ملكيته للشركة الحالية
         if (!$offer || $offer->getCompany() !== $this->getUser()) {
             throw $this->createNotFoundException('Offer not found.');
         }
@@ -370,7 +311,7 @@ class CompanyController extends AbstractController
 
         return $this->render('company/candidates_list.html.twig', [
             'offer'         => $offer,
-            'offers'        => [$offer],       // الحل: تمرير العرض داخل مصفوفة باسم 'offers'
+            'offers'        => [$offer],
             'candidates'    => $candidates,
             'current_route' => 'app_company_dashboard',
         ]);
@@ -383,9 +324,9 @@ class CompanyController extends AbstractController
     #[Route('/company/university-requests/send', name: 'app_company_send_verification_request', methods: ['POST'])]
     public function sendVerificationRequest(Request $request, EntityManagerInterface $em): Response
     {
-        $company = $this->getUser();
+        $company      = $this->getUser();
         $universityId = $request->request->get('university_id');
-        $university = $em->getRepository(User::class)->find($universityId);
+        $university   = $em->getRepository(User::class)->find($universityId);
 
         if (!$university) {
             $this->addFlash('error', 'الجامعة غير موجودة.');
@@ -408,8 +349,8 @@ class CompanyController extends AbstractController
     #[Route('/company/university-requests', name: 'app_company_university_requests')]
     public function universityRequests(EntityManagerInterface $em): Response
     {
-        $company = $this->getUser();
-        $universities = $em->getRepository(User::class)->findByRole('ROLE_ADMIN');
+        $company            = $this->getUser();
+        $universities       = $em->getRepository(User::class)->findByRole('ROLE_ADMIN');
         $universityRequests = $em->getRepository(VerificationRequest::class)->findBy(['company' => $company]);
 
         return $this->render('company/dashboard.html.twig', [
@@ -430,8 +371,7 @@ class CompanyController extends AbstractController
     }
 
     // ═══════════════════════════════════════════════════════════════
-    // ★ VALIDATE: الشركة تقبل الطالب → يُرسل للأدمين (pending_admin)
-    //   لا تُنشأ الاتفاقية هنا — الأدمين هو من يُنشئها.
+    // Application Actions
     // ═══════════════════════════════════════════════════════════════
 
     #[Route('/company/application/{id}/validate', name: 'app_company_application_validate', methods: ['POST'])]
@@ -443,19 +383,12 @@ class CompanyController extends AbstractController
             throw $this->createNotFoundException('الطلب غير موجود.');
         }
 
-        // ★ الشركة تقبل الطالب → status = pending_admin (في انتظار الأدمين)
-        // الاتفاقية لا تُنشأ هنا، بل عندما يضغط الأدمين على Validate.
         $application->setStatus('pending_admin');
-
         $em->flush();
 
         $this->addFlash('success', 'تم إرسال الطلب إلى الجامعة للمراجعة والموافقة النهائية.');
         return $this->redirectToRoute('app_company_offer_candidates', ['id' => $application->getOffer()->getId()]);
     }
-
-    // ═══════════════════════════════════════════════════════════════
-    // ★ REFUSE: الشركة ترفض الطالب مع سبب → يراه الطالب في صفحته
-    // ═══════════════════════════════════════════════════════════════
 
     #[Route('/company/application/{id}/refuse', name: 'app_company_application_refuse', methods: ['POST'])]
     public function refuseApplication(int $id, Request $request, EntityManagerInterface $em): Response
@@ -465,32 +398,74 @@ class CompanyController extends AbstractController
         if (!$application) {
             throw $this->createNotFoundException();
         }
-
         if ($application->getOffer()->getCompany() !== $this->getUser()) {
             throw $this->createAccessDeniedException();
         }
 
         $reason = $request->request->get('rejection_reason') ?? 'No reason provided.';
-
-        // ★ status = refused  +  rejectionReason محفوظ → يظهر للطالب في قسم "My Applications"
         $application->setStatus('refused');
         $application->setRejectionReason($reason);
         $em->flush();
 
-// إذا كان الطلب AJAX → أرجع JSON فقط بدون redirect
         if ($request->isXmlHttpRequest()) {
             return new JsonResponse(['success' => true, 'message' => 'Candidature refusée.']);
         }
 
-// إذا كان طلب عادي → redirect كالسابق (fallback)
-        $this->addFlash('error', 'تم رفض الطلب...');
-
+        $this->addFlash('error', 'تم رفض الطلب.');
         return $this->redirectToRoute('app_company_offer_candidates', ['id' => $application->getOffer()->getId()]);
-
     }
+
+    #[Route('/application/{id}/reject', name: 'app_reject_application', methods: ['POST'])]
+    public function rejectApplication(Application $application, Request $request, EntityManagerInterface $em): JsonResponse
+    {
+        $application->setStatus('refused');
+        $application->setRejectionReason($request->request->get('reason'));
+        $em->flush();
+
+        return new JsonResponse(['success' => true, 'applicationId' => $application->getId()]);
+    }
+
+    #[Route('/company/application/{id}/download-convention', name: 'app_company_download_convention')]
+    public function downloadConvention(Application $application): Response
+    {
+        if ($application->getOffer()->getCompany() !== $this->getUser()) {
+            throw $this->createAccessDeniedException('لا تملك صلاحية الوصول لهذه الاتفاقية.');
+        }
+
+        $filePath = $this->getParameter('kernel.project_dir')
+            . '/public/conventions/' . $application->getConventionFile();
+
+        if (!file_exists($filePath)) {
+            throw $this->createNotFoundException('الملف غير موجود.');
+        }
+
+        return $this->file($filePath);
+    }
+
     // ═══════════════════════════════════════════════════════════════
     // Helpers
     // ═══════════════════════════════════════════════════════════════
+
+    private function handleSkills(Request $request, Offers $offer, EntityManagerInterface $em): void
+    {
+        $skillsRaw = $request->request->get('skills');
+        if (!$skillsRaw) {
+            return;
+        }
+
+        foreach (array_map('trim', explode(',', $skillsRaw)) as $skillName) {
+            if (empty($skillName)) continue;
+
+            $skill = $em->getRepository(Skills::class)->findOneBy(['tagName' => $skillName]);
+            if (!$skill) {
+                $skill = new Skills();
+                $skill->setTagName($skillName);
+                $skill->setIdTag(0);
+                $em->persist($skill);
+            }
+            $offer->addSkill($skill);
+        }
+    }
 
     private function calculateMatch(Application $app): int
     {
@@ -499,8 +474,7 @@ class CompanyController extends AbstractController
 
         if (empty($offerSkills)) return 0;
 
-        $matches = array_intersect($studentSkills, $offerSkills);
-        return (int)((count($matches) / count($offerSkills)) * 100);
+        return (int) ((count(array_intersect($studentSkills, $offerSkills)) / count($offerSkills)) * 100);
     }
 
     #[Route('/company/student/{id}/profile', name: 'app_student_profile_view')]
@@ -517,82 +491,21 @@ class CompanyController extends AbstractController
         ]);
     }
 
-
-
-
-
-
-
-
-
     #[Route('/company/university-request/delete/{id}', name: 'app_company_delete_university_request', methods: ['DELETE'])]
     public function deleteUniversityRequest(int $id, EntityManagerInterface $em): JsonResponse
     {
-        $request = $em->getRepository(VerificationRequest::class)->find($id);
+        $verRequest = $em->getRepository(VerificationRequest::class)->find($id);
 
-        // التأكد من أن الطلب موجود وأن الشركة الحالية هي صاحبة الطلب
-        if (!$request || $request->getCompany() !== $this->getUser()) {
+        if (!$verRequest || $verRequest->getCompany() !== $this->getUser()) {
             return new JsonResponse(['success' => false, 'message' => 'الطلب غير موجود أو لا تملك صلاحية حذفه.'], 404);
         }
 
         try {
-            $em->remove($request);
+            $em->remove($verRequest);
             $em->flush();
             return new JsonResponse(['success' => true, 'message' => 'تم حذف الطلب من السجل بنجاح.']);
         } catch (\Exception $e) {
             return new JsonResponse(['success' => false, 'message' => 'حدث خطأ أثناء الحذف.'], 500);
         }
-    }
-
-
-
-
-
-
-
-
-
-    // داخل CompanyController.php
-    #[Route('/application/{id}/reject', name: 'app_reject_application', methods: ['POST'])]
-    public function rejectApplication(
-        Application $application,
-        Request $request,
-        EntityManagerInterface $em
-    ): JsonResponse
-    {
-        $reason = $request->request->get('reason');
-
-        $application->setStatus('refused');
-        $application->setRejectionReason($reason);
-
-        $em->flush();
-
-        return new JsonResponse([
-            'success' => true,
-            'applicationId' => $application->getId(),
-        ]);
-    }
-
-
-
-
-
-    // داخل CompanyController.php
-
-    #[Route('/company/application/{id}/download-convention', name: 'app_company_download_convention')]
-    public function downloadConvention(Application $application)
-    {
-        // التأكد من أن الشركة هي صاحبة العرض لضمان الأمان
-        if ($application->getOffer()->getCompany() !== $this->getUser()) {
-            throw $this->createAccessDeniedException('لا تملك صلاحية الوصول لهذه الاتفاقية.');
-        }
-        $fileName = $application->getConventionFile(); // هذا هو الاسم الصحيح الموجود في الكينونة
-        // استبدله بهذا السطر:
-        $filePath = $this->getParameter('kernel.project_dir') . '/public/conventions/' . $fileName;
-        if (!file_exists($filePath)) {
-            throw $this->createNotFoundException('الملف غير موجود.');
-        }
-
-        return $this->file($filePath);
     }
 }

@@ -143,6 +143,140 @@
                 color: white !important;
                 box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
             }
+
+
+
+
+
+
+
+
+
+
+            /* تصميم البطاقة الأساسي */
+            .stat-card-custom {
+                background-color: var(--bg-sidebar); /* أسود صريح */
+                border: 1px solid var(--border-color); /* إطار ناعم */
+                border-radius: 16px;
+                padding: 20px;
+                display: flex;
+                align-items: center;
+                gap: 15px;
+                transition: all 0.3s ease;
+                height: 100%;
+            }
+
+            /* تأثير عند التمرير */
+            .stat-card-custom:hover {
+                border-color: var(--accent-primary);
+                box-shadow: 0 0 20px var(--glow-color);
+                transform: translateY(-5px);
+            }
+
+            /* تنسيق الأيقونة */
+            .stat-icon-wrapper {
+                background-color: rgba(51, 120, 243, 0.1); /* خلفية زرقاء شفافة جداً */
+                color: var(--accent-primary); /* اللون الأزرق التكنولوجي */
+                width: 50px;
+                height: 50px;
+                border-radius: 12px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 1.5rem;
+            }
+
+            /* تنسيق النصوص */
+            .stat-number {
+                font-size: 1.5rem;
+                font-weight: 800;
+                color: white;
+                margin-bottom: 0;
+                line-height: 1;
+            }
+
+            .stat-label {
+                color: var(--text-muted); /* رمادي باهت */
+                font-size: 0.85rem;
+                margin-bottom: 0;
+                margin-top: 5px;
+                white-space: nowrap;
+            }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            /* حاوية البحث */
+            .search-container-custom {
+                position: relative;
+                width: 300px;
+            }
+
+            /* أيقونة البحث */
+            .search-icon {
+                position: absolute;
+                top: 50%;
+                left: 15px;
+                transform: translateY(-50%);
+                color: var(--text-muted);
+                font-size: 1rem;
+                transition: all 0.3s ease;
+                pointer-events: none; /* لكي لا تعيق النقر على المربع */
+            }
+
+            /* مربع الإدخال */
+            .search-input {
+                width: 100%;
+                background-color: var(--bg-sidebar); /* الأسود الصريح #000 */
+                border: 1px solid var(--border-color); /* الإطار الناعم الحالي */
+                border-radius: 12px;
+                padding: 10px 15px 10px 45px; /* مساحة للأيقونة على اليسار */
+                color: white;
+                font-size: 0.9rem;
+                outline: none;
+                transition: all 0.3s ease;
+            }
+
+            /* تأثير عند التركيز (Focus) - النيون الأزرق */
+            .search-input:focus {
+                border-color: var(--accent-primary);
+                box-shadow: 0 0 15px var(--glow-color);
+                background-color: rgba(51, 120, 243, 0.05); /* لمسة زرقاء خفيفة جداً للخلفية */
+            }
+
+            /* تغيير لون الأيقونة عند التركيز */
+            .search-input:focus + .search-icon {
+                color: var(--accent-primary);
+            }
+
+            /* لون الـ Placeholder */
+            .search-input::placeholder {
+                color: var(--text-muted);
+                opacity: 0.6;
+            }
         </style>
     {% endblock %}
 
@@ -226,55 +360,66 @@
                 </div>
             {% endif %}
         </div>
-
-
         <div class="row g-3">
-            <!-- Total Offers -->
-            <div class="col">
-                <div class="stat-card text-center h-100">
-                    <i class="bi bi-briefcase text-info fs-2 mb-2"></i>
-                    <h3 class="text-white fw-bold mb-0">{{ total_offers }}</h3>
-                    <p class="label-custom small">Total Offers</p>
+            <div class="col-md-3 col-6">
+                <div class="stat-card-custom">
+                    <div class="stat-icon-wrapper">
+                        <i class="bi bi-briefcase"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 class="stat-number">{{ total_offers }}</h3>
+                        <p class="stat-label">Total Offers</p>
+                    </div>
                 </div>
             </div>
 
-            <!-- Active Offers -->
-            <div class="col">
-                <div class="stat-card text-center h-100">
-                    <i class="bi bi-lightning-charge text-info fs-2 mb-2"></i>
-                    <h3 class="text-white fw-bold mb-0">{{ active_offers }}</h3>
-                    <p class="label-custom small">Active Offers</p>
+            <div class="col-md-3 col-6">
+                <div class="stat-card-custom">
+                    <div class="stat-icon-wrapper">
+                        <i class="bi bi-lightning-charge"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 class="stat-number">{{ active_offers }}</h3>
+                        <p class="stat-label">Active Offers</p>
+                    </div>
                 </div>
             </div>
 
-            <!-- Total Applicants -->
-            <div class="col">
-                <div class="stat-card text-center h-100">
-                    <i class="bi bi-people text-info fs-2 mb-2"></i>
-                    <h3 class="text-white fw-bold mb-0">{{ total_applicants }}</h3>
-                    <p class="label-custom small">Total Applicants</p>
+            <div class="col-md-3 col-6">
+                <div class="stat-card-custom">
+                    <div class="stat-icon-wrapper">
+                        <i class="bi bi-people"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 class="stat-number">{{ total_applicants }}</h3>
+                        <p class="stat-label">Total Applicants</p>
+                    </div>
                 </div>
             </div>
 
-            <!-- Pending Review -->
-            <div class="col">
-                <div class="stat-card text-center h-100">
-                    <i class="bi bi-clock-history text-info fs-2 mb-2"></i>
-                    <h3 class="text-white fw-bold mb-0">{{ pending_applicants }}</h3>
-                    <p class="label-custom small">Pending Review</p>
+            <div class="col-md-3 col-6">
+                <div class="stat-card-custom">
+                    <div class="stat-icon-wrapper">
+                        <i class="bi bi-clock-history"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 class="stat-number">{{ pending_applicants }}</h3>
+                        <p class="stat-label">Pending Review</p>
+                    </div>
                 </div>
             </div>
-
-            <!-- Accepted Interns -->
-            <div class="col">
-                <div class="stat-card text-center h-100">
-                    <i class="bi bi-person-check text-info fs-2 mb-2"></i>
-                    <h3 class="text-white fw-bold mb-0">{{ accepted_applicants }}</h3>
-                    <p class="label-custom small">Accepted Interns</p>
+            <div class="col-md-3 col-6">
+                <div class="stat-card-custom">
+                    <div class="stat-icon-wrapper">
+                        <i class="bi bi-person-check"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 class="stat-number">{{ accepted_applicants }}</h3>
+                        <p class="stat-label">Accepted Interns</p>
+                    </div>
                 </div>
             </div>
         </div>
-
         <!-- قسم الرسم البياني -->
         <div class="row mt-4">
             <div class="col-md-6">
@@ -420,9 +565,8 @@
                             </div>#}
 
                         {# 1. نحدد ما إذا كان التاريخ الحالي قد تجاوز تاريخ بداية التربص #}
-                        {% set is_past_start = offer.startDate|date('Y-m-d') < "now"|date('Y-m-d') %}
+                       {#  {% set is_past_start = offer.startDate|date('Y-m-d') < "now"|date('Y-m-d') %}
 
-                        {# 2. نتحقق من وجود أي طلب مقبول (هذا يتطلب وجود علاقة applications في كينونة Offer) #}
                         {% set has_accepted = false %}
                         {% for app in offer.applications %}
                             {% if app.status == 'accepted' %}
@@ -430,21 +574,30 @@
                             {% endif %}
                         {% endfor %}
 
-                        {# 3. عرض الشارة بناءً على الشروط #}
                         {% if not is_past_start %}
-                            {# الحالة نشطة لأن موعد البداية لم يحن بعد #}
                             <span class="badge bg-success-subtle text-success ms-2" style="font-size: 0.65rem;">ACTIVE</span>
                         {% elseif is_past_start and not has_accepted %}
-                            {# الحالة غير نشطة لأن الموعد مرّ ولم يتم قبول أحد #}
                             <span class="badge bg-danger-subtle text-danger ms-2" style="font-size: 0.65rem;">INACTIVE</span>
                         {% else %}
-                            {# الحالة مكتملة أو قيد التنفيذ (مرّ التاريخ ويوجد مقبولين) #}
                             <span class="badge bg-info-subtle text-info ms-2" style="font-size: 0.65rem;">ONGOING</span>
                         {% endif %}
-                    </div>
+                    </div>#}{% set cs = offer.computedStatus %}
+                                {% if cs == 'Active' %}
+                                    <span class="badge bg-success-subtle text-success ms-2" style="font-size:0.65rem;">ACTIVE</span>
+                                {% elseif cs == 'In Progress' %}
+                                    <span class="badge bg-info-subtle text-info ms-2" style="font-size:0.65rem;">IN PROGRESS</span>
+                                {% elseif cs == 'Deadline Over' %}
+                                    <span class="badge bg-warning-subtle text-warning ms-2" style="font-size:0.65rem;">DEADLINE OVER</span>
+                                {% elseif cs == 'Expired' %}
+                                    <span class="badge bg-danger-subtle text-danger ms-2" style="font-size:0.65rem;">EXPIRED</span>
+                                {% elseif cs == 'Closed' %}
+                                    <span class="badge bg-secondary ms-2" style="font-size:0.65rem;">CLOSED</span>
+                                {% elseif cs == 'Draft' %}
+                                    <span class="badge bg-secondary bg-opacity-50 ms-2" style="font-size:0.65rem;">DRAFT</span>
+                                {% endif %}
                             {# 1. اسم الشركة والمستوى والنوع #}
                             <div class="mb-2">
-                                <span class="text-primary fw-bold small">{{ app.user.companyName }} Algeria</span>
+                                <span class="text-primary fw-bold small">{{ offer.company.companyName }} Algeria</span>
                                 <span class="text-muted mx-2">|</span>
                                 <span class="badge bg-primary-subtle text-primary" style="font-size: 0.7rem;">{{ offer.locationType }}</span>
                                 <span class="badge bg-info-subtle text-info ms-1" style="font-size: 0.7rem;">{{ offer.level|default('Master/Licence') }}</span>
@@ -873,11 +1026,10 @@
                 <h2 class="fw-bold text-white">Applicants</h2>
                 <p class="text-secondary mb-0">Review and manage candidates for your positions.</p>
             </div>
-            <div class="position-relative" style="width: 300px;">
-                <i class="bi bi-search position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"></i>
-                <input type="text" id="applicantSearch" class="form-control ps-5"
-                       placeholder="Filter by offer title..."
-                       style="background: #111; border: 1px solid #333; border-radius: 12px; color: white;">
+            <div class="search-container-custom">
+                <i class="bi bi-search search-icon"></i>
+                <input type="text" id="applicantSearch" class="search-input"
+                       placeholder="Filter by offer title...">
             </div>
         </div>
 
@@ -1344,7 +1496,7 @@
                                     <i class="bi bi-geo-alt text-primary"></i>
                                 </div>
                                 <div>
-                                    <p class="text-muted mb-0" style="font-size:0.6rem;letter-spacing:1px;">LOCATION</p>
+                                    <p class="text-secondary small"  style="font-size:0.6rem;letter-spacing:1px;">LOCATION</p>
                                     <p id="modal-student-location" class="mb-0 small fw-semibold text-white"></p>
                                 </div>
                             </div>
@@ -1354,7 +1506,7 @@
                                     <i class="bi bi-bank text-primary"></i>
                                 </div>
                                 <div>
-                                    <p class="text-muted mb-0" style="font-size:0.6rem;letter-spacing:1px;">UNIVERSITY</p>
+                                    <p class="text-secondary small"  style="font-size:0.6rem;letter-spacing:1px;">UNIVERSITY</p>
                                     <p id="modal-student-university" class="mb-0 small fw-semibold text-white"></p>
                                 </div>
                             </div>
@@ -1363,7 +1515,7 @@
 
                     <!-- Bio -->
                     <div id="modal-bio-section" class="mb-3 d-none">
-                        <p class="text-muted mb-1" style="font-size:0.65rem;letter-spacing:1px;">ABOUT</p>
+                        <p class="text-secondary small"  style="font-size:0.65rem;letter-spacing:1px;">ABOUT</p>
                         <p id="modal-student-bio"
                            class="small text-white mb-0 p-3 rounded-3"
                            style="background:rgba(255,255,255,0.03);border:1px solid var(--border-color);
@@ -1372,7 +1524,7 @@
 
                     <!-- Skills -->
                     <div id="modal-skills-section" class="mb-3 d-none">
-                        <p class="text-muted mb-2" style="font-size:0.65rem;letter-spacing:1px;">SKILLS</p>
+                        <p class="text-secondary small"  small"  style="font-size:0.65rem;letter-spacing:1px;">SKILLS</p>
                         <div id="modal-skills-list" class="d-flex flex-wrap gap-2"></div>
                     </div>
 
@@ -1391,7 +1543,7 @@
                             <i class="bi bi-globe fs-5"></i>
                         </a>
                         <a id="modal-phone-link" href="#"
-                           class="text-white d-none"
+                           class="text-white-50"
                            style="opacity:0.7;transition:opacity 0.2s;"
                            onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.7">
                             <i class="bi bi-telephone fs-5"></i>

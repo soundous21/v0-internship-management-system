@@ -13,8 +13,9 @@ use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
-use Symfony\Component\HttpFoundation\JsonResponse; // تأكد من إضافة هذا التوصيف في الأعلى
-// 1. تأكد من وجود هذه التعريفات في أعلى الملف
+use App\Entity\Department;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 
 final class HomeController extends AbstractController
@@ -33,19 +34,16 @@ final class HomeController extends AbstractController
             ->getQuery()
             ->getResult();
 
-        // 2. جلب قائمة كل الأقسام المتاحة حالياً (كخيار افتراضي)
         $results = $em->getRepository(User::class)->createQueryBuilder('u')
             ->select('DISTINCT u.department')
             ->where('u.department IS NOT NULL')
             ->getQuery()
             ->getResult();
 
-        // تنسيق الأقسام لتناسب Twig
         $departments = [];
         foreach ($results as $row) {
             $departments[] = ['department' => $row['department']];
         }
-        // في HomeController.php المعدل
         return $this->render('home/index.html.twig', [
             'last_username' => '',
             'error' => null,
@@ -56,81 +54,107 @@ final class HomeController extends AbstractController
     }
 
 
-        #[Route('/register', name: 'app_register', methods: ['POST'])]
+    #[Route('/register', name: 'app_register', methods: ['POST'])]
     public function register(
-            Request $request,
-            MailerInterface $mailer,
-            UserPasswordHasherInterface $passwordHasher,
-            EntityManagerInterface $em,
-            SluggerInterface $slugger
-        ): Response {
-            $email = $request->request->get('email');
-            $role = $request->request->get('role');
-            $password = $request->request->get('password');
-            $confirmPassword = $request->request->get('confirm_password');
-            $studentDept = $request->request->get('department'); // القسم المختار
+        Request $request,
+        MailerInterface $mailer,
+        UserPasswordHasherInterface $passwordHasher,
+        EntityManagerInterface $em,
+        SluggerInterface $slugger
+    ): Response {
+        $email = $request->request->get('email');
+        $role = $request->request->get('role');
+        $password = $request->request->get('password');
+        $confirmPassword = $request->request->get('confirm_password');
 
-            if ($password !== $confirmPassword) {
-                $this->addFlash('error', 'كلمات المرور غير متطابقة!');
+        if ($password !== $confirmPassword) {
+            $this->addFlash('error', 'كلمات المرور غير متطابقة!');
+            return $this->redirectToRoute('app_home');
+        }
+
+        $user = new User();
+        $user->setEmail($email);
+        $user->setRoles([$role]);
+        $user->setPassword($passwordHasher->hashPassword($user, $password));
+        $user->setIsVerified(false);
+
+        if ($role === 'ROLE_STUDENT') {
+            $studentDept = $request->request->get('department');
+
+            $user->setFirstName($request->request->get('firstName'));
+            $user->setLastName($request->request->get('lastName'));
+            $user->setDepartment($studentDept);
+
+            $domain = substr(strrchr($email, "@"), 1);
+
+            $deptAdmin = $em->getRepository(User::class)->createQueryBuilder('u')
+                ->where('u.roles LIKE :role')
+                ->andWhere('u.email LIKE :domain')
+                ->andWhere('u.department = :dept')
+                ->setParameter('role', '%"ROLE_ADMIN"%')
+                ->setParameter('domain', '%@' . $domain)
+                ->setParameter('dept', $studentDept)
+                ->setMaxResults(1)
+                ->getQuery()
+                ->getOneOrNullResult();
+
+            if (!$deptAdmin) {
+                $this->addFlash('error', 'عذراً، لا يوجد مسؤول مسجل لهذا القسم في جامعتك.');
                 return $this->redirectToRoute('app_home');
             }
 
-            $user = new User();
-            $user->setEmail($email);
-            $user->setRoles([$role]);
-            $user->setPassword($passwordHasher->hashPassword($user, $password));
-            $user->setIsVerified(false);
 
-            if ($role === 'ROLE_STUDENT') {
-                $user->setFirstName($request->request->get('first_name')); // تم التعديل من firstName إلى first_name
-                $user->setLastName($request->request->get('last_name'));   // تم التعديل من lastName إلى last_name
-                $user->setEmail($request->request->get('email'));
-                $user->setDepartment($studentDept);
-// لتجنب توقف الموقع بسبب البريد الإلكتروني (مؤقتاً للtest):
-                try {
-                    $mailer->send($email);
-                } catch (\Exception $e) {
-                    // تجاهل خطأ الإرسال حالياً لتسمح للحساب بأن يُنشأ في قاعدة البيانات
-                }
-                // استخراج الدومين (مثلاً: univ-constantine.dz)
-                $domain = substr(strrchr($email, "@"), 1);
+            $user->setUniversityEntity($deptAdmin);
+            $adminUniName = $deptAdmin->getUniversityName()
+                ?? $deptAdmin->getUniversityRef()?->getName();
+            $user->setUniversity($adminUniName);
+            $user->setUniversityName($adminUniName);
 
-                // البحث عن الآدمن الذي يطابق نفس الدومين ونفس القسم
-                $deptAdmin = $em->getRepository(User::class)->createQueryBuilder('u')
-                    ->where('u.roles LIKE :role')
-                    ->andWhere('u.email LIKE :domain')
-                    ->andWhere('u.department = :dept')
-                    ->setParameter('role', '%"ROLE_ADMIN"%')
-                    ->setParameter('domain', '%@' . $domain)
-                    ->setParameter('dept', $studentDept)
-                    ->setMaxResults(1)
-                    ->getQuery()
-                    ->getOneOrNullResult();
-
-                if (!$deptAdmin) {
-                    $this->addFlash('error', 'عذراً، لا يوجد مسؤول مسجل لهذا القسم في جامعتك.');
-                    return $this->redirectToRoute('app_home');
-                }
-
-                // ربط الطالب بآدمن القسم الخاص به
-                $user->setUniversityEntity($deptAdmin);
-
-                // منطق التوكن والإيميل
-                $token = bin2hex(random_bytes(32));
-                $user->setConfirmationToken($token);
-
-                $url = $this->generateUrl('app_verify_email', ['token' => $token], UrlGeneratorInterface::ABSOLUTE_URL);
-
-                $emailContent = (new Email())
-                    ->from('no-reply@stage.io')
-                    ->to($email)
-                    ->subject('تفعيل حساب الطالب - Stage.io')
-                    ->html("مرحباً، يرجى تفعيل حسابك في قسم {$studentDept} بالضغط هنا: <a href='{$url}'>تفعيل</a>");
-
-                $mailer->send($emailContent);
+            if ($deptAdmin->getUniversityRef()) {
+                $user->setStudentUniversityRef($deptAdmin->getUniversityRef());
             }
 
-        // Company Logic
+            if ($deptAdmin->getDepartmentRef()) {
+                $user->setStudentDepartmentRef($deptAdmin->getDepartmentRef());
+            } else {
+                $uniRef = $deptAdmin->getUniversityRef();
+                if ($uniRef) {
+                    $deptEntity = $em->getRepository(Department::class)->findOneBy([
+                        'name'       => $studentDept,
+                        'university' => $uniRef,
+                    ]);
+                    if ($deptEntity) {
+                        $user->setStudentDepartmentRef($deptEntity);
+                    }
+                }
+            }
+            $token = bin2hex(random_bytes(32));
+            $user->setConfirmationToken($token);
+
+            $em->persist($user);
+            $em->flush();
+
+            $url = $this->generateUrl(
+                'app_verify_email',
+                ['token' => $token],
+                UrlGeneratorInterface::ABSOLUTE_URL
+            );
+
+            $emailMessage = (new Email())
+                ->from('no-reply@stage.io')
+                ->to($email)
+                ->subject('تفعيل حساب الطالب - Stage.io')
+                ->html("مرحباً، يرجى تفعيل حسابك في قسم {$studentDept} بالضغط هنا: <a href='{$url}'>تفعيل</a>");
+
+            try {
+                $mailer->send($emailMessage);
+            } catch (\Exception $e) {
+            }
+
+            $this->addFlash('success', 'تم إنشاء الحساب! تحقق من بريدك لتفعيل الحساب.');
+            return $this->redirectToRoute('app_home', ['openLogin' => 1]);
+        }
+
         elseif ($role === 'ROLE_COMPANY') {
             $user->setCompanyName($request->request->get('companyName'));
             $user->setWilaya($request->request->get('wilaya'));
@@ -172,8 +196,6 @@ final class HomeController extends AbstractController
     }
 
 
-
-
     #[Route('/verify/{token}', name: 'app_verify_email')]
     public function verifyEmail(string $token, EntityManagerInterface $em): Response
     {
@@ -194,17 +216,12 @@ final class HomeController extends AbstractController
 
 
 
-
-
-
     #[Route('/api/departments/{universityName}', name: 'api_get_departments')]
     public function getDepartmentsByUniversity(string $universityName, EntityManagerInterface $em): JsonResponse
     {
-        // نفترض أن الجامعة هي مستخدم بدوره ROLE_ADMIN أو ROLE_WEBMASTER ولديها اسم
-        // هنا نجلب الأقسام المرتبطة بمستخدمين يتبعون لهذه الجامعة
         $results = $em->getRepository(User::class)->createQueryBuilder('u')
             ->select('DISTINCT u.department')
-            ->where('u.universityName = :uni') // تأكد أن لديك حقل باسم الجامعة في Entity
+            ->where('u.universityName = :uni')
             ->setParameter('uni', $universityName)
             ->andWhere('u.department IS NOT NULL')
             ->getQuery()

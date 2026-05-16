@@ -16,6 +16,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use App\Repository\ApplicationRepository;
+use App\Entity\Offers;
 
 #[IsGranted('ROLE_STUDENT')]
 class StudentController extends AbstractController
@@ -44,25 +45,26 @@ class StudentController extends AbstractController
         $profileFields     = [$user->getPhone(), $user->getBio(), $user->getUniversity(), $user->getSpecialty(), $user->getProfilePicture()];
         $completionPercent = (count(array_filter($profileFields)) / count($profileFields)) * 100;
 
-        // ★ العروض المتاحة: فقط من شركات شريكة مع جامعة الطالب
+        // 1. تعريف المصفوفات
         $offers = [];
         $appliedOfferIds = [];
 
+// 2. جلب كافة العروض التي حالتها 'Active' لجميع الشركات بدون استثناء
+        $offers = $em->getRepository(\App\Entity\Offers::class)->findBy(
+            ['status' => 'Active'],
+            ['createdAt' => 'DESC']
+        );
+
+// 3. (اختياري) يمكنكِ إبقاء جلب معلومات الجامعة فقط لعرض اسمها في الواجهة
         $universityAdmin = $user->getUniversityEntity();
-        if ($universityAdmin) {
-            $partnerCompanies = $universityAdmin->getPartnerCompanies();
-            if (!$partnerCompanies->isEmpty()) {
-                $offers = $em->getRepository(\App\Entity\Offers::class)
-                    ->createQueryBuilder('o')
-                    ->where('o.company IN (:companies)')
-                    ->andWhere('o.status = :status')
-                    ->setParameter('companies', $partnerCompanies->toArray())
-                    ->setParameter('status', 'Active')
-                    ->orderBy('o.createdAt', 'DESC')
-                    ->getQuery()
-                    ->getResult();
+
+// 4. جلب الـ IDs للعروض التي تقدم إليها الطالب (لإظهار حالة "Applied" في الواجهة)
+        foreach ($applications as $app) {
+            if ($app->getOffer()) {
+                $appliedOfferIds[] = $app->getOffer()->getId();
             }
         }
+
 
         // ★ IDs العروض التي تقدّم إليها الطالب مسبقاً
         foreach ($applications as $app) {
@@ -179,12 +181,22 @@ class StudentController extends AbstractController
                 ->setMaxResults(1)
                 ->getQuery()
                 ->getOneOrNullResult();
-
             if ($universityAdmin) {
-                // ربط الطالب بكيان الجامعة تلقائياً[cite: 24, 26]
                 $user->setUniversityEntity($universityAdmin);
-                // تحديث الحقل النصي لاسم الجامعة ليتوافق مع اسم جامعة الأدمين
-                $user->setUniversity($universityAdmin->getUniversityName() ?? $universityAdmin->getCompanyName());
+
+                $adminUniName = $universityAdmin->getUniversityName()
+                    ?? $universityAdmin->getUniversityRef()?->getName()
+                    ?? $universityAdmin->getCompanyName();
+
+                $user->setUniversity($adminUniName);
+                $user->setUniversityName($adminUniName);
+
+                if ($universityAdmin->getUniversityRef()) {
+                    $user->setStudentUniversityRef($universityAdmin->getUniversityRef());
+                }
+                if ($universityAdmin->getDepartmentRef()) {
+                    $user->setStudentDepartmentRef($universityAdmin->getDepartmentRef());
+                }
             }
         }
 
@@ -328,6 +340,24 @@ class StudentController extends AbstractController
         $em->flush();
 
         return new JsonResponse(['success' => true]);
+    }
+
+    // داخل StudentController.php
+
+    #[Route('/student/browse', name: 'app_student_browse_offers')]
+    public function browseOffers(EntityManagerInterface $em): Response
+    {
+        // جلب العروض مرتبة من الأحدث أولاً
+        $allOffers = $em->getRepository(Offers::class)->findBy([], ['id' => 'DESC']);
+
+        // تصفية العروض بناءً على المنطق الذكي الذي وضعناه في الـ Entity
+        $activeOffers = array_filter($allOffers, function($offer) {
+            return $offer->isActive();
+        });
+
+        return $this->render('student/browse.html.twig', [
+            'offers' => $activeOffers,
+        ]);
     }
 }
 

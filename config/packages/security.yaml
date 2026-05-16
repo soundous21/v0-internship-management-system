@@ -22,6 +22,7 @@ security:
     main:
       lazy: true
       provider: app_user_provider
+      user_checker: App\Security\UserChecker   # ← أضيفي هذا السطر فقط
 
       # Login Form
       form_login:
@@ -57,6 +58,7 @@ security:
       - { path: ^/$,               roles: PUBLIC_ACCESS }
       - { path: ^/login,           roles: PUBLIC_ACCESS }
       - { path: ^/forgot-password, roles: PUBLIC_ACCESS }
+      - { path: ^/verify,          roles: PUBLIC_ACCESS }  # ← أضيفي هذا
 
       # نقطة التوزيع — أي مستخدم مسجل
       - { path: ^/dashboard,       roles: IS_AUTHENTICATED_FULLY }

@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="container mt-5">
+        <div class="card bg-dark text-white p-4">
+            <h2>تعديل معلومات الأدمن</h2>
+            <form method="post">
+                <div class="mb-3">
+                    <label>البريد الإلكتروني</label>
+                    <input type="email" name="email" value="{{ admin.email }}" class="form-control bg-secondary text-white">
+                </div>
+                <button type="submit" class="btn btn-success">حفظ التغييرات</button>
+                <a href="{{ path('app_webmaster_dashboard') }}" class="btn btn-link text-white">إلغاء</a>
+            </form>
+        </div>
+    </div>
+{% endblock %}

@@ -16,10 +16,6 @@ use Doctrine\Common\Collections\Collection;
 #[UniqueEntity(fields: ['email'], message: 'هذا البريد الإلكتروني مستخدم بالفعل.')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
-    // =========================================================================
-    // الحقول الأساسية
-    // =========================================================================
-
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -96,75 +92,37 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $stampFilename = null;
-
-    // =========================================================================
-    // ★ العلاقة 1: طالب ───ManyToOne──▶ أدمين جامعته
-    //   الطالب يعرف أدمينه الواحد عبر هذا الحقل.
-    //   OWNING SIDE على جانب الطالب.
-    // =========================================================================
-
     #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'students')]
     #[ORM\JoinColumn(name: 'university_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
     private ?User $universityEntity = null;
 
-    // =========================================================================
-    // ★ العلاقة 1 (عكسية): أدمين ───OneToMany──▶ طلابه
-    //   الأدمين يرى كل طلابه دفعةً واحدة.
-    //   INVERSE SIDE.
-    // =========================================================================
-
     #[ORM\OneToMany(mappedBy: 'universityEntity', targetEntity: self::class)]
     private Collection $students;
-
-    // =========================================================================
-    // ★ العلاقة 2: شركة ◄──ManyToMany──▶ أدمين
-    //
-    //   جدول الربط:  company_university
-    //     company_id    → id الشركة (User بـ ROLE_COMPANY)
-    //     university_id → id الأدمين (User بـ ROLE_ADMIN)
-    //
-    //   تُضاف السجلات في هذا الجدول تلقائياً عند قبول VerificationRequest.
-    //   OWNING SIDE على جانب الشركة (partnerUniversities).
-    // =========================================================================
-
-    /** الشركة: قائمة جامعاتها الشريكة */
     #[ORM\ManyToMany(targetEntity: self::class, inversedBy: 'partnerCompanies')]
     #[ORM\JoinTable(name: 'company_university')]
     #[ORM\JoinColumn(name: 'company_id', referencedColumnName: 'id')]
     #[ORM\InverseJoinColumn(name: 'university_id', referencedColumnName: 'id')]
     private Collection $partnerUniversities;
 
-    /** الأدمين: قائمة شركاته (الجهة العكسية) */
     #[ORM\ManyToMany(targetEntity: self::class, mappedBy: 'partnerUniversities')]
     private Collection $partnerCompanies;
-
-    // =========================================================================
-    // المهارات (موجودة مسبقاً)
-    // =========================================================================
-
     #[ORM\ManyToMany(targetEntity: Skills::class)]
     #[ORM\JoinTable(name: 'user_skills')]
     #[ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id')]
     #[ORM\InverseJoinColumn(name: 'skill_id', referencedColumnName: 'id_skill')]
     private Collection $skills;
 
-    // =========================================================================
-    // Constructor
-    // =========================================================================
 
     public function __construct()
     {
         $this->createdAt = new \DateTime();
         $this->roles = [];
         $this->skills = new ArrayCollection();
-        $this->students = new ArrayCollection();   // ← جديد
-        $this->partnerUniversities = new ArrayCollection();   // ← جديد
-        $this->partnerCompanies = new ArrayCollection();   // ← جديد
+        $this->students = new ArrayCollection();
+        $this->partnerUniversities = new ArrayCollection();
+        $this->partnerCompanies = new ArrayCollection();
     }
 
-    // =========================================================================
-    // Getters / Setters — الحقول الأساسية
-    // =========================================================================
 
     public function getId(): ?int
     {
@@ -450,13 +408,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->stampFilename = $v;
         return $this;
     }
-
-    // =========================================================================
-    // Getters / Setters — العلاقات
-    // =========================================================================
-
-    // ── طالب ↔ أدمين ─────────────────────────────────────────────────────────
-
     public function getUniversityEntity(): ?User
     {
         return $this->universityEntity;
@@ -468,15 +419,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    /** جلب كل طلاب هذا الأدمين */
     public function getStudents(): Collection
     {
         return $this->students;
     }
-
-    // ── شركة ↔ أدمين ─────────────────────────────────────────────────────────
-
-    /** جامعات هذه الشركة الشريكة (للشركة) */
     public function getPartnerUniversities(): Collection
     {
         return $this->partnerUniversities;
@@ -579,4 +525,51 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function getConfirmationToken(): ?string { return $this->confirmationToken; }
     public function setConfirmationToken(?string $token): self { $this->confirmationToken = $token; return $this; }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // src/Entity/User.php
+
+// ربط الأدمين بجامعة محددة
+    #[ORM\ManyToOne(targetEntity: University::class, inversedBy: 'admins')]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?University $universityRef = null;
+
+// ربط الأدمين بقسم محدد
+    #[ORM\ManyToOne(targetEntity: Department::class)]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?Department $departmentRef = null;
+
+// Getters & Setters
+    public function getUniversityRef(): ?University { return $this->universityRef; }
+    public function setUniversityRef(?University $universityRef): self { $this->universityRef = $universityRef; return $this; }
+
+    public function getDepartmentRef(): ?Department { return $this->departmentRef; }
+    public function setDepartmentRef(?Department $departmentRef): self { $this->departmentRef = $departmentRef; return $this; }
+
+
+    #[ORM\ManyToOne(targetEntity: University::class)]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?University $studentUniversityRef = null;
+    #[ORM\ManyToOne(targetEntity: Department::class)]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?Department $studentDepartmentRef = null;
+
+    public function getStudentUniversityRef(): ?University { return $this->studentUniversityRef; }
+    public function setStudentUniversityRef(?University $ref): self { $this->studentUniversityRef = $ref; return $this; }
+
+    public function getStudentDepartmentRef(): ?Department { return $this->studentDepartmentRef; }
+    public function setStudentDepartmentRef(?Department $ref): self { $this->studentDepartmentRef = $ref; return $this; }
 }

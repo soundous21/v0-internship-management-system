@@ -7,28 +7,50 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Component\HttpFoundation\Request;
+use App\Entity\User;                          // ← أضيفي
+use Doctrine\ORM\EntityManagerInterface;      // ← أضيفي
+
 
 
 
 class SecurityController extends AbstractController
 {
     #[Route('/login', name: 'app_login')]
-    public function login(AuthenticationUtils $authUtils): Response
-    {
-        // إذا كان المستخدم مسجل دخوله فعلاً، وجهه للداشبورد مباشرة
+    public function login(
+        AuthenticationUtils $authUtils,
+        EntityManagerInterface $em            // ← أضيفي
+    ): Response {
         if ($this->getUser()) {
             return $this->redirectToRoute('app_dashboard_redirect');
         }
 
-        // جلب أخطاء تسجيل الدخول إن وجدت
         $error = $authUtils->getLastAuthenticationError();
         $lastUsername = $authUtils->getLastUsername();
 
-        // التوجيه لصفحة الـ Home مع إرسال الأخطاء
+        // ← أضيفي هذا الكود
+        $universities = $em->getRepository(User::class)->createQueryBuilder('u')
+            ->select('DISTINCT u.universityName')
+            ->where('u.universityName IS NOT NULL')
+            ->getQuery()
+            ->getResult();
+
+        $results = $em->getRepository(User::class)->createQueryBuilder('u')
+            ->select('DISTINCT u.department')
+            ->where('u.department IS NOT NULL')
+            ->getQuery()
+            ->getResult();
+
+        $departments = [];
+        foreach ($results as $row) {
+            $departments[] = ['department' => $row['department']];
+        }
+
         return $this->render('home/index.html.twig', [
             'last_username' => $lastUsername,
             'error' => $error,
             'open_login_modal' => $error !== null,
+            'universities' => $universities,   // ← أضيفي
+            'departments' => $departments,     // ← أضيفي
         ]);
     }
 
