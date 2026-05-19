@@ -146,14 +146,6 @@
 
 
 
-
-
-
-
-
-
-
-            /* تصميم البطاقة الأساسي */
             .stat-card-custom {
                 background-color: var(--bg-sidebar); /* أسود صريح */
                 border: 1px solid var(--border-color); /* إطار ناعم */
@@ -204,32 +196,6 @@
             }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-            /* حاوية البحث */
             .search-container-custom {
                 position: relative;
                 width: 300px;
@@ -277,7 +243,68 @@
                 color: var(--text-muted);
                 opacity: 0.6;
             }
+
+
+
+
+
+
+
+
+
+
+             .stat-card {
+                 background: #000000 !important; /* أسود عميق */
+                 border: 2px solid #1e293b !important;
+                 transition: all 0.3s ease-in-out;
+                 position: relative;
+                 overflow: hidden;
+             }
+
+            /* تأثير عند تمرير الفأرة على البطاقة */
+            .stat-card:hover {
+                transform: translateY(-5px);
+                border-color: #3b82f6 !important; /* تغيير اللون للحدود عند التمرير */
+                box-shadow: 0 10px 30px -10px rgba(59, 130, 246, 0.2); /* توهج أزرق خفيف */
+            }
+
+            .skill-badge {
+                background: rgba(59, 130, 246, 0.1) !important;
+                color: #60a5fa !important;
+                border: 1px solid rgba(59, 130, 246, 0.2);
+                padding: 4px 10px;
+                border-radius: 6px;
+                font-size: 0.75rem;
+            }
+
+            .progress {
+                background-color: #1a1a1a !important;
+                border-radius: 10px;
+            }
+
+            .progress-bar {
+                background: linear-gradient(90deg, #3b82f6, #2dd4bf) !important; /* تدرج أزرق للمقاعد */
+                box-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+            }
+
+            .btn-outline-light {
+                border-color: #334155 !important;
+                color: #94a3b8 !important;
+            }
+
+            .btn-outline-light:hover {
+                background: #f8fafc !important;
+                color: #000 !important;
+            }
         </style>
+
+
+
+
+
+
+
+
     {% endblock %}
 
     <div class="sidebar">
@@ -306,10 +333,7 @@
                class="nav-link-custom {{ app.request.attributes.get('_route') == 'app_company_profile' ? 'active' : '' }}">
                 <i class="bi bi-person-circle"></i> Company Profile
             </a>
-            <a href="{{ path('app_company_university_requests') }}"
-               class="nav-link-custom {{ app.request.attributes.get('_route') == 'app_company_university_requests' ? 'active' : '' }}">
-                <i class="bi bi-bank"></i> University Requests
-            </a>
+
             <hr class="border-secondary my-4 opacity-25">
 
 
@@ -342,84 +366,106 @@
 
 
             {# تنبيه انعدام المشاركة #}
-            {% if noApplicants is not empty %}
-                <div class="col-md-4">
-                    <div class="card border-danger bg-danger bg-opacity-10 h-100">
-                        <div class="card-body">
-                            <h6 class="text-danger d-flex align-items-center">
-                                <i class="bi bi-people-fill me-2"></i> No Applicants Yet
-                            </h6>
-                            <p class="small text-muted mb-1">Consider updating:</p>
-                            <div class="d-flex flex-wrap gap-1">
-                                {% for offer in noApplicants %}
-                                    <span class="badge bg-danger">{{ offer.title }}</span>
-                                {% endfor %}
-                            </div>
-                        </div>
+            {# تنبيه انعدام المشاركة بتصميم مودرن #}
+{% if noApplicants is not empty %}
+    <div class="col-md-4">
+        <div class="stat-card h-100 p-4" style="border-color: rgba(239, 68, 68, 0.3) !important;">
+            <div class="d-flex align-items-center justify-content-between mb-3">
+                <div class="d-flex align-items-center gap-2">
+                    <div class="rounded-circle bg-danger bg-opacity-10 d-flex align-items-center justify-content-center" style="width: 32px; height: 32px;">
+                        <i class="bi bi-exclamation-circle text-danger"></i>
                     </div>
+                    <h6 class="text-white mb-0 fw-bold" style="font-size: 0.9rem;">Attention Required</h6>
                 </div>
-            {% endif %}
-        </div>
-        <div class="row g-3">
-            <div class="col-md-3 col-6">
-                <div class="stat-card-custom">
-                    <div class="stat-icon-wrapper">
-                        <i class="bi bi-briefcase"></i>
-                    </div>
-                    <div class="stat-content">
-                        <h3 class="stat-number">{{ total_offers }}</h3>
-                        <p class="stat-label">Total Offers</p>
-                    </div>
-                </div>
+                <span class="badge rounded-pill bg-danger bg-opacity-10 text-danger border border-danger border-opacity-10" style="font-size: 0.7rem;">
+                    {{ noApplicants|length }} Offers
+                </span>
             </div>
 
-            <div class="col-md-3 col-6">
-                <div class="stat-card-custom">
-                    <div class="stat-icon-wrapper">
-                        <i class="bi bi-lightning-charge"></i>
-                    </div>
-                    <div class="stat-content">
-                        <h3 class="stat-number">{{ active_offers }}</h3>
-                        <p class="stat-label">Active Offers</p>
-                    </div>
-                </div>
+            <p class="small mb-3" style="color: #cbd5e1; line-height: 1.5;">
+                The following offers haven't received any applicants yet. Consider refining their descriptions to attract more talent:
+            </p>
+
+            <div class="d-flex flex-wrap gap-2">
+                {% for offer in noApplicants %}
+                    <a href="{{ path('app_company_offer_manage', {'id': offer.id}) }}"
+                       class="text-decoration-none px-2 py-1 rounded border border-danger border-opacity-25 bg-danger bg-opacity-10 text-danger-emphasis d-flex align-items-center gap-1"
+                       style="font-size: 0.75rem; transition: all 0.2s;">
+                        <i class="bi bi-pencil-square" style="font-size: 0.65rem;"></i>
+                        {{ offer.title }}
+                    </a>
+                {% endfor %}
             </div>
 
-            <div class="col-md-3 col-6">
-                <div class="stat-card-custom">
-                    <div class="stat-icon-wrapper">
-                        <i class="bi bi-people"></i>
-                    </div>
-                    <div class="stat-content">
-                        <h3 class="stat-number">{{ total_applicants }}</h3>
-                        <p class="stat-label">Total Applicants</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-3 col-6">
-                <div class="stat-card-custom">
-                    <div class="stat-icon-wrapper">
-                        <i class="bi bi-clock-history"></i>
-                    </div>
-                    <div class="stat-content">
-                        <h3 class="stat-number">{{ pending_applicants }}</h3>
-                        <p class="stat-label">Pending Review</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3 col-6">
-                <div class="stat-card-custom">
-                    <div class="stat-icon-wrapper">
-                        <i class="bi bi-person-check"></i>
-                    </div>
-                    <div class="stat-content">
-                        <h3 class="stat-number">{{ accepted_applicants }}</h3>
-                        <p class="stat-label">Accepted Interns</p>
-                    </div>
-                </div>
+            <div class="mt-3 pt-3 border-top border-secondary border-opacity-10 text-center">
+                <small class="text-secondary" style="font-size: 0.65rem;">
+                    <i class="bi bi-info-circle me-1"></i> Improving tags and skills can help.
+                </small>
             </div>
         </div>
+    </div>
+{% endif %}
+<div class="row g-3 row-cols-2 row-cols-md-5">
+    <div class="col">
+        <div class="stat-card-custom">
+            <div class="stat-icon-wrapper">
+                <i class="bi bi-briefcase"></i>
+            </div>
+            <div class="stat-content">
+                <h3 class="stat-number">{{ total_offers }}</h3>
+                <p class="stat-label">Total Offers</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col">
+        <div class="stat-card-custom">
+            <div class="stat-icon-wrapper">
+                <i class="bi bi-lightning-charge"></i>
+            </div>
+            <div class="stat-content">
+                <h3 class="stat-number">{{ active_offers }}</h3>
+                <p class="stat-label">Active Offers</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col">
+        <div class="stat-card-custom">
+            <div class="stat-icon-wrapper">
+                <i class="bi bi-people"></i>
+            </div>
+            <div class="stat-content">
+                <h3 class="stat-number">{{ total_applicants }}</h3>
+                <p class="stat-label">Total Applicants</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col">
+        <div class="stat-card-custom">
+            <div class="stat-icon-wrapper">
+                <i class="bi bi-clock-history"></i>
+            </div>
+            <div class="stat-content">
+                <h3 class="stat-number">{{ pending_applicants }}</h3>
+                <p class="stat-label">Pending Review</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col">
+        <div class="stat-card-custom">
+            <div class="stat-icon-wrapper">
+                <i class="bi bi-person-check"></i>
+            </div>
+            <div class="stat-content">
+                <h3 class="stat-number">{{ accepted_applicants }}</h3>
+                <p class="stat-label">Accepted Interns</p>
+            </div>
+        </div>
+    </div>
+</div>
         <!-- قسم الرسم البياني -->
         <div class="row mt-4">
             <div class="col-md-6">
@@ -548,161 +594,134 @@
 
 
 
-
-
-
-
-
-
-        <div class="d-flex flex-column gap-3">
+        <div class="d-flex flex-column gap-4">
             {% for offer in offers %}
                 <div class="stat-card p-4">
-                     <div class="d-flex justify-content-between align-items-start">
-                        <div class="flex-grow-1">
-                            <div class="d-flex align-items-center gap-2 mb-1">
-                                <h5 class="fw-bold mb-0 text-white">{{ offer.title }}</h5>
-                               {# <span class="badge bg-success-subtle text-success ms-2" style="font-size: 0.65rem;">offer.status</span>
-                            </div>#}
+                    <div class="d-flex justify-content-between align-items-start mb-4">
+                        <div>
+                            <div class="d-flex align-items-center gap-3 mb-2">
+                                <h5 class="fw-bold mb-0 text-white" style="letter-spacing: -0.5px; font-size: 1.25rem;">{{ offer.title }}</h5>
 
-                        {# 1. نحدد ما إذا كان التاريخ الحالي قد تجاوز تاريخ بداية التربص #}
-                       {#  {% set is_past_start = offer.startDate|date('Y-m-d') < "now"|date('Y-m-d') %}
+                                {# حالة العرض المتوهجة #}
+                                {% set cs = offer.computedStatus %}
+                                {% set status_styles = {
+                                    'Active': 'background: rgba(34, 197, 94, 0.1); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.2);',
+                                    'In Progress': 'background: rgba(59, 130, 246, 0.1); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.2);',
+                                    'Deadline Over': 'background: rgba(234, 179, 8, 0.1); color: #facc15; border: 1px solid rgba(234, 179, 8, 0.2);',
+                                    'Expired': 'background: rgba(239, 68, 68, 0.1); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.2);',
+                                    'Closed': 'background: rgba(148, 163, 184, 0.1); color: #94a3b8; border: 1px solid rgba(148, 163, 184, 0.2);',
+                                    'Draft': 'background: rgba(255, 255, 255, 0.05); color: #64748b; border: 1px solid rgba(255, 255, 255, 0.1);'
+                                } %}
+                                <span class="badge rounded-pill" style="{{ status_styles[cs]|default(status_styles['Closed']) }} font-size: 0.65rem; padding: 5px 12px;">
+                            {{ cs|upper }}
+                        </span>
+                            </div>
 
-                        {% set has_accepted = false %}
-                        {% for app in offer.applications %}
-                            {% if app.status == 'accepted' %}
-                                {% set has_accepted = true %}
+                            <div class="d-flex align-items-center gap-2 small">
+                                <span class="text-primary fw-semibold" style="color: #3b82f6 !important;">{{ offer.company.companyName }} Algeria</span>
+                                <span style="color: #334155;">/</span>
+                                <span class="text-primary fw-semibold"><i class="bi bi-geo-alt me-1 text-primary"></i> {{ offer.wilaya }}</span>
+                            </div>
+                        </div>
+
+                        <div class="text-end">
+                            <div class="text-secondary mb-2" style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px;">Availability</div>
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="progress" style="width: 100px; height: 8px;">
+                                    {% set occupancy = (offer.seats > 0) ? ((offer.seats - offer.remainingSeats) / offer.seats * 100) : 0 %}
+                                    <div class="progress-bar" role="progressbar" style="width: {{ occupancy }}%"></div>
+                                </div>
+                                <span class="fw-bold text-white small">{{ offer.remainingSeats }}/{{ offer.seats }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    {# زر عرض الوصف - الجديد #}
+                    {% if offer.description %}
+                        <button class="btn btn-sm btn-outline-primary border-opacity-25 d-flex align-items-center gap-2"
+                                type="button"
+                                data-bs-toggle="collapse"
+                                data-bs-target="#desc-{{ offer.id }}"
+                                style="font-size: 0.75rem; border-radius: 8px;">
+                            <i class="bi bi-text-paragraph"></i> Details
+                        </button>
+                    {% endif %}
+                    {# 2. قسم الوصف القابل للطي (Collapse) #}
+                    <div class="collapse" id="desc-{{ offer.id }}">
+                        <div class="mb-4 p-3" style="background: rgba(59, 130, 246, 0.03); border-radius: 10px; border-left: 3px solid #3b82f6;">
+                            <small class="d-block mb-2" style="font-size: 0.65rem; color: #cbd5e1; letter-spacing: 0.5px; font-weight: 600;">JOB DESCRIPTION</small>
+                            <div class="text-secondary mb-0" style="font-size: 0.85rem; line-height: 1.6; color: #94a3b8 !important;">
+                                {{ offer.description|nl2br }}
+                            </div>
+                        </div>
+                    </div>
+                    {# التواريخ بنظام 4 أعمدة لضمان التناسق #}
+                    <div class="row g-0 mb-4 py-3 border-top border-bottom border-secondary border-opacity-10 shadow-inner" style="background: rgba(255,255,255,0.01); border-radius: 8px;">
+                        {# العمود الأول #}
+                        <div class="col-md-3 text-center px-2">
+                            <small class="d-block mb-1" style="font-size: 0.65rem; color: #cbd5e1; letter-spacing: 0.5px; font-weight: 600;">DURATION & TYPE</small>
+                            <span class="text-light small">
+            <i class="bi bi-hourglass-split me-1 text-primary"></i> {{ offer.duration }}
+            <span class="text-secondary mx-1">|</span> {{ offer.locationType }}
+        </span>
+                        </div>
+
+                        {# العمود الثاني #}
+                        <div class="col-md-3 text-center px-2 border-start border-secondary border-opacity-10">
+                            <small class="d-block mb-1" style="font-size: 0.65rem; color: #cbd5e1; letter-spacing: 0.5px; font-weight: 600;">DEADLINE</small>
+                            <span class="text-danger small fw-medium">
+            <i class="bi bi-calendar-x me-1"></i> {{ offer.deadline|date('M d, Y') }}
+        </span>
+                        </div>
+
+                        {# العمود الثالث #}
+                        <div class="col-md-3 text-center px-2 border-start border-secondary border-opacity-10">
+                            <small class="d-block mb-1" style="font-size: 0.65rem; color: #cbd5e1; letter-spacing: 0.5px; font-weight: 600;">INTERNSHIP START</small>
+                            <span class="text-info small fw-medium">
+            <i class="bi bi-play-circle-fill me-1"></i> {{ offer.internshipStart ? offer.internshipStart|date('M d, Y') : 'Not Set' }}
+        </span>
+                        </div>
+
+                        {# العمود الرابع #}
+                        <div class="col-md-3 text-center px-2 border-start border-secondary border-opacity-10">
+                            <small class="d-block mb-1" style="font-size: 0.65rem; color: #cbd5e1; letter-spacing: 0.5px; font-weight: 600;">REQUIRED LEVEL</small>
+                            <span class="text-success small fw-medium">
+            <i class="bi bi-shield-check me-1"></i> {{ offer.level|default('Master/Licence') }}
+        </span>
+                        </div>
+                    </div>
+
+                    <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 mt-2">
+                        <div class="d-flex gap-2 flex-wrap">
+                            {% for skill in offer.skills %}
+                                <span class="skill-badge">#{{ skill.tagName }}</span>
+                            {% endfor %}
+                        </div>
+
+                        <div class="d-flex gap-2">
+                            {% if offer.latitude and offer.longitude %}
+                                <a href="https://www.google.com/maps/search/?api=1&query={{ offer.latitude }},{{ offer.longitude }}"
+                                   target="_blank" class="btn btn-sm btn-outline-info border-info border-opacity-25" style="color: #0dcaf0;">
+                                    <i class="bi bi-map-fill"></i> Map
+                                </a>
                             {% endif %}
-                        {% endfor %}
 
-                        {% if not is_past_start %}
-                            <span class="badge bg-success-subtle text-success ms-2" style="font-size: 0.65rem;">ACTIVE</span>
-                        {% elseif is_past_start and not has_accepted %}
-                            <span class="badge bg-danger-subtle text-danger ms-2" style="font-size: 0.65rem;">INACTIVE</span>
-                        {% else %}
-                            <span class="badge bg-info-subtle text-info ms-2" style="font-size: 0.65rem;">ONGOING</span>
-                        {% endif %}
-                    </div>#}{% set cs = offer.computedStatus %}
-                                {% if cs == 'Active' %}
-                                    <span class="badge bg-success-subtle text-success ms-2" style="font-size:0.65rem;">ACTIVE</span>
-                                {% elseif cs == 'In Progress' %}
-                                    <span class="badge bg-info-subtle text-info ms-2" style="font-size:0.65rem;">IN PROGRESS</span>
-                                {% elseif cs == 'Deadline Over' %}
-                                    <span class="badge bg-warning-subtle text-warning ms-2" style="font-size:0.65rem;">DEADLINE OVER</span>
-                                {% elseif cs == 'Expired' %}
-                                    <span class="badge bg-danger-subtle text-danger ms-2" style="font-size:0.65rem;">EXPIRED</span>
-                                {% elseif cs == 'Closed' %}
-                                    <span class="badge bg-secondary ms-2" style="font-size:0.65rem;">CLOSED</span>
-                                {% elseif cs == 'Draft' %}
-                                    <span class="badge bg-secondary bg-opacity-50 ms-2" style="font-size:0.65rem;">DRAFT</span>
-                                {% endif %}
-                            {# 1. اسم الشركة والمستوى والنوع #}
-                            <div class="mb-2">
-                                <span class="text-primary fw-bold small">{{ offer.company.companyName }} Algeria</span>
-                                <span class="text-muted mx-2">|</span>
-                                <span class="badge bg-primary-subtle text-primary" style="font-size: 0.7rem;">{{ offer.locationType }}</span>
-                                <span class="badge bg-info-subtle text-info ms-1" style="font-size: 0.7rem;">{{ offer.level|default('Master/Licence') }}</span>
-                                <span class="badge bg-info">Ramaining Seats: {{ offer.remainingSeats }} / {{ offer.seats }}
-</span>
-                            </div>
+                            <a href="{{ path('app_company_offer_manage', {'id': offer.id}) }}"
+                               class="btn btn-sm btn-outline-light">
+                                <i class="bi bi-pencil-square me-1"></i> Edit
+                            </a>
 
-                            {# 2. التواريخ والولاية #}
-                            <div class="d-flex flex-wrap gap-3 text-secondary small mb-3">
-                                <span><i class="bi bi-geo-alt me-1 text-primary"></i> {{ offer.wilaya }}</span>
-                                <span><i class="bi bi-clock me-1 text-primary"></i> {{ offer.duration }}</span>
-
-                                {% if offer.deadline %}
-                                    <span><i class="bi bi-calendar-event me-1 text-danger"></i> Deadline: {{ offer.deadline|date('M d, Y') }}</span>
-                                {% endif %}
-
-                                {# إضافة التواريخ الجديدة إذا كانت موجودة في الـ Entity #}
-                                {% if offer.startDate is defined and offer.startDate %}
-                                    <span><i class="bi bi-calendar-check me-1 text-success"></i> Starts: {{ offer.startDate|date('M d, Y') }}</span>
-                                {% endif %}
-
-                                {# السطر الجديد الذي يجب إضافته هنا #}
-                                {% if offer.internshipStart %}
-                                    <span><i class="bi bi-play-circle me-1 text-success"></i> Internship: {{ offer.internshipStart|date('M d, Y') }}</span>
-                                {% endif %}
-                            </div>
-
-                            <div class="d-flex align-items-center justify-content-between mt-3">
-                                <div class="d-flex gap-2 flex-wrap">
-                                    {% for skill in offer.skills %}
-                                        <span class="skill-badge">{{ skill.tagName }}</span>
-                                    {% endfor %}
-                                </div>
-
-                                <div class="d-flex gap-2 align-items-center">
-                                    {# 3. رابط الخريطة #}
-                                    {% if offer.latitude and offer.longitude %}
-                                        <a href="https://www.google.com/maps?q={{ offer.latitude }},{{ offer.longitude }}"
-                                           target="_blank" class="btn btn-sm btn-outline-info border-secondary me-2">
-                                            <i class="bi bi-map"></i> View Map
-                                        </a>
-                                    {% endif %}
-
-                                    {#  <button class="btn btn-sm btn-outline-light border-secondary"><i class="bi bi-pencil me-1"></i> Edit</button>#}
-                                    {# داخل حلقة عرض العروض #}
-                                    <a href="{{ path('app_company_offer_manage', {'id': offer.id}) }}"
-                                       class="btn btn-sm btn-outline-light border-secondary">
-                                        <i class="bi bi-pencil me-1"></i> Edit
-                                    </a>
-                                    {#  <button class="btn btn-sm btn-outline-danger border-secondary"><i class="bi bi-trash"></i></button>#}
-                                    <form action="{{ path('app_company_offer_delete', {'id': offer.id}) }}"
-                                          method="POST"
-                                          style="display:inline;"
-                                          onsubmit="return confirm('Are you sure you want to delete this offer?');">
-                                        <button type="submit" class="btn btn-sm btn-outline-danger border-secondary">
-                                            <i class="bi bi-trash"></i>
-                                        </button>
-                                    </form>
-                                </div>
-                            </div>
+                            <form action="{{ path('app_company_offer_delete', {'id': offer.id}) }}"
+                                  method="POST" class="d-inline"
+                                  onsubmit="return confirm('Confirm deletion?');">
+                                <button type="submit" class="btn btn-sm btn-outline-danger border-danger border-opacity-25">
+                                    <i class="bi bi-trash3"></i>
+                                </button>
+                            </form>
                         </div>
                     </div>
                 </div>
             {% endfor %}
         </div>
-
-        {# <div class="stat-card p-4 offer-card">
-                    <div class="d-flex justify-content-between align-items-start">
-                        <div class="flex-grow-1">
-                            <div class="d-flex align-items-center gap-2 mb-2">
-                                <h5 class="fw-bold mb-0 text-white">Frontend Developer Intern</h5>
-                                <span class="badge bg-success-subtle text-success ms-2" style="font-size: 0.65rem;">ACTIVE</span>
-                            </div>
-
-                            <div class="d-flex flex-wrap gap-3 text-secondary small mb-3">
-                                <span><i class="bi bi-building me-1 text-primary"></i> {{ company.companyName }} Algeria</span>
-                                <span><i class="bi bi-geo-alt me-1 text-primary"></i> Constantine</span>
-                                <span><i class="bi bi-clock me-1 text-primary"></i> 6 months</span>
-                                <span><i class="bi bi-calendar-event me-1 text-primary"></i> Deadline: April 30, 2026</span>
-                            </div>
-
-                            <p class="label-custom" style="max-width: 800px;">
-                                Join our team to build modern web applications using Symfony and React. You will work on real-world projects...
-                            </p>
-
-                            <div class="d-flex align-items-center justify-content-between">
-                                <div class="d-flex gap-2">
-                                    <span class="badge-custom">React</span>
-                                    <span class="badge-custom">Symfony</span>
-                                    <span class="badge-custom">MySQL</span>
-                                </div>
-
-                                <div class="d-flex gap-2">
-                                    <button class="btn btn-sm btn-outline-light border-secondary"><i class="bi bi-pencil me-1"></i> Edit</button>
-                                    <button class="btn btn-sm btn-outline-danger border-secondary"><i class="bi bi-trash"></i></button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>#}
-        {# نهاية البطاقة الواحدة #}
-        </div>
-
-
-
 
         {# --- 3. Create New Offer Page --- #}
     {% elseif current_route == 'app_company_offers_new' %}
@@ -853,7 +872,6 @@
                         <p class="label-custom">{{ app.user.companyName }} Algeria</p>
 
                         <div class="d-flex flex-column gap-1 mb-3">
-                            <span class="badge bg-primary-subtle text-primary w-fit-content" id="prev-offer-loc">• Hybrid</span>
                             <small class="label-custom" id="prev-offer-wilaya"><i class="bi bi-geo-alt"></i> Location / Wilaya</small>
                             <small class="label-custom" id="prev-offer-duration"><i class="bi bi-clock"></i> Duration not set</small>
                             <small class="label-custom" id="prev-offer-date"><i class="bi bi-calendar"></i> No deadline</small>
@@ -1137,139 +1155,7 @@
             {% endfor %}
         </div>
 
-       {# --- 4b. University Requests Page (Affiliation) --- #}
-    {% elseif current_route == 'app_company_university_requests' %}
-        <div class="mb-5">
-            <h2 class="display-6 fw-bold text-white mb-2">University Affiliation</h2>
-            <p class="text-secondary mb-0">Build bridges between your company and academic institutions.</p>
-        </div>
 
-        <div class="row g-4">
-            {# Form Section #}
-            <div class="col-xl-4 col-lg-5">
-                <div class="stat-card h-100">
-                    <div class="icon-box mb-4 bg-primary bg-opacity-10 d-inline-flex p-3 rounded-4">
-                        <i class="bi bi-building-add text-primary fs-4"></i>
-                    </div>
-                    <h5 class="text-white fw-bold mb-3">Send New Request</h5>
-                    <p class="text-muted small mb-4">Choose a university to share your credentials and internship offers with their students.</p>
-
-                    <form action="{{ path('app_company_send_verification_request') }}" method="POST">
-                        <div class="mb-4">
-                            <label class="label-custom small fw-bold">SELECT UNIVERSITY</label>
-                            <select name="university_id" class="form-control custom-select-dark" required>
-                                <option value="" disabled selected>-- Search University --</option>
-                                {% for uni in universities %}
-                                    <option value="{{ uni.id }}">{{ uni.universityName }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-
-                        <div class="alert border-0 mb-4" style="background: rgba(59, 130, 246, 0.05); border-left: 4px solid #3b82f6 !important;">
-                            <div class="d-flex">
-                                <i class="bi bi-info-circle text-primary me-3 mt-1"></i>
-                                <p class="small text-secondary mb-0">
-                                    Your legal documents and company profile will be visible to the university administration.
-                                </p>
-                            </div>
-                        </div>
-
-                        <button type="submit" class="btn btn-primary w-100 py-3 fw-bold rounded-3 shadow-sm mt-2">
-                            <i class="bi bi-send-fill me-2"></i> Submit Request
-                        </button>
-                    </form>
-                </div>
-            </div>
-
-            <div class="col-xl-12 col-lg-12 mt-4">
-                <div class="stat-card" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 15px; padding: 20px;">
-                    <div class="d-flex align-items-center justify-content-between mb-4">
-                        <h5 class="text-white fw-bold mb-0">
-                            <i class="bi bi-clock-history me-2 text-primary"></i> Affiliation History
-                        </h5>
-                        <span class="badge bg-primary bg-opacity-10 text-primary px-3 rounded-pill">
-                {{ university_requests|length }} Total Requests
-            </span>
-                    </div>
-
-                    <div class="table-responsive">
-                        <table class="table table-dark table-hover align-middle mb-0" style="--bs-table-bg: transparent;">
-                            <thead>
-                            <tr class="text-secondary small" style="border-bottom: 2px solid rgba(255, 255, 255, 0.05);">
-                                <th class="py-3 border-0">UNIVERSITY / INSTITUTION</th>
-                                <th class="py-3 border-0 text-center">SUBMISSION</th>
-                                <th class="py-3 border-0 text-center">STATUS</th>
-                                <th class="py-3 border-0">SYSTEM MESSAGE / REASON</th>
-                                <th class="py-3 border-0 text-end">ACTION</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {% for request in university_requests|default([]) %}
-                                <tr class="request-row" style="border-bottom: 1px solid rgba(255, 255, 255, 0.05); transition: all 0.3s ease;">
-                                    <td class="py-4">
-                                        <div class="d-flex align-items-center">
-                                            <div class="avatar-sm me-3 rounded-12 d-flex align-items-center justify-content-center"
-                                                 style="width: 40px; height: 40px; background: linear-gradient(135deg, var(--accent-primary), #6366f1); color: white; font-weight: bold; border-radius: 10px;">
-                                                {{ request.university.universityName|slice(0, 1)|upper }}
-                                            </div>
-                                            <div>
-                                                <div class="text-white fw-bold mb-0" style="font-size: 0.95rem;">{{ request.university.universityName }}</div>
-                                                <div class="text-muted small">Campus ID: #{{ request.university.id }}</div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="text-center text-secondary small">{{ request.createdAt|date('M d, Y') }}</td>
-                                    <td class="text-center">
-                                        {% if request.status == 'Pending' %}
-                                            <span class="status-badge warning">Pending</span>
-                                        {% elseif request.status == 'Accepted' %}
-                                            <span class="status-badge success">Partnered</span>
-                                        {% elseif request.status == 'Rejected' %}
-                                            <span class="status-badge danger">Rejected</span>
-                                        {% endif %}
-                                    </td>
-                                    <td class="small">
-                                        {% if request.status|lower in ['refused', 'rejected'] %}
-                                            {#  {% if app.status in ['refused', 'rejected'] %}#}
-
-                                            {#   {% if request.status == 'Rejected' %}#}
-                                            <div class="p-2 rounded bg-danger bg-opacity-10 text-danger-emphasis border border-danger border-opacity-10" style="max-width: 250px;">
-                                                <i class="bi bi-info-circle me-1"></i> {{ request.rejectionReason|default('No specific reason provided') }}
-                                            </div>
-                                        {% elseif request.status == 'Accepted' %}
-                                            <span class="text-success small"><i class="bi bi-shield-check me-1"></i> Agreement Active</span>
-                                        {% else %}
-                                            <span class="text-muted small italic">Awaiting response...</span>
-                                        {% endif %}
-                                    </td>
-                                    <td class="text-end">
-                                        <button onclick="deleteRequestHistory({{ request.id }}, this)"
-                                                class="btn btn-sm btn-outline-danger border-0 rounded-circle p-2"
-                                                title="Delete from history">
-                                            {# تعديل الزر في الجدول #}
-                                            <button onclick="deleteRequestHistory({{ request.id }}, this)"
-                                                    class="btn btn-sm btn-outline-danger border-0 rounded-circle p-2"
-                                                    title="Delete from history">
-                                                <i class="bi bi-trash3"></i>
-                                            </button>
-
-                                        </button>
-                                    </td>
-                                </tr>
-                            {% else %}
-                                <tr>
-                                    <td colspan="5" class="text-center py-5">
-                                        <img src="/path/to/empty-icon.svg" alt="" style="opacity: 0.2; width: 60px; margin-bottom: 15px;">
-                                        <p class="text-muted">No records found in your history.</p>
-                                    </td>
-                                </tr>
-                            {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
 
         {# --- 5. Profile Page (Original Code) --- #}
     {% else %}
@@ -1307,6 +1193,65 @@
                         </div>
                     </div>
                 </div>
+
+{# ── بطاقة رفع الختم الرسمي ──────────────────────────────────── #}
+<div class="stat-card mb-4" id="stamp-section">
+    <div class="d-flex align-items-center gap-2 mb-3">
+        <div class="rounded-2 d-flex align-items-center justify-content-center"
+             style="width:36px;height:36px;background:rgba(59,130,246,0.1);">
+            <i class="bi bi-patch-check text-primary"></i>
+        </div>
+        <div>
+            <h6 class="text-white mb-0 fw-bold">Official Company Stamp</h6>
+            <small class="text-secondary" style="font-size:0.75rem;">
+                Printed automatically on internship agreements
+            </small>
+        </div>
+    </div>
+
+    <div class="d-flex align-items-center gap-4">
+
+        {# ── معاينة الختم الحالي ──────────────────────────────── #}
+        <div id="stamp-preview-wrapper"
+             style="width:90px;height:90px;border-radius:12px;border:1px dashed #334155;
+                    background:#020617;display:flex;align-items:center;justify-content:center;
+                    overflow:hidden;flex-shrink:0;">
+            {% if company.stampFilename %}
+                <img id="stamp-preview-img"
+                     src="{{ asset('uploads/stamps/' ~ company.stampFilename) }}"
+                     alt="Company Stamp"
+                     style="width:100%;height:100%;object-fit:contain;">
+            {% else %}
+                <div id="stamp-preview-placeholder" class="text-center px-2">
+                    <i class="bi bi-patch-check text-secondary fs-4"></i>
+                    <div style="font-size:0.6rem;color:#475569;margin-top:4px;">No stamp</div>
+                </div>
+            {% endif %}
+        </div>
+
+        {# ── زر الرفع والمعلومات ──────────────────────────────── #}
+        <div class="flex-grow-1">
+            <p class="text-secondary mb-3" style="font-size:0.82rem;line-height:1.6;">
+                Upload a transparent-background PNG of your official stamp.
+                It will appear in the <strong class="text-white">Company</strong> signature block of every generated agreement.
+            </p>
+
+            <label for="companyStampInput"
+                   class="btn btn-sm"
+                   style="background:rgba(59,130,246,0.1);border:1px solid rgba(59,130,246,0.3);
+                          color:#93c5fd;border-radius:8px;padding:8px 18px;
+                          cursor:pointer;transition:all 0.2s;font-size:0.82rem;">
+                <i class="bi bi-upload me-1"></i>
+                {% if company.stampFilename %}Replace Stamp{% else %}Upload Stamp{% endif %}
+            </label>
+            <input type="file" id="companyStampInput" accept="image/png,image/jpeg,image/webp"
+                   class="d-none">
+
+            {# رسالة النجاح / الخطأ #}
+            <div id="stamp-msg" class="mt-2" style="font-size:0.8rem;display:none;"></div>
+        </div>
+    </div>
+</div>
 
                 <div class="stat-card">
                     <h6 class="fw-bold mb-4 text-white"><i class="bi bi-pencil-square me-2 text-primary"></i> Company Details</h6>
@@ -1357,7 +1302,7 @@
                         </div>
 
                         {# داخل قسم Company Details في ملف dashboard.html.twig #}
-                        <div class="col-md-12 mt-3">
+                       {#  <div class="col-md-12 mt-3">
                             <label class="label-custom">Company Verification Documents (PDF/JPG)</label>
                             <div class="d-flex align-items-center gap-3">
                                 <input type="file" id="verification-input" class="d-none" accept=".pdf,image/*" onchange="updateVerificationPreview(this)">
@@ -1366,7 +1311,7 @@
                                 </button>
                                 <span id="v-file-name" class="text-muted small">No file selected</span>
                             </div>
-                        </div>
+                        </div>#}
 
 
 
@@ -1377,11 +1322,11 @@
             </div>
             <div class="col-lg-4">
                 <div class="stat-card sticky-top" style="top: 2rem;">
-                        <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-2 text-uppercase fw-bold mb-4" style="font-size: 0.75rem;">
+                       {#  <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-2 text-uppercase fw-bold mb-4" style="font-size: 0.75rem;">
                             <i class="bi bi-eye me-2"></i> Live Preview
-                        </span>
+                        </span>#}
 
-                    <div class="text-center mb-4">
+                   <div class="text-center mb-4">
                         <div class="mx-auto mb-3" id="prev-logo-container" style="width: 75px; height: 75px; border-radius: 12px; background: #020617; display: flex; align-items: center; justify-content: center; overflow: hidden; border: 2px solid #3b82f6;">
                             {% if company.logo %}
                                 <img src="{{ asset('uploads/logos/' ~ company.logo) }}" id="prev-logo-img" style="width: 100%; height: 100%; object-fit: cover;">
@@ -1393,7 +1338,7 @@
                         </div>
                         <h5 id="prev-name" class="mt-3 fw-bold text-white">{{ company.companyName|default('Company Name') }}</h5>
                         <span id="prev-industry" class="badge bg-primary-subtle text-primary py-2 px-3">{{ company.industry|default('Industry') }}</span>
-                    </div>
+                       </div>
 
                     <div class="preview-info small d-flex flex-column gap-3">
                         <div class="d-flex align-items-center">
@@ -1425,12 +1370,12 @@
                     <p id="prev-desc" class="text-secondary small mb-0">{{ company.bio|default('Company description will appear here.') }}</p>
 
                     {# داخل div المعاينة (Live Preview)[cite: 2] #}
-                    <div id="preview-verification-section" class="mt-3 {% if not company.verificationFile %}d-none{% endif %}">
+                   {#  <div id="preview-verification-section" class="mt-3 {% if not company.verificationFile %}d-none{% endif %}">
                         <a href="{{ company.verificationFile ? asset('uploads/verification/' ~ company.verificationFile) : '#' }}"
                            id="prev-v-link" target="_blank" class="btn btn-sm btn-primary w-100 fw-bold">
                             <i class="bi bi-shield-check me-2"></i> View Verification Docs
                         </a>
-                    </div>
+                    </div>#}
 
 
                 </div>
@@ -2399,4 +2344,65 @@
             });
 
         </script>
+        {# ════════════════════════════════════════════════════════════════
+   JavaScript — أضف هذا داخل <script> الموجود في نهاية الصفحة
+   ════════════════════════════════════════════════════════════════ #}
+<script>
+document.getElementById('companyStampInput').addEventListener('change', async function () {
+    const file = this.files[0];
+    if (!file) return;
+
+    // ── التحقق المبدئي على جانب العميل ──────────────────────────
+    const allowedTypes = ['image/png', 'image/jpeg', 'image/webp'];
+    if (!allowedTypes.includes(file.type)) {
+        showStampMsg('❌ Unsupported format. Use PNG, JPG, or WebP.', '#ef4444');
+        return;
+    }
+    if (file.size > 2 * 1024 * 1024) {
+        showStampMsg('❌ File too large. Maximum 2 MB.', '#ef4444');
+        return;
+    }
+
+    // ── معاينة فورية قبل الرفع ───────────────────────────────────
+    const reader = new FileReader();
+    reader.onload = e => {
+        const wrapper = document.getElementById('stamp-preview-wrapper');
+        wrapper.innerHTML = `<img id="stamp-preview-img"
+            src="${e.target.result}"
+            style="width:100%;height:100%;object-fit:contain;">`;
+    };
+    reader.readAsDataURL(file);
+
+    // ── رفع الملف إلى الـ server ─────────────────────────────────
+    showStampMsg('⏳ Uploading...', '#94a3b8');
+
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+        const res  = await fetch('{{ path("app_company_upload_stamp") }}', {
+            method: 'POST',
+            body:   formData,
+        });
+        const data = await res.json();
+
+        if (data.success) {
+            showStampMsg('✅ Stamp saved successfully!', '#10b981');
+        } else {
+            showStampMsg('❌ ' + (data.error || 'Upload failed.'), '#ef4444');
+        }
+    } catch (err) {
+        showStampMsg('❌ Network error. Please try again.', '#ef4444');
+    }
+});
+
+function showStampMsg(text, color) {
+    const el = document.getElementById('stamp-msg');
+    el.textContent = text;
+    el.style.color  = color;
+    el.style.display = 'block';
+    // اخفاء الرسالة بعد 4 ثواني
+    setTimeout(() => { el.style.display = 'none'; }, 4000);
+}
+</script>
     {% endblock %}

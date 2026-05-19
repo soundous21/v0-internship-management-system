@@ -1,12 +1,153 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Reset your password{% endblock %}
+{% block title %}Stage.io - Reset Your Password{% endblock %}
 
 {% block body %}
-    <h1>Reset your password</h1>
+    <style>
+        /* إخفاء الـ Navbar تماماً في هذه الصفحة */
+        .navbar {
+            display: none !important;
+        }
 
-    {{ form_start(resetForm) }}
-        {{ form_row(resetForm.plainPassword) }}
-        <button class="btn btn-primary">Reset password</button>
-    {{ form_end(resetForm) }}
+        /* التنسيقات المتوافقة مع الهوية البصرية المظلمة للموقع */
+        .auth-container {
+            min-height: 90vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .auth-card {
+            background-color: #09090b;
+            border: 1px solid #1f2937;
+            border-radius: 16px;
+            padding: 40px;
+            width: 100%;
+            max-width: 450px;
+            box-shadow: 0 0 40px rgba(0,0,0,0.5);
+        }
+
+        .icon-box-reset {
+            width: 60px;
+            height: 60px;
+            background: rgba(59, 130, 246, 0.1);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #3b82f6;
+            margin-bottom: 24px;
+        }
+
+        /* تطويع مدخلات نموذج الـ Password الخاص بـ Symfony */
+        .auth-card input, .auth-card .form-control {
+            background-color: #000000 !important;
+            border: 1px solid #1f2937 !important;
+            color: white !important;
+            padding: 12px;
+            padding-end: 45px; /* مسافة إضافية في اليمين لمنع تداخل النص مع العين */
+            border-radius: 8px;
+            transition: 0.3s;
+            width: 100%;
+        }
+        .auth-card input:focus, .auth-card .form-control:focus {
+            border-color: #3b82f6 !important;
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2) !important;
+            outline: none;
+        }
+
+        /* تنسيق عناوين الحقول */
+        .auth-card label {
+            color: #94a3b8 !important;
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+            display: block;
+        }
+
+        /* زر إعادة التعيين الأبيض الاحترافي */
+        .btn-v0-white {
+            background-color: #ffffff;
+            color: #000000;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: 600;
+            width: 100%;
+            transition: 0.3s;
+        }
+        .btn-v0-white:hover {
+            background-color: #e2e8f0;
+        }
+
+        /* تنسيق الأيقونة الزرقاء للعين */
+        .eye-icon-reset {
+            color: #3b82f6 !important;
+            cursor: pointer;
+            opacity: 0.8;
+            transition: 0.2s;
+            z-index: 10;
+        }
+        .eye-icon-reset:hover {
+            opacity: 1;
+        }
+    </style>
+
+    <div class="container auth-container">
+        <div class="auth-card">
+            {# أيقونة مفتاح الأمان #}
+            <div class="icon-box-reset mx-auto">
+                <i class="bi bi-key-fill fs-2"></i>
+            </div>
+
+            <div class="text-center mb-4">
+                <h3 class="fw-bold text-white">Choose New Password</h3>
+                <p class="text-secondary small mt-2">
+                    Please enter your new secure password below to update your account access.
+                </p>
+            </div>
+
+            {{ form_start(resetForm) }}
+
+            {# جلب حقول كلمة المرور (الأولى والتأكيد) بصورة مخصصة لحقن العين التفاعلية #}
+            {% for password_field in resetForm.plainPassword %}
+                <div class="mb-4 text-start">
+                    {{ form_label(password_field) }}
+                    <div class="position-relative">
+                        {{ form_widget(password_field, {
+                            'attr': {'class': 'form-control', 'placeholder': '••••••••'}
+                        }) }}
+                        {# إضافة العين الزرقاء التفاعلية لكل حقل #}
+                        <i class="bi bi-eye position-absolute top-50 end-0 translate-middle-y me-3 eye-icon-reset"></i>
+                    </div>
+                    {{ form_errors(password_field) }}
+                </div>
+            {% endfor %}
+
+            <button type="submit" class="btn-v0-white mt-2 mb-2">Reset Password</button>
+            {{ form_end(resetForm) }}
+        </div>
+    </div>
+
+    {# كود الجافا سكريبت لتشغيل العيون في هذه الصفحة بصورة مستقلة وذكية #}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.eye-icon-reset').forEach(icon => {
+                icon.addEventListener('click', function() {
+                    // البحث عن الـ input المتواجد بجانب العين مباشرة
+                    const input = this.parentElement.querySelector('input');
+                    if (input.type === 'password') {
+                        input.type = 'text';
+                        this.classList.remove('bi-eye');
+                        this.classList.add('bi-eye-slash');
+                    } else {
+                        input.type = 'password';
+                        this.classList.remove('bi-eye-slash');
+                        this.classList.add('bi-eye');
+                    }
+                });
+            });
+        });
+    </script>
 {% endblock %}

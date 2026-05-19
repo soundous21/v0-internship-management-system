@@ -1,22 +1,134 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Reset your password{% endblock %}
+{% block title %}Stage.io - Reset Password{% endblock %}
 
 {% block body %}
-    {% for flash_error in app.flashes('reset_password_error') %}
-        <div class="alert alert-danger" role="alert">{{ flash_error }}</div>
-    {% endfor %}
-    <h1>Reset your password</h1>
+    <style>
+        /* كود إخفاء الـ Navbar لهذه الصفحة تحديداً لضمان عدم ظهوره */
+        .navbar {
+            display: none !important;
+        }
 
-    {{ form_start(requestForm) }}
-        {{ form_row(requestForm.email) }}
-        <div>
-            <small>
-                Enter your email address, and we will send you a
-                link to reset your password.
-            </small>
+        /* التنسيقات المتوافقة مع الهوية البصرية المظلمة للموقع */
+        .auth-container {
+            min-height: 90vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .auth-card {
+            background-color: #09090b;
+            border: 1px solid #1f2937;
+            border-radius: 16px;
+            padding: 40px;
+            width: 100%;
+            max-width: 450px;
+            box-shadow: 0 0 40px rgba(0,0,0,0.5);
+        }
+
+        .icon-box-reset {
+            width: 60px;
+            height: 60px;
+            background: rgba(59, 130, 246, 0.1);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #3b82f6;
+            margin-bottom: 24px;
+        }
+
+        /* تحسين مظهر حقول إدخال Symfony لتناسب التصميم */
+        .auth-card input, .auth-card .form-control {
+            background-color: #000000 !important;
+            border: 1px solid #1f2937 !important;
+            color: white !important;
+            padding: 12px;
+            border-radius: 8px;
+            transition: 0.3s;
+        }
+        .auth-card input:focus, .auth-card .form-control:focus {
+            border-color: #3b82f6 !important;
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2) !important;
+            outline: none;
+        }
+
+        /* تنسيق عناوين الحقول (Labels) */
+        .auth-card label {
+            color: #94a3b8 !important;
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+            display: block;
+        }
+
+        /* تنسيق زر الإرسال الزر الأبيض العالي التباين */
+        .btn-v0-white {
+            background-color: #ffffff;
+            color: #000000;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: 600;
+            width: 100%;
+            transition: 0.3s;
+        }
+        .btn-v0-white:hover {
+            background-color: #e2e8f0;
+        }
+
+        .back-link {
+            color: #94a3b8;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: 0.3s;
+        }
+        .back-link:hover {
+            color: white;
+        }
+    </style>
+
+    <div class="container auth-container">
+        <div class="auth-card">
+            {# أيقونة الحماية والقفل الزرقاء المتناسقة #}
+            <div class="icon-box-reset mx-auto">
+                <i class="bi bi-shield-lock-fill fs-2"></i>
+            </div>
+
+            <div class="text-center mb-4">
+                <h3 class=\"fw-bold text-white\">Forgot Password?</h3>
+                <p class="text-secondary small mt-2">
+                    Enter your email address, and we will send you a link to reset your password.
+                </p>
+            </div>
+
+            {# عرض رسائل الخطأ إن وجدت #}
+            {% for flash_error in app.flashes('reset_password_error') %}
+                <div class="alert alert-danger border-0 bg-danger bg-opacity-10 text-danger small mb-3" role="alert">
+                    {{ flash_error }}
+                </div>
+            {% endfor %}
+
+            {# نموذج Symfony معدل ليتناسب مع الواجهة تلقائياً #}
+            {{ form_start(requestForm) }}
+            <div class="mb-4 text-start">
+                {{ form_row(requestForm.email, {
+                    'label_attr': {'class': 'small text-secondary fw-bold mb-1'},
+                    'attr': {'class': 'form-control', 'placeholder': 'name@university.edu'}
+                }) }}
+            </div>
+
+            <button type="submit" class="btn-v0-white mb-3">Send Password Reset Email</button>
+            {{ form_end(requestForm) }}
+
+            {# رابط للعودة للخلف #}
+            <div class="text-center mt-3">
+                <a href="javascript:history.back()" class="back-link">
+                    <i class="bi bi-arrow-left me-1"></i> Back to Login
+                </a>
+            </div>
         </div>
-
-        <button class="btn btn-primary">Send password reset email</button>
-    {{ form_end(requestForm) }}
+    </div>
 {% endblock %}

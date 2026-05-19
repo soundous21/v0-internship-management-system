@@ -1,11 +1,114 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Password Reset Email Sent{% endblock %}
+{% block title %}Stage.io - Email Sent{% endblock %}
 
 {% block body %}
-    <p>
-        If an account matching your email exists, then an email was just sent that contains a link that you can use to reset your password.
-        This link will expire in {{ resetToken.expirationMessageKey|trans(resetToken.expirationMessageData, 'ResetPasswordBundle') }}.
-    </p>
-    <p>If you don't receive an email please check your spam folder or <a href="{{ path('app_forgot_password_request') }}">try again</a>.</p>
+    <style>
+        /* إخفاء الـ Navbar لهذه الصفحة لضمان المظهر الكامل */
+        .navbar {
+            display: none !important;
+        }
+
+        /* التنسيقات المتوافقة مع الهوية البصرية المظلمة للموقع */
+        .auth-container {
+            min-height: 90vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .auth-card {
+            background-color: #09090b;
+            border: 1px solid #1f2937;
+            border-radius: 16px;
+            padding: 40px;
+            width: 100%;
+            max-width: 480px;
+            box-shadow: 0 0 40px rgba(0,0,0,0.5);
+        }
+
+        /* صندوق الأيقونة الزرقاء الدائرية المضيئة */
+        .icon-box-check {
+            width: 65px;
+            height: 65px;
+            background: rgba(59, 130, 246, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #3b82f6;
+            margin-bottom: 24px;
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.1);
+        }
+
+        /* تنسيق النصوص والروابط */
+        .card-text {
+            color: #94a3b8;
+            line-height: 1.6;
+        }
+
+        .accent-link {
+            color: #3b82f6;
+            text-decoration: none;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+        .accent-link:hover {
+            color: #60a5fa;
+            text-decoration: underline;
+        }
+
+        .back-link {
+            color: #64748b;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: 0.3s;
+        }
+        .back-link:hover {
+            color: white;
+        }
+
+        .badge-expiry {
+            background-color: rgba(245, 158, 11, 0.1);
+            color: #f59e0b;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+    </style>
+
+    <div class="container auth-container">
+        <div class="auth-card text-center">
+            {# أيقونة الطائرة الورقية / الإرسال الناجح #}
+            <div class="icon-box-check mx-auto">
+                <i class="bi bi-send-check-fill fs-2"></i>
+            </div>
+
+            <h3 class="fw-bold text-white mb-3">Check Your Email</h3>
+
+            <div class="card-text small mb-4">
+                <p class="mb-3">
+                    If an account matching your email exists, then an email was just sent that contains a link that you can use to reset your password.
+                </p>
+                <p class="mb-0">
+                    This link will expire in <span class="badge-expiry">{{ resetToken.expirationMessageKey|trans(resetToken.expirationMessageData, 'ResetPasswordBundle') }}</span>.
+                </p>
+            </div>
+
+            <hr class="border-secondary opacity-25 my-4">
+
+            <p class="card-text small mb-4">
+                If you don't receive an email, please check your <span class="text-white fw-bold">Spam folder</span> or
+                <a href="{{ path('app_forgot_password_request') }}" class="accent-link">try again</a>.
+            </p>
+
+            {# رابط العودة الذكي #}
+            <div class="mt-2">
+                <a href="javascript:history.back()" class="back-link">
+                    <i class="bi bi-arrow-left me-1"></i> Back
+                </a>
+            </div>
+        </div>
+    </div>
 {% endblock %}

@@ -83,6 +83,7 @@ class StudentController extends AbstractController
             'offers'            => $offers,
             'appliedOfferIds'   => $appliedOfferIds,
             'applications'      => $applications,  // ★ أضف هذا
+            'acceptedApplication' => $acceptedApplication,
         ]);
     }
     // ─── ★ ربط الطالب بأدمين جامعته ──────────────────────────────────────────

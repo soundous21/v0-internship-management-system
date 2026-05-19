@@ -8,6 +8,7 @@ parameters:
     logos_directory: '%kernel.project_dir%/public/uploads/logos'
     verification_directory: '%kernel.project_dir%/public/uploads/verification'
     stampsDir: '%kernel.project_dir%/public/uploads/stamps/'
+    app_base_url: 'http://localhost:8000'
 services:
     # default configuration for services in *this* file
     _defaults:
@@ -30,7 +31,7 @@ services:
       arguments:
         $conventionsDir: '%kernel.project_dir%/public/conventions/'
         $stampsDir:      '%kernel.project_dir%/public/uploads/stamps/'
-
+        $appBaseUrl:     '%app_base_url%'
 
   # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

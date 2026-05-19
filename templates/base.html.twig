@@ -12,7 +12,36 @@
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
         {# خط Google Fonts (Geist أو Inter يشبه خط الفيديو) #}
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script>
+        // التأكد من الوضع المختار فور تحميل الصفحة
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+    </script>
 
+    <style>
+        :root {
+            /* الوضع الفاتح */
+            --bg-body: #f8fafc;
+            --bg-card: #ffffff;
+            --text-color: #1e293b;
+            --border-color: #e2e8f0;
+        }
+
+        [data-theme="dark"] {
+            /* الوضع المظلم */
+            --bg-body: #000000;
+            --bg-card: #09090b;
+            --text-color: #ffffff;
+            --border-color: #1f2937;
+        }
+
+        /* تطبيق المتغيرات على جسم الصفحة */
+        body {
+            background-color: var(--bg-body) !important;
+            color: var(--text-color) !important;
+            transition: 0.3s;
+        }
+    </style>
         <style>
             :root {
                 --bg-dark: #030712;
@@ -36,6 +65,7 @@
             .navbar-brand { font-weight: 800; letter-spacing: -1px; }
         </style>
 
+
         {% block stylesheets %}
             {# هنا تضع ملفات الـ CSS الإضافية إذا كنت تستخدم Webpack Encore #}
         {% endblock %}
@@ -44,23 +74,34 @@
 {# --- الـ Navbar العلوي (كما يظهر في الفيديو) --- #}
 <nav class="navbar navbar-expand-lg sticky-top py-3">
     <div class="container">
-        <a class="navbar-brand text-white d-flex align-items-center" href="{{ path('app_home') }}">
-            <i class="bi bi-layers-fill me-2 text-primary"></i> Stag.io
-        </a>
+         {#  <a class="navbar-brand d-flex align-items-center" href="{{ path('app_home') }}">
+            <div class="brand-logo-container">
+                <img src="{{ asset('') }}" alt="Stage.io Logo" class="brand-logo-img">
+            </div>
+        </a> #}
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav mx-auto">
+           {# <ul class="navbar-nav mx-auto">
                 <li class="nav-item"><a class="nav-link" href="#">Features</a></li>
                 <li class="nav-item"><a class="nav-link" href="#">For Who</a></li>
                 <li class="nav-item"><a class="nav-link" href="#">About</a></li>
+            </ul>#}
+            <ul class="navbar-nav mx-auto">
+                <li class="nav-item"><a class="nav-link" href="#features">Features</a></li>
+                <li class="nav-item"><a class="nav-link" href="#for-who">For Who</a></li>
+                <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
             </ul>
           {# <div class="d-flex align-items-center gap-3">
                 <a href="#" class="nav-link">Sign In</a>
                 <a href="#" class="btn btn-light fw-bold px-4 rounded-pill">Sign Up</a>
             </div>#}
             <div class="d-flex align-items-center gap-3">
+
+                <button id="theme-toggle" class="btn btn-outline-secondary rounded-circle p-2" style="width: 40px; height: 40px;">
+                    <i id="theme-icon" class="bi bi-moon-stars"></i>
+                </button>
                 <button type="button" class="btn btn-outline-light rounded-pill px-4" data-bs-toggle="modal" data-bs-target="#signInModal">
                     Sign In
                 </button>
@@ -79,6 +120,33 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 {% block javascripts %}
+    <script>
+        const themeToggle = document.getElementById('theme-toggle');
+        const themeIcon = document.getElementById('theme-icon');
+        const htmlElement = document.documentElement;
+
+        function updateThemeUI(theme) {
+            if (theme === 'dark') {
+                themeIcon.className = 'bi bi-sun-fill';
+                themeIcon.style.color = '#f59e0b';
+            } else {
+                themeIcon.className = 'bi bi-moon-stars-fill';
+                themeIcon.style.color = '#3378f3';
+            }
+        }
+
+        // تهيئة الواجهة بناءً على الثيم الحالي
+        updateThemeUI(htmlElement.getAttribute('data-theme'));
+
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = htmlElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+
+            htmlElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeUI(newTheme);
+        });
+    </script>
     {# هنا تضع ملفات الـ JS الإضافية #}
 {% endblock %}
 </body>

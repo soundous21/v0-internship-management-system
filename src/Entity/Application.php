@@ -50,7 +50,12 @@ class Application
     /** سبب الرفض (اختياري، يُملأ عند الرفض) */
     #[ORM\Column(type: 'text', nullable: true)]
     private ?string $rejectionReason = null;
-
+    /**
+     * ★ العلاقة مع التربص — يُنشأ تلقائياً عند موافقة الأدمين
+     * OneToOne: كل طلب مقبول = تربص واحد فقط
+     */
+    #[ORM\OneToOne(mappedBy: 'application', targetEntity: Internship::class, cascade: ['persist', 'remove'])]
+    private ?Internship $internship = null;
     // Getters & Setters ────────────────────────────────────────────────────────
 
     public function getConventionFile(): ?string
@@ -106,7 +111,21 @@ class Application
 
 
 
+    public function getInternship(): ?Internship
+    {
+        return $this->internship;
+    }
 
+    public function setInternship(?Internship $internship): static
+    {
+        $this->internship = $internship;
+        return $this;
+    }
+
+    public function hasInternship(): bool
+    {
+        return $this->internship !== null;
+    }
     // src/Entity/Application.php
 
     public function getMatchingScore(): int

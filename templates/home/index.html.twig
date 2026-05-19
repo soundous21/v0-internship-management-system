@@ -54,7 +54,7 @@
     /* Modal Styles */
     .modal-v0 .modal-content {
         background-color: #09090b !important;
-        border: 1px solid #1f2937 !important;
+        border: 1px solid #283b5a !important;
         border-radius: 16px !important;
         box-shadow: 0 0 40px rgba(0,0,0,0.5);
     }
@@ -122,19 +122,6 @@
         color: #fbbf24;
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
      .hero-title {
          font-size: 3.5rem;
          font-weight: 800;
@@ -188,66 +175,26 @@
     .animated-gradient-text {
         filter: drop-shadow(0 0 8px rgba(0, 255, 135, 0.3));
     }
+
+
+
+
+
+
+
+    .eye-icon {
+        color: #3b82f6 !important; /* تغيير اللون إلى الأزرق */
+        opacity: 0.8;
+        cursor: pointer;
+        transition: 0.2s;
+    }
+    .eye-icon:hover {
+        opacity: 1;
+        filter: drop-shadow(0 0 4px rgba(59, 130, 246, 0.5)); /* إضافة توهج خفيف عند تمرير الماوس (اختياري) */
+    }
 </style>
 
 <div class="container">
-    {# --- Hero Section --- #}
-    {#  <section class="hero-section text-center">
-            <span class="badge rounded-pill bg-dark border border-secondary mb-4 px-3 py-2">
-                <span class="text-primary me-1">●</span> University-Enterprise Bridge
-            </span>
-        <h1 class="hero-title mb-4">Connecting Students with <br> <span class="text-primary">Career Opportunities</span></h1>
-        <p class="lead text-secondary mb-5 mx-auto" style="max-width: 700px;">
-            Stage.io streamlines internship management between students, companies, and universities. Find the perfect match effortlessly.
-        </p>
-
-       ً
-
-        <div class="d-flex justify-content-center gap-3 mb-5">
-            <button class="btn btn-light btn-lg px-5 fw-bold" data-bs-toggle="modal" data-bs-target="#signUpModal">Get Started</button>
-        </div>
-    </section>#}
-
-
-
-
-
-
-    {# <section class="hero-section py-5">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-lg-6 text-start">
-                <span class="badge rounded-pill bg-dark border border-secondary mb-4 px-3 py-2">
-                    <span class="text-primary me-1">●</span> University-Enterprise Bridge
-                </span>
-                    <h1 class="hero-title mb-4">
-                        Connecting Students with <br>
-                        <span class="text-primary">Career Opportunities</span>
-                    </h1>
-                    <p class="lead text-secondary mb-5">
-                        Stage.io streamlines internship management between students, companies, and universities. Find the perfect match effortlessly.
-                    </p>
-                    <div class="d-flex gap-3">
-                        <button class="btn btn-light btn-lg px-4 fw-bold" data-bs-toggle="modal" data-bs-target="#signUpModal">Get Started</button>
-                        <button class="btn btn-outline-secondary btn-lg px-4">Learn More</button>
-                    </div>
-                </div>
-
-                <div class="col-lg-6 mt-5 mt-lg-0 text-center">
-                    <div class="position-relative">
-                        <div class="position-absolute top-50 start-50 translate-middle w-75 h-75 bg-primary opacity-10 blur-3xl"></div>
-
-                        <img src="{{ asset('images/hero-bg.jpg.png') }}"
-                             alt="Stage.io Technology"
-                             class="img-fluid rounded-4 shadow-lg border border-secondary custom-img-style">
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section> #}
-
-
-
 
 
     <section class="hero-section py-5">
@@ -275,7 +222,7 @@
     </section>
 
     {# --- Features Section --- #}
-    <div class="row g-4 mb-5 pb-5">
+    <div id="features" class="row g-4 mb-5 pb-5">
         <h2 class="text-center mb-5 fw-bold">Everything You Need for Internship Management</h2>
         {% set features = [
             {'icon': 'bi-search', 'title': 'Smart Matching', 'desc': 'Find internships based on skills and preferences.'},
@@ -289,18 +236,18 @@
             <div class="col-md-4">
                 <div class="card card-custom h-100">
                     <div class="icon-box"><i class="bi {{ f.icon }} fs-5"></i></div>
-                    <h5 class="fw-bold">{{ f.title }}</h5>
+                    <h5 class="fw-bold text-white">{{ f.title }}</h5>
                     <p class="text-secondary small mb-0">{{ f.desc }}</p>
                 </div>
             </div>
         {% endfor %}
     </div>
 
-    <section class="py-5">
+    <section id="for-who" class="py-5">
         <h2 class="text-center fw-bold mb-5">Built for Everyone</h2>
 
         <div class="user-card-horizontal">
-            <div class="user-info">
+            <div id="students" class="user-info">
                 <h4 class="fw-bold mb-1">For Students</h4>
                 <p class="small text-secondary mb-2">Find your dream internship and start your professional journey.</p>
                 <ul class="user-features-inline">
@@ -312,7 +259,7 @@
             <button class="btn btn-outline-light px-4 py-2 ms-4" data-bs-toggle="modal" data-bs-target="#signUpModal">Join as Student</button>
         </div>
         {# Company #}
-        <div class="user-card-horizontal">
+        <div id="companies" class="user-card-horizontal">
             <div class="user-info">
                 <h4 class="fw-bold mb-1">For Companies</h4>
                 <p class="small text-secondary mb-2">Recruit top university talent and manage applications easily.</p>
@@ -325,7 +272,7 @@
             <button class="btn btn-outline-light px-4 py-2 ms-4" data-bs-toggle="modal" data-bs-target="#signUpModal">Join as Company</button>
         </div>
         {# Admin #}
-        <div class="user-card-horizontal">
+        <div id="admins" class="user-card-horizontal">
             <div class="user-info">
                 <h4 class="fw-bold mb-1">For Administrators</h4>
                 <p class="small text-secondary mb-2">Control and validate the internship lifecycle from one dashboard.</p>
@@ -340,23 +287,22 @@
     </section>
 
     {# --- NEW FOOTER (Based on your Image) --- #}
-    <footer class="footer-custom">
+    <footer id="about" class="footer-custom">
         <div class="row">
             <div class="col-md-5">
                 <div class="footer-logo-text">
                     <i class="bi bi-mortarboard-fill text-primary"></i> Stag.io
                 </div>
                 <p class="footer-description">
-                    Stag.io is an internship management platform developed as part of the L3TI Workshop 2025-2026. It connects students with companies while streamlining administrative processes for universities.
-                </p>
+                    Stage.io is an innovative smart platform for automating and managing the field training pipeline (Stages). We help students find their ideal opportunities, and enable companies and universities to manage agreements and evaluations digitally with minimal effort.   </p>
             </div>
             <div class="col-md-3 offset-md-1">
                 <h6 class="footer-heading">Platform</h6>
                 <ul class="footer-links">
-                    <li><a href="#">Features</a></li>
-                    <li><a href="#">For Students</a></li>
-                    <li><a href="#">For Companies</a></li>
-                    <li><a href="#">For Admins</a></li>
+                    <li><a href="#features">Features</a></li>
+                    <li><a href="#students">For Students</a></li>
+                    <li><a href="#companies">For Companies</a></li>
+                    <li><a href="#admins">For Admins</a></li>
                 </ul>
             </div>
             <div class="col-md-3">
@@ -381,33 +327,8 @@
                 <div class="icon-box mx-auto"><i class="bi bi-layers-fill fs-4"></i></div>
                 <h3 class="fw-bold text-white">Welcome back</h3>
             </div>
-            {#  <form>
-                    <div class="mb-3 text-start">
-                        <label class="small text-secondary fw-bold mb-1">EMAIL ADDRESS</label>
-                        <input type="email" class="form-control v0-input" placeholder="name@university.edu">
-                    </div>
-                    <div class="mb-3 text-start">
-                        <div class="d-flex justify-content-between">
-                            <label class="small text-secondary fw-bold mb-1">PASSWORD</label>
-                            {#  <a href="#" class="text-primary small text-decoration-none" style="font-size: 11px;">Forgot password?</a>
-                        </div>#}
 
 
-            {#  <a href="{{ path('app_forgot_password') }}" class="text-primary small text-decoration-none" style="font-size: 11px;">
-                                Forgot password?
-                            </a>
-                        </div>
-                        <div class="position-relative">
-                            <input type="password" class="form-control v0-input w-100" placeholder="••••••••">
-                            <i class="bi bi-eye position-absolute top-50 end-0 translate-middle-y me-3 eye-icon"></i>
-                        </div>
-                    </div>
-                    <div class="mb-4 form-check text-start">
-                        <input type="checkbox" class="form-check-input bg-black border-secondary" id="remCheck">
-                        <label class="form-check-label small text-secondary ms-1" for="remCheck">Remember me</label>
-                    </div>
-                    <button type="submit" class="btn-v0-white">Sign In</button>
-                </form> #}
 
             <form action="{{ path('app_login') }}" method="post">
                 {# 1. توكن الحماية #}
@@ -502,10 +423,7 @@
                     <label class="small text-secondary fw-bold mb-1">UNIVERSITY EMAIL</label>
                     <input type="email" name="email" class="form-control v0-input" placeholder="amine@univ-constantine.dz" required>
                 </div>
-                <div class="mb-3 text-start">
-                    <label class="small text-secondary fw-bold mb-1">STUDENT ID</label>
-                    <input type="text" name="studentId" class="form-control v0-input" placeholder="20231234">
-                </div>
+
                 <div class="mb-3 text-start">
                     <select name="university" class="form-control v0-input" required>
                         <option value="">Select your university</option>
@@ -525,13 +443,20 @@
                 </div>
 
                 <div class="row g-2 mb-3 text-start">
-                    <div class="col-6">
+                    <div class="col-6 position-relative">
                         <label class="small text-secondary fw-bold mb-1">PASSWORD</label>
-                        <input type="password" name="password" class="form-control v0-input" required>
+                        <div class="position-relative">
+                            <input type="password" name="password" class="form-control v0-input w-100" required>
+                            <i class="bi bi-eye position-absolute top-50 end-0 translate-middle-y me-3 eye-icon"></i>
+                        </div>
                     </div>
-                    <div class="col-6">
+
+                    <div class="col-6 position-relative">
                         <label class="small text-secondary fw-bold mb-1">CONFIRM PASSWORD</label>
-                        <input type="password" name="confirm_password" class="form-control v0-input" required>
+                        <div class="position-relative">
+                            <input type="password" name="confirm_password" class="form-control v0-input w-100" required>
+                            <i class="bi bi-eye position-absolute top-50 end-0 translate-middle-y me-3 eye-icon"></i>
+                        </div>
                     </div>
                 </div>
                 <button type="submit" class="btn-v0-white" style="background:#3b82f6;color:white;">
@@ -553,6 +478,15 @@
                     <label class="small text-secondary fw-bold mb-1">COMPANY NAME</label>
                     <input type="text" name="companyName" class="form-control v0-input" placeholder="Tech Solutions SPA" required>
                 </div>
+                
+                <div class="col-6">
+                    <label class="small text-secondary fw-bold mb-1">FIRST NAME</label>
+                    <input type="text" name="firstName" class="form-control v0-input" placeholder="Amine" required>
+                </div>
+                <div class="col-6">
+                    <label class="small text-secondary fw-bold mb-1">LAST NAME</label>
+                    <input type="text" name="lastName" class="form-control v0-input" placeholder="Benali" required>
+                </div>
 
                 <div class="mb-3 text-start">
                     <label class="small text-secondary fw-bold mb-1">PROFESSIONAL EMAIL</label>
@@ -571,6 +505,20 @@
                     <div class="form-text text-muted small">Please upload your commercial register or professional ID.</div>
                 </div>
 
+              {#   <div class="mb-3 text-start">
+                    <label class="small text-secondary fw-bold mb-1">PASSWORD</label>
+                    <div class="position-relative">
+                        <input type="password" name="password" class="form-control v0-input w-100" placeholder="••••••••" required>
+                        <i class="bi bi-eye position-absolute top-50 end-0 translate-middle-y me-3 eye-icon"></i>
+                    </div>
+                </div>
+
+                <div class="mb-4 text-start">
+                    <label class="small text-secondary fw-bold mb-1">CONFIRM PASSWORD</label>
+                    <div class="position-relative">
+                        <input type="password" name="confirm_password" class="form-control v0-input w-100" placeholder="••••••••" required>
+                    </div>
+                </div>#}
                 <div class="mb-3 text-start">
                     <label class="small text-secondary fw-bold mb-1">PASSWORD</label>
                     <div class="position-relative">
@@ -584,6 +532,7 @@
                     <label class="small text-secondary fw-bold mb-1">CONFIRM PASSWORD</label>
                     <div class="position-relative">
                         <input type="password" name="confirm_password" class="form-control v0-input w-100" placeholder="••••••••" required>
+                        <i class="bi bi-eye position-absolute top-50 end-0 translate-middle-y me-3 eye-icon"></i>
                     </div>
                 </div>
 
@@ -697,6 +646,197 @@
                     });
                 });
         });
+
+
+
+
+
+        function setupPasswordMatch(formId, passwordName, confirmName, btnSelector) {
+            const form = document.getElementById(formId);
+            if (!form) return;
+            const pwd = form.querySelector(`[name="${passwordName}"]`);
+            const confirm = form.querySelector(`[name="${confirmName}"]`);
+            const btn = form.querySelector(btnSelector);
+
+            btn.disabled = true;
+            btn.style.opacity = '0.5';
+            btn.style.cursor = 'not-allowed';
+
+            function check() {
+                const match = pwd.value.length > 0 && pwd.value === confirm.value;
+                btn.disabled = !match;
+                btn.style.opacity = match ? '1' : '0.5';
+                btn.style.cursor = match ? 'pointer' : 'not-allowed';
+                confirm.style.borderColor = confirm.value.length > 0
+                    ? (match ? '#10b981' : '#ef4444')
+                    : '#374151';
+            }
+
+            pwd.addEventListener('input', check);
+            confirm.addEventListener('input', check);
+        }
+
+        setupPasswordMatch('form-student', 'password', 'confirm_password', 'button[type="submit"]');
+        setupPasswordMatch('form-company', 'password', 'confirm_password', 'button[type="submit"]');
     </script>
+
+
+
+
+    <style>
+        /* تحسينات الوضع الفاتح - بدون استخدام Filter */
+        [data-theme="light"] body {
+            background-color: #f1f5f9 !important; /* خلفية رمادية فاتحة جداً مريحة للعين */
+            color: #0f172a !important; /* نص كحلي داكن جداً للوضوح */
+        }
+
+        /* تحسين البطاقات (Cards) في الوضع الفاتح */
+        [data-theme="light"] .card-custom {
+            background-color: #ffffff !important;
+            border: 1px solid #cbd5e1 !important; /* حدود رمادية واضحة */
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        [data-theme="light"] .card-custom h4,
+        [data-theme="light"] .card-custom p,
+        [data-theme="light"] .hero-title,
+        [data-theme="light"] .section-title {
+            color: #0f172a !important; /* نصوص داكنة تماماً */
+        }
+
+        /* تحسين الأزرار في الوضع الفاتح لتظل بارزة */
+        [data-theme="light"] .btn-primary {
+            background-color: #2563eb !important;
+            border-color: #2563eb !important;
+            color: #ffffff !important;
+        }
+
+        [data-theme="light"] .btn-outline-light {
+            color: #2563eb !important;
+            border-color: #2563eb !important;
+        }
+
+        /* تحسين شريط التنقل (Navbar) */
+        [data-theme="light"] .navbar {
+            background-color: rgba(255, 255, 255, 0.9) !important;
+            border-bottom: 1px solid #e2e8f0 !important;
+        }
+
+        [data-theme="light"] .nav-link {
+            color: #475569 !important;
+        }
+
+        /* تنعيم الانتقال */
+        body, .card-custom, .btn, .navbar {
+            transition: all 0.3s ease-in-out;
+        }
+    </style>
+
+    <style>
+        /* --- تحسينات الوضع الفاتح الشاملة لـ Stage.io --- */
+
+        [data-theme="light"] body {
+            background-color: #f8fafc !important; /* خلفية فاتحة جداً ونقية */
+            color: #0f172a !important;
+        }
+
+        /* 1. إصلاح بطاقات "Built for Everyone" وتغييرها للأبيض */
+        [data-theme="light"] .card-custom,
+        [data-theme="light"] .feature-card {
+            background-color: #ffffff !important;
+            border: 2px solid #e2e8f0 !important; /* إطار رمادي واضح وأنيق */
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03) !important;
+        }
+
+        [data-theme="light"] .card-custom h4 {
+            color: #111827 !important; /* أسود صريح للعناوين */
+            font-weight: 700;
+        }
+
+        [data-theme="light"] .card-custom p {
+            color: #475569 !important; /* رمادي داكن للنصوص الوصفية */
+        }
+
+        /* 2. تحسين الأزرار وإطاراتها (Buttons) */
+        [data-theme="light"] .btn-outline-light {
+            border: 2px solid #3378f3 !important; /* إطار أزرق واضح */
+            color: #3378f3 !important;
+            background: transparent !important;
+            font-weight: 600;
+        }
+
+        [data-theme="light"] .btn-outline-light:hover {
+            background: #3378f3 !important;
+            color: #ffffff !important;
+        }
+
+        [data-theme="light"] .btn-primary {
+            background-color: #3378f3 !important;
+            border: 2px solid #2563eb !important;
+            box-shadow: 0 4px 6px rgba(51, 120, 243, 0.2);
+        }
+
+        /* 3. بطاقات اختيار الدور (Student, Company, Admin) في نافذة التسجيل */
+        [data-theme="light"] .role-btn {
+            background-color: #ffffff !important;
+            border: 2px solid #cbd5e1 !important; /* إطار واضح غير مختفي */
+            color: #64748b !important;
+        }
+
+        [data-theme="light"] .role-btn:hover,
+        [data-theme="light"] .role-btn.active {
+            border-color: #3378f3 !important;
+            color: #3378f3 !important;
+            background-color: #eff6ff !important;
+        }
+
+        /* 4. معالجة النصوص في أسفل الصفحة (Footer) */
+        [data-theme="light"] footer {
+            background-color: #ffffff !important;
+            border-top: 2px solid #f1f5f9 !important;
+        }
+
+        [data-theme="light"] footer h5,
+        [data-theme="light"] footer p,
+        [data-theme="light"] footer a {
+            color: #1e293b !important; /* نصوص داكنة جداً للوضوح */
+        }
+
+        /* 5. النوافذ المنبثقة (Modals) والمدخلات */
+        [data-theme="light"] .modal-content {
+            background-color: #ffffff !important;
+            border: 1px solid #e2e8f0 !important;
+        }
+
+        [data-theme="light"] .form-control {
+            background-color: #f8fafc !important;
+            border: 2px solid #e2e8f0 !important; /* إطار المدخلات واضح */
+            color: #0f172a !important;
+        }
+
+        [data-theme="light"] .form-control:focus {
+            border-color: #3378f3 !important;
+            background-color: #ffffff !important;
+        }
+
+        /* 6. العناوين الكبيرة (Hero Section) */
+        [data-theme="light"] .hero-title,
+        [data-theme="light"] .section-title {
+            color: #0f172a !important;
+            text-shadow: none !important; /* إزالة أي وهج قديم */
+        }
+
+        /* الأيقونات في المربعات */
+        [data-theme="light"] .icon-box {
+            background: #eff6ff !important;
+            border: 1px solid #dbeafe !important;
+            color: #3378f3 !important;
+        }
+
+        /* تنعيم الانتقال */
+        body, .card-custom, .btn, .role-btn, .form-control {
+            transition: all 0.25s ease-in-out;
+        }
+    </style>
 
 {% endblock %}

@@ -531,13 +531,13 @@
                     </div>
 
                     {# القسم السفلي: العرض المقبول + نسبة اكتمال الملف #}
-                    <div class="row g-4">
+                     <div class="row g-4">
                         <!-- الجزء الذي طلبتِ استبداله بالعرض المقبول -->
-                        <div class="col-lg-8">
+                       {#  <div class="col-lg-8">
                             {% if myInternship %}
                                 <h4 class="fw-bold mb-4">My Current Internship</h4>
                                 <div class="stat-card p-4 border-primary" style="background: rgba(51, 120, 243, 0.05);">
-                                    {# ... كود عرض التربص الذي أرسلته لكِ سابقاً ... #}
+
                                 </div>
                             {% else %}
                                 <h4 class="fw-bold mb-4">Recommended for You</h4>
@@ -545,8 +545,76 @@
                                     <p class="text-secondary mb-0">No approved internship yet.</p>
                                 </div>
                             {% endif %}
-                        </div>
+                        </div>#}
+                         <div class="col-lg-8">
+                             {% if myInternship %}
+                                 <h4 class="fw-bold mb-4">My Internship</h4>
+                                 <div class="stat-card p-4 border-primary position-relative" style="background: rgba(51, 120, 243, 0.05); border: 1px solid rgba(51, 120, 243, 0.2);">
 
+                                     {# الجزء العلوي: العنوان والحالة #}
+                                     <div class="d-flex justify-content-between align-items-start mb-4">
+                                         <div>
+                                             <h5 class="fw-bold mb-1 text-white" style="font-size: 1.25rem;">{{ myInternship.title }}</h5>
+                                             <div class="d-flex align-items-center gap-2">
+                                                 <p class="text-secondary mb-0"><i class="bi bi-building me-1"></i>{{ myInternship.company.fullName }}</p>
+                                                 <span class="text-muted">•</span>
+                                                      </div>
+                                         </div>
+                                         <span class="badge rounded-pill px-3 py-2" style="background: rgba(16, 185, 129, 0.1); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.2);">
+                    <i class="bi bi-check-circle-fill me-1"></i> Active
+                </span>
+                                     </div>
+
+                                     {# الجزء الأوسط: تفاصيل سريعة #}
+                                     <div class="row g-3 mb-4">
+                                         <div class="col-6 col-md-3">
+                                             {# تم تغيير text-muted إلى text-white لجعل العنوان فاتحاً وواضحاً #}
+                                             <small class="text-white d-block text-uppercase" style="font-size: 0.7rem; letter-spacing: 1px; opacity: 0.9;">Duration</small>
+                                             <span class="fw-medium"><i class="bi bi-calendar3 me-2 text-primary"></i>{{ myInternship.duration }}</span>
+                                         </div>
+                                         <div class="col-6 col-md-3">
+                                             {# تم تغيير text-muted إلى text-white لجعل كلمة Type فاتحة #}
+                                             <small class="text-white d-block text-uppercase" style="font-size: 0.7rem; letter-spacing: 1px; opacity: 0.9;">Type</small>
+                                             <span class="fw-medium"><i class="bi bi-laptop me-2 text-primary"></i>{{ myInternship.locationType }}</span>
+                                         </div>
+
+                                         <div class="col-6 col-md-3">
+                                             {# تم تغيير text-muted إلى text-white لجعل كلمة Start Date فاتحة #}
+                                             <small class="text-white d-block text-uppercase" style="font-size: 0.7rem; letter-spacing: 1px; opacity: 0.9;">Start Date</small>
+                                             <span class="fw-medium"><i class="bi bi-clock-history me-2 text-primary"></i>{{ myInternship.internshipStart|date('d M Y') }}</span>
+                                         </div>
+                                     </div>
+
+                                     <hr style="border-color: rgba(255,255,255,0.1);">
+
+                                     {# الأزرار التفاعلية #}
+                                     <div class="d-flex flex-wrap gap-2 mt-3">
+                                         {# استبدلي الزر القديم بهذا #}
+                                         <button type="button" class="btn btn-sm btn-outline-light px-3" data-bs-toggle="modal" data-bs-target="#companyModal">
+                                             <i class="bi bi-eye me-1"></i> View Company Details
+                                         </button>
+
+                                         {# زر تحميل الاتفاقية (مهم جداً للعلامة الكاملة) #}
+                                         {% if acceptedApplication and acceptedApplication.conventionFile %}
+                                             <a href="{{ asset('conventions/' ~ acceptedApplication.conventionFile) }}" class="btn btn-sm btn-primary px-3">
+                                                 <i class="bi bi-file-earmark-pdf me-1"></i> Download Convention
+                                             </a>
+                                         {% endif %}
+                                     </div>
+
+                                 </div>
+                             {% else %}
+                                 {# الكود الخاص بحالة عدم وجود تربص يبقى كما هو #}
+                                 <h4 class="fw-bold mb-4">Recommended for You</h4>
+                                 <div class="stat-card p-5 text-center border-dashed" style="border: 2px dashed rgba(255,255,255,0.1); background: transparent;">
+                                     <div class="mb-3">
+                                         <i class="bi bi-search text-muted" style="font-size: 2rem;"></i>
+                                     </div>
+                                     <p class="text-secondary mb-3">You don't have an active internship yet.</p>
+                                     <a href="{{ path('app_student_browse_offers') }}" class="btn btn-primary btn-sm px-4">Browse Offers</a>
+                                 </div>
+                             {% endif %}
+                         </div>
                         <!-- جانب لوحة التحكم: نسبة اكتمال الملف -->
                         <div class="col-lg-4">
                             <div class="stat-card">
@@ -591,7 +659,7 @@
                     <div>
                         <h2 class="fw-bold mb-0">Browse Internships</h2>
                         <p class="text-secondary small">
-                            Offers from your university's partner companies
+                            Offers from companies
                             {% if offers|length > 0 %}
                                 — <span class="text-primary fw-bold">{{ offers|length }} available</span>
                             {% endif %}
@@ -728,8 +796,14 @@
                                                 <i class="bi bi-building text-primary" style="font-size:14px;"></i>
                                             {% endif %}
                                         </div>
-                                        <h5 class="fw-bold mb-0 text-white">{{ offer.title }}</h5>
-                                        <span class="badge bg-success-subtle text-success ms-1" style="font-size:0.65rem;">ACTIVE</span>
+                                        <h5 class="fw-bold mb-0 text-white">{{ offer.title }}</h5>{% set cs = offer.computedStatus %}
+                                        {% if cs == 'Active' %}
+                                            <span class="badge bg-success-subtle text-success ms-1" style="font-size:0.65rem;">ACTIVE</span>
+                                        {% elseif cs == 'In Progress' %}
+                                            <span class="badge bg-info-subtle text-info ms-1" style="font-size:0.65rem;">IN PROGRESS</span>
+                                        {% elseif cs == 'Deadline Over' %}
+                                            <span class="badge bg-warning-subtle text-warning ms-1" style="font-size:0.65rem;">DEADLINE OVER</span>
+                                        {% endif %}
                                     </div>
 
                                     {# Company + Type + Level #}
@@ -1128,7 +1202,7 @@
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <div>
                         <h2 class="fw-bold mb-0 text-white">My Applications</h2>
-                        <p style="color:#94a3b8;font-size:0.85rem;">Track and manage your professional journey</p>
+                        <p style="color:#94a3b8;font-size:0.85rem;">Track and manage your application</p>
                     </div>
                     <div class="stat-card py-2 px-4 mb-0 d-flex align-items-center gap-2" style="border-radius:50px;">
                         <div class="rounded-circle bg-primary" style="width:8px;height:8px;box-shadow:0 0 10px var(--accent-primary);"></div>
@@ -1215,7 +1289,7 @@
         </span>
                                             {% elseif app.status == 'accepted' %}
                                                 <span class="badge-custom-tech-active">
-            <i class="bi bi-shield-check me-1"></i> ACCEPTED
+            <i></i> ACCEPTED
         </span>
                                             {% else %}
                                                 <span class="badge-custom-rejected">
@@ -1466,6 +1540,59 @@
             </div>
         </div>
     </div>
+
+
+
+
+
+
+    <div class="modal fade" id="companyModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" style="background: #0a0a0a; border: 1px solid #111827; color: white;">
+                <div class="modal-header border-0 pb-0">
+                    <h5 class="modal-title fw-bold">Company Profile</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <div class="text-center mb-4">
+                        <div class="rounded-circle bg-primary d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px; font-size: 2rem;">
+                            {{ myInternship.company.fullName|slice(0, 1)|upper }}
+                        </div>
+                        <h4 class="fw-bold mb-1">{{ myInternship.company.fullName }}</h4>
+                        <p class="text-muted small"><i class="bi bi-patch-check-fill text-primary me-1"></i> Verified Partner</p>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div class="mb-3">
+                            <label class="text-muted small text-uppercase mb-2 d-block">About the Company</label>
+                            <p class="mb-0" style="font-size: 0.95rem; line-height: 1.6;">
+                                {# نفترض وجود حقل bio أو description في كيان User #}
+                                {{ myInternship.company.bio ?: 'No description available for this company yet.' }}
+                            </p>
+                        </div>
+
+                        <hr style="border-color: rgba(255,255,255,0.1);">
+
+                        <div class="row g-3">
+                            <div class="col-12">
+                                <div class="d-flex align-items-center gap-3">
+                                    <i class="bi bi-envelope text-primary"></i>
+                                    <div>
+                                        <small class="text-muted d-block">Contact Email</small>
+                                        <span>{{ myInternship.company.email }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer border-0">
+                    <button type="button" class="btn btn-secondary w-100" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
 
 

@@ -508,4 +508,63 @@ class CompanyController extends AbstractController
             return new JsonResponse(['success' => false, 'message' => 'حدث خطأ أثناء الحذف.'], 500);
         }
     }
+
+
+
+
+
+// ══════════════════════════════════════════════════════════════════
+// أضف هذا الـ Route داخل كلاس CompanyController
+// بعد دالة updateProfile() مباشرةً
+// ══════════════════════════════════════════════════════════════════
+
+    /**
+     * رفع ختم الشركة (Stamp) لتُطبع في وثيقة الاتفاقية
+     */
+    #[Route('/company/stamp', name: 'app_company_upload_stamp', methods: ['POST'])]
+    public function uploadStamp(Request $request, EntityManagerInterface $em): JsonResponse
+    {
+        /** @var User $company */
+        $company = $this->getUser();
+        $stampFile = $request->files->get('file');
+
+        // ─── التحقق من وجود الملف ────────────────────────────────
+        if (!$stampFile) {
+            return $this->json(['error' => 'No file received.'], 400);
+        }
+
+        // ─── التحقق من نوع الملف ─────────────────────────────────
+        $allowedMime = ['image/png', 'image/jpeg', 'image/webp'];
+        if (!in_array($stampFile->getMimeType(), $allowedMime, true)) {
+            return $this->json(['error' => 'Unsupported format. Use PNG, JPG, or WebP.'], 400);
+        }
+
+        // ─── حجم الملف (2 MB max) ────────────────────────────────
+        if ($stampFile->getSize() > 2 * 1024 * 1024) {
+            return $this->json(['error' => 'File too large. Maximum 2 MB.'], 400);
+        }
+
+        // ─── إنشاء المجلد إذا لم يكن موجوداً ───────────────────
+        $stampsDir = $this->getParameter('kernel.project_dir') . '/public/uploads/stamps/';
+        if (!is_dir($stampsDir)) {
+            mkdir($stampsDir, 0755, true);
+        }
+
+        // ─── حذف الختم القديم إن وُجد ───────────────────────────
+        if ($company->getStampFilename() && file_exists($stampsDir . $company->getStampFilename())) {
+            unlink($stampsDir . $company->getStampFilename());
+        }
+
+        // ─── حفظ الملف الجديد ────────────────────────────────────
+        $newFilename = 'stamp_c' . $company->getId() . '_' . uniqid() . '.' . $stampFile->guessExtension();
+        $stampFile->move($stampsDir, $newFilename);
+
+        $company->setStampFilename($newFilename);
+        $em->flush();
+
+        return $this->json([
+            'success' => true,
+            'url' => '/uploads/stamps/' . $newFilename,
+        ]);
+    }
 }
