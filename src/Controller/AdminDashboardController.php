@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Application;
+use App\Entity\Internship;
 use App\Entity\User;
 use App\Entity\VerificationRequest;
 use App\Service\ConventionGeneratorService;
@@ -103,19 +104,7 @@ public function dashboard(EntityManagerInterface $em): Response
 
     $totalStudents = $admin->getStudents()->count();
     $unplacedCount = $totalStudents - $placedCount;
-
-
-
-
-
-
-
-
-
-
-
-
-    // حساب حالات الطلبات
+ // حساب حالات الطلبات
     $statusCounts = $em->getRepository(Application::class)->createQueryBuilder('a')
         ->select('a.status, count(a.id) as count')
         ->join('a.student', 's')
@@ -214,7 +203,38 @@ public function dashboard(EntityManagerInterface $em): Response
             $filename = $conventionGenerator->generate($application, $admin);
             $application->setConventionFile($filename);
         } catch (\Throwable $e) { $filename = null; }
+// 3. ─── إضافة المنطق الجديد: تعبئة جدول الـ Internship ───
+        $existingInternship = $em->getRepository(Internship::class)->findOneBy(['application' => $application]);
 
+        if (!$existingInternship) {
+            $internship = new Internship();
+            $internship->setApplication($application);
+
+            // جلب تاريخ البداية من عرض العمل (Offers)
+            $offer = $application->getOffer();
+            $startDate = $offer->getInternshipStart();
+
+            if (!$startDate) {
+                $startDate = new \DateTime(); // تاريخ احتياطي إذا كان فارغاً
+            }
+            $internship->setStartDate($startDate);
+
+            // حساب تاريخ النهاية بناءً على مدة العرض (Duration)
+            $durationInMonths = (int)$offer->getDuration();
+            if ($durationInMonths <= 0) {
+                $durationInMonths = 3; // افتراضياً 3 أشهر إذا لم تُحدد الشركة المدة
+            }
+
+            $endDate = clone $startDate;
+            $endDate->modify("+$durationInMonths months");
+            $internship->setEndDate($endDate);
+
+            // تعيين الحالة المبدئية وسجل وقت الإنشاء
+            $internship->setStatus('pending');
+
+
+            $em->persist($internship);
+        }
         $em->flush();
 
         return $this->json([

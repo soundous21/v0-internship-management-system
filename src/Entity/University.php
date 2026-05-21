@@ -26,7 +26,8 @@ class University
     /** @var Collection<int, User> */
     #[ORM\OneToMany(mappedBy: 'universityRef', targetEntity: User::class)]
     private Collection $admins;
-
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $address = null;
 
     public function __construct(string $name = '')
     {
@@ -87,5 +88,16 @@ class University
     public function __toString(): string
     {
         return $this->name;
+    }
+
+    public function getAddress(): ?string
+    {
+        return $this->address;
+    }
+
+    public function setAddress(?string $address): static
+    {
+        $this->address = $address;
+        return $this;
     }
 }

@@ -16,14 +16,36 @@ class ConventionGeneratorService
     public function __construct(
         private string $conventionsDir,
         private string $stampsDir,
-        private string $appBaseUrl,  // ★ رابط الموقع مثل https://monsite.com
+        private string $appBaseUrl,
     ) {}
 
-    public function generate(Application $application, User $university): string
+    public function generate(Application $application, User $admin): string
     {
         $student = $application->getStudent();
         $offer   = $application->getOffer();
         $company = $offer->getCompany();
+
+        // ── 1. جلب وتأمين بيانات الجامعة والقسم والأدمن ──
+        $universityName = 'University';
+        $universityAddress = 'Not Provided';
+        $departmentName = 'Not Provided';
+
+        if ($admin->getUniversityRef()) {
+            $university = $admin->getUniversityRef();
+            $universityName = $university->getName();
+            $universityAddress = $university->getAddress() ?? 'Not Provided';
+        }
+
+        if ($admin->getDepartmentRef()) {
+            $departmentName = $admin->getDepartmentRef()->getName();
+        }
+
+        // بناء اسم الأدمن الكامل وإيميله بدقة
+        $adminFullName = trim(($admin->getFirstName() ?? '') . ' ' . ($admin->getLastName() ?? ''));
+        if (empty($adminFullName)) {
+            $adminFullName = 'Authorized Administrator';
+        }
+        $adminEmail = $admin->getEmail() ?? 'No Email';
 
         if (!is_dir($this->conventionsDir)) {
             mkdir($this->conventionsDir, 0755, true);
@@ -47,39 +69,57 @@ class ConventionGeneratorService
             'marginRight'  => Converter::cmToTwip(2),
         ]);
 
-        // 1. Header
+        // ── 2. الـ Header العلوي (تم إزالة العنوان الفرعي والـ Address من هنا تماماً بناءً على طلبك) ──
         $section->addText(
-            strtoupper($university->getUniversityName() ?? 'University Name'),
+            strtoupper($universityName),
             ['bold' => true, 'size' => 14],
             ['alignment' => Jc::CENTER]
         );
         $section->addTextBreak(1);
 
-        // 2. Title
+        // العنوان الرئيسي للوثيقة
         $section->addText(
             'INTERNSHIP AGREEMENT',
             ['bold' => true, 'size' => 18, 'color' => '1a3c6e'],
             ['alignment' => Jc::CENTER, 'spaceBefore' => 240, 'spaceAfter' => 240]
         );
 
-        // 3. Parties
-        $this->addPartySection($section, "The Host Company", [
-            'Company Name: '  . ($company->getCompanyName() ?? $company->getFirstName()),
-            'Represented by: '. $company->getFirstName() . ' ' . $company->getLastName(),
-            'Email: '         . $company->getEmail(),
-            'Phone: '         . ($company->getPhone() ?? 'N/A'),
-        ]);
-
+        $section->addTextBreak(1);
         $section->addText('BETWEEN', ['bold' => true], ['alignment' => Jc::CENTER]);
+        $section->addTextBreak(1);
+        // ── 3. جدول الأطراف المتقابل ──
+        $section->addTextBreak(1);
+        $partiesTable = $section->addTable(['borderSize' => 0, 'cellMargin' => 100]);
+        $partiesTable->addRow();
 
+        // جهة اليسار: الشركة المستضيفة
+        $leftCell = $partiesTable->addCell(5000);
+        $leftCell->addText("The Host Company", ['bold' => true, 'underlined' => 'single', 'color' => '1a3c6e']);
+        $leftCell->addText('Company Name: ' . ($company->getCompanyName() ?? $company->getFirstName() ?? 'TechCorp'));
+        $leftCell->addText('Represented by: ' . trim(($company->getFirstName() ?? '') . ' ' . ($company->getLastName() ?? '')));
+        $leftCell->addText('Email: ' . ($company->getEmail() ?? 'company@gmail.com'));
+        $leftCell->addText('Phone: ' . ($company->getPhone() ?? '—'));
+
+        // جهة اليمين: الجامعة (تعرض بيانات الأدمن المستخرجة مباشرة بشكل متقابل ومنظم)
+        $rightCell = $partiesTable->addCell(5000);
+        $rightCell->addText("The University:", ['bold' => true, 'underlined' => 'single', 'color' => '1a3c6e']);
+        $rightCell->addText('University Name: ' . $universityName);
+        $rightCell->addText('Represented by: ' . $adminFullName);
+        $rightCell->addText('Email: ' . $adminEmail);
+        $rightCell->addText('Department: ' . $departmentName);
+        $rightCell->addText('Address: ' . $universityAddress);
+
+
+        // معلومات الطالب
         $this->addPartySection($section, "The Student", [
-            'Full Name: ' . $student->getFirstName() . ' ' . $student->getLastName(),
+            'Full Name: ' . trim(($student->getFirstName() ?? '') . ' ' . ($student->getLastName() ?? '')),
             'Specialty: ' . ($student->getSpecialty() ?? 'N/A'),
             'Level: '     . ($student->getLevel() ?? 'N/A'),
-            'Email: '     . $student->getEmail(),
+            'Email: '     . ($student->getEmail() ?? 'N/A'),
+            'Phone: '     . ($student->getPhone() ?? '—'), // تم إضافة رقم الهاتف هنا
         ]);
 
-        // 4. Internship Details
+        // ── 4. تفاصيل التربص ──
         $section->addTextBreak(1);
         $section->addText('INTERNSHIP DETAILS', ['bold' => true, 'color' => '1a3c6e']);
 
@@ -93,11 +133,11 @@ class ConventionGeneratorService
             $section->addText($label . ': ' . $value);
         }
 
-        // 5. Signature Block
+        // ── 5. مربعات التوقيع والأختام ──
         $section->addTextBreak(2);
-        $this->addSignatureBlock($section, $university, $company);
+        $this->addSignatureBlock($section, $admin, $company);
 
-        // ★ 6. QR Code — رابط تحميل الوثيقة
+        // ── 6. رمز الـ QR Code ──
         $downloadUrl = $this->appBaseUrl . '/student/applications/' . $application->getId() . '/convention';
         $qrPath = $this->generateQrCode($downloadUrl);
 
@@ -113,7 +153,6 @@ class ConventionGeneratorService
                 'height'    => 80,
                 'alignment' => Jc::CENTER,
             ]);
-            // حذف الملف المؤقت
             @unlink($qrPath);
         }
 
@@ -123,8 +162,6 @@ class ConventionGeneratorService
         return $filename;
     }
 
-    // ★ توليد QR Code مؤقت
-    // ★ توليد QR Code مؤقت
     private function generateQrCode(string $url): ?string
     {
         try {
@@ -141,7 +178,6 @@ class ConventionGeneratorService
         }
     }
 
-
     private function addPartySection($section, string $title, array $info): void
     {
         $section->addText($title, ['bold' => true, 'underlined' => 'single']);
@@ -151,16 +187,22 @@ class ConventionGeneratorService
         $section->addTextBreak(1);
     }
 
-    private function addSignatureBlock($section, User $university, User $company): void
+    private function addSignatureBlock($section, User $admin, User $company): void
     {
         $table = $section->addTable(['borderSize' => 0, 'cellMargin' => 100]);
         $table->addRow(1500);
 
         $uniCell = $table->addCell(5000);
         $uniCell->addText("For the University", ['bold' => true], ['alignment' => Jc::CENTER]);
+
+        $adminName = trim(($admin->getFirstName() ?? '') . ' ' . ($admin->getLastName() ?? ''));
+        if (empty($adminName)) {
+            $adminName = "Authorized Admin";
+        }
+        $uniCell->addText("Admin: " . $adminName, ['italic' => true, 'size' => 10], ['alignment' => Jc::CENTER]);
         $uniCell->addText("(Signature & Stamp)", ['size' => 9], ['alignment' => Jc::CENTER]);
 
-        $stampFilename = $university->getStampFilename();
+        $stampFilename = $admin->getStampFilename();
         if ($stampFilename && file_exists($this->stampsDir . $stampFilename)) {
             $uniCell->addImage($this->stampsDir . $stampFilename, [
                 'width' => 80, 'height' => 80, 'alignment' => Jc::CENTER,

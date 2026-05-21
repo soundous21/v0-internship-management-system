@@ -29,10 +29,31 @@ class StudentController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
 
-        $acceptedApplication = $em->getRepository(Application::class)->findOneBy([
-            'student' => $user, 'status' => 'accepted',
+
+        $allAccepted = $em->getRepository(Application::class)->findBy([
+            'student' => $user,
+            'status'  => 'accepted',
         ]);
-        $myInternship = $acceptedApplication?->getOffer();
+
+        // التربص الحالي: Active أو In Progress (لم ينته بعد)
+        $acceptedApplication = null;
+        $myInternship        = null;
+
+        // التربصات المنتهية: Expired
+        $pastApplications = [];
+
+        foreach ($allAccepted as $app) {
+            $cs = $app->getOffer()->getComputedStatus();
+            if (in_array($cs, ['Active', 'In Progress'])) {
+                // نأخذ الأول فقط كتربص حالي
+                if ($acceptedApplication === null) {
+                    $acceptedApplication = $app;
+                    $myInternship        = $app->getOffer();
+                }
+            } elseif ($cs === 'Expired') {
+                $pastApplications[] = $app;
+            }
+        }
 
         $applications = $em->getRepository(Application::class)->findBy(['student' => $user]);
 
@@ -45,28 +66,15 @@ class StudentController extends AbstractController
         $profileFields     = [$user->getPhone(), $user->getBio(), $user->getUniversity(), $user->getSpecialty(), $user->getProfilePicture()];
         $completionPercent = (count(array_filter($profileFields)) / count($profileFields)) * 100;
 
-        // 1. تعريف المصفوفات
-        $offers = [];
-        $appliedOfferIds = [];
-
-// 2. جلب كافة العروض التي حالتها 'Active' لجميع الشركات بدون استثناء
-        $offers = $em->getRepository(\App\Entity\Offers::class)->findBy(
+        // ── العروض النشطة فعلياً (بعد الفلترة المحسوبة) ──
+        $rawOffers = $em->getRepository(\App\Entity\Offers::class)->findBy(
             ['status' => 'Active'],
             ['createdAt' => 'DESC']
         );
+        $offers = array_values(array_filter($rawOffers, fn($o) => $o->isActive()));
 
-// 3. (اختياري) يمكنكِ إبقاء جلب معلومات الجامعة فقط لعرض اسمها في الواجهة
-        $universityAdmin = $user->getUniversityEntity();
-
-// 4. جلب الـ IDs للعروض التي تقدم إليها الطالب (لإظهار حالة "Applied" في الواجهة)
-        foreach ($applications as $app) {
-            if ($app->getOffer()) {
-                $appliedOfferIds[] = $app->getOffer()->getId();
-            }
-        }
-
-
-        // ★ IDs العروض التي تقدّم إليها الطالب مسبقاً
+        // ── IDs العروض التي تقدّم إليها الطالب (مرة واحدة فقط) ──
+        $appliedOfferIds = [];
         foreach ($applications as $app) {
             if ($app->getOffer()) {
                 $appliedOfferIds[] = $app->getOffer()->getId();
@@ -74,16 +82,17 @@ class StudentController extends AbstractController
         }
 
         return $this->render('student/dashboard.html.twig', [
-            'user'              => $user,
-            'stats'             => $stats,
-            'completionPercent' => $completionPercent,
-            'myInternship'      => $myInternship,
-            'myUniversity'      => $user->getUniversityEntity(),
-            // ★ جديد
-            'offers'            => $offers,
-            'appliedOfferIds'   => $appliedOfferIds,
-            'applications'      => $applications,  // ★ أضف هذا
+            'user'                => $user,
+            'stats'               => $stats,
+            'completionPercent'   => $completionPercent,
+            'myInternship'        => $myInternship,
+            'myUniversity'        => $user->getUniversityEntity(),
+            'offers'              => $offers,
+            'appliedOfferIds'     => $appliedOfferIds,
+            'applications'        => $applications,
             'acceptedApplication' => $acceptedApplication,
+            'pastApplications'    => $pastApplications,   // ★ جديد
+
         ]);
     }
     // ─── ★ ربط الطالب بأدمين جامعته ──────────────────────────────────────────
@@ -345,21 +354,44 @@ class StudentController extends AbstractController
 
     // داخل StudentController.php
 
+
+// ─────────────────────────────────────────────────────────────────────────────
+// التعديل #1 — browseOffers  (src/Controller/StudentController.php)
+// ─────────────────────────────────────────────────────────────────────────────
+// استبدل الدالة الحالية بهذه النسخة المعدَّلة
+
     #[Route('/student/browse', name: 'app_student_browse_offers')]
     public function browseOffers(EntityManagerInterface $em): Response
     {
-        // جلب العروض مرتبة من الأحدث أولاً
-        $allOffers = $em->getRepository(Offers::class)->findBy([], ['id' => 'DESC']);
+        /** @var User $student */
+        $student = $this->getUser();
 
-        // تصفية العروض بناءً على المنطق الذكي الذي وضعناه في الـ Entity
-        $activeOffers = array_filter($allOffers, function($offer) {
-            return $offer->isActive();
-        });
+        // ── جلب العروض ذات الحالة اليدوية "Active" فقط (Draft وClosed محذوفان تلقائياً)
+        $allOffers = $em->getRepository(Offers::class)->findBy(
+            ['status' => 'Active'],   // ① حالة يدوية نشطة
+            ['createdAt' => 'DESC']
+        );
+
+        // ── فلترة PHP بالحالة المحسوبة — تُحذف: Deadline Over, In Progress, Expired
+        $activeOffers = array_values(array_filter($allOffers, fn($offer) => $offer->isActive()));
+
+        // ── IDs العروض التي تقدّم إليها الطالب (لإظهار زر "Applied")
+        $applications = $em->getRepository(Application::class)->findBy(['student' => $student]);
+        $appliedOfferIds = [];
+        foreach ($applications as $app) {
+            if ($app->getOffer()) {
+                $appliedOfferIds[] = $app->getOffer()->getId();
+            }
+        }
 
         return $this->render('student/browse.html.twig', [
             'offers' => $activeOffers,
+            'appliedOfferIds' => $appliedOfferIds,
         ]);
     }
+
+
+
 }
 
 

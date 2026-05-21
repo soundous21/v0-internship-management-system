@@ -483,57 +483,57 @@
         </nav>
     </div>
 
-        <div class="main-content">
-                <!-- بداية قسم الداشبورد -->
-                <div id="section-dashboard">
-                    <header class="d-flex justify-content-between align-items-center mb-5">
-                        <div>
-                            <h2 class="fw-bold mb-0">Hello {{ user.firstName }}!</h2>
-                            <p class="text-secondary small">Here’s a summary of your activity.</p>
-                        </div>
+    <div class="main-content">
+        <!-- بداية قسم الداشبورد -->
+        <div id="section-dashboard">
+            <header class="d-flex justify-content-between align-items-center mb-5">
+                <div>
+                    <h2 class="fw-bold mb-0">Hello {{ user.firstName }}!</h2>
+                    <p class="text-secondary small">Here’s a summary of your activity.</p>
+                </div>
 
-                        {# قسم معلومات المستخدم في الهيدر #}
-                        <div class="d-flex align-items-center gap-3">
-                            <div class="text-end">
-                                <p class="mb-0 fw-bold small">{{ user.firstName }} {{ user.lastName }}</p>
-                                <small class="text-secondary small" style="font-size: 0.7rem;">{{ user.email }}</small>
-                            </div>
-                            <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center fw-bold overflow-hidden"
-                                 style="width: 45px; height: 45px; border: 1px solid var(--border-color);">
-                                {% if user.profilePicture %}
-                                    <img src="{{ asset('uploads/profiles/' ~ user.profilePicture) }}" class="w-100 h-100 object-fit-cover">
-                                {% else %}
-                                    <span class="text-white">{{ user.firstName|first|upper }}{{ user.lastName|first|upper }}</span>
-                                {% endif %}
-                            </div>
-                        </div>
-                    </header>
-
-                    {# قسم الإحصائيات #}
-                    <div class="row g-4 mb-5">
-                        {% set items = [
-                            {'label': 'Total Applied', 'value': stats.total, 'icon': 'bi-send', 'color': 'text-white'},
-                            {'label': 'Pending', 'value': stats.pending, 'icon': 'bi-clock', 'color': 'text-white'},
-                            {'label': 'Accepted', 'value': stats.accepted, 'icon': 'bi-check-circle', 'color': 'text-white'},
-                            {'label': 'Rejected', 'value': stats.refused, 'icon': 'bi-x-circle', 'color': 'text-white'}
-                        ] %}
-                        {% for stat in items %}
-                            <div class="col-md-3">
-                                <div class="stat-card">
-                                    <div class="d-flex justify-content-between align-items-center mb-2">
-                                        <span class="text-secondary small fw-bold">{{ stat.label|upper }}</span>
-                                        <i class="bi {{ stat.icon }} {{ stat.color }}"></i>
-                                    </div>
-                                    <h2 class="fw-bold mb-0">{{ stat.value }}</h2>
-                                </div>
-                            </div>
-                        {% endfor %}
+                {# قسم معلومات المستخدم في الهيدر #}
+                <div class="d-flex align-items-center gap-3">
+                    <div class="text-end">
+                        <p class="mb-0 fw-bold small">{{ user.firstName }} {{ user.lastName }}</p>
+                        <small class="text-secondary small" style="font-size: 0.7rem;">{{ user.email }}</small>
                     </div>
+                    <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center fw-bold overflow-hidden"
+                         style="width: 45px; height: 45px; border: 1px solid var(--border-color);">
+                        {% if user.profilePicture %}
+                            <img src="{{ asset('uploads/profiles/' ~ user.profilePicture) }}" class="w-100 h-100 object-fit-cover">
+                        {% else %}
+                            <span class="text-white">{{ user.firstName|first|upper }}{{ user.lastName|first|upper }}</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </header>
 
-                    {# القسم السفلي: العرض المقبول + نسبة اكتمال الملف #}
-                     <div class="row g-4">
-                        <!-- الجزء الذي طلبتِ استبداله بالعرض المقبول -->
-                       {#  <div class="col-lg-8">
+            {# قسم الإحصائيات #}
+            <div class="row g-4 mb-5">
+                {% set items = [
+                    {'label': 'Total Applied', 'value': stats.total, 'icon': 'bi-send', 'color': 'text-white'},
+                    {'label': 'Pending', 'value': stats.pending, 'icon': 'bi-clock', 'color': 'text-white'},
+                    {'label': 'Accepted', 'value': stats.accepted, 'icon': 'bi-check-circle', 'color': 'text-white'},
+                    {'label': 'Rejected', 'value': stats.refused, 'icon': 'bi-x-circle', 'color': 'text-white'}
+                ] %}
+                {% for stat in items %}
+                    <div class="col-md-3">
+                        <div class="stat-card">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="text-secondary small fw-bold">{{ stat.label|upper }}</span>
+                                <i class="bi {{ stat.icon }} {{ stat.color }}"></i>
+                            </div>
+                            <h2 class="fw-bold mb-0">{{ stat.value }}</h2>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+
+            {# القسم السفلي: العرض المقبول + نسبة اكتمال الملف #}
+            <div class="row g-4">
+                <!-- الجزء الذي طلبتِ استبداله بالعرض المقبول -->
+                {#  <div class="col-lg-8">
                             {% if myInternship %}
                                 <h4 class="fw-bold mb-4">My Current Internship</h4>
                                 <div class="stat-card p-4 border-primary" style="background: rgba(51, 120, 243, 0.05);">
@@ -545,428 +545,619 @@
                                     <p class="text-secondary mb-0">No approved internship yet.</p>
                                 </div>
                             {% endif %}
-                        </div>#}
-                         <div class="col-lg-8">
-                             {% if myInternship %}
-                                 <h4 class="fw-bold mb-4">My Internship</h4>
-                                 <div class="stat-card p-4 border-primary position-relative" style="background: rgba(51, 120, 243, 0.05); border: 1px solid rgba(51, 120, 243, 0.2);">
+                        </div>#}{# ══════════════════════════════════════════════════════════════════
+   استبدلي كامل <div class="col-lg-8"> في قسم section-dashboard
+   من السطر 549 حتى السطر 617 بهذا الكود
+   ══════════════════════════════════════════════════════════════════ #}
 
-                                     {# الجزء العلوي: العنوان والحالة #}
-                                     <div class="d-flex justify-content-between align-items-start mb-4">
-                                         <div>
-                                             <h5 class="fw-bold mb-1 text-white" style="font-size: 1.25rem;">{{ myInternship.title }}</h5>
-                                             <div class="d-flex align-items-center gap-2">
-                                                 <p class="text-secondary mb-0"><i class="bi bi-building me-1"></i>{{ myInternship.company.fullName }}</p>
-                                                 <span class="text-muted">•</span>
-                                                      </div>
-                                         </div>
-                                         <span class="badge rounded-pill px-3 py-2" style="background: rgba(16, 185, 129, 0.1); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.2);">
-                    <i class="bi bi-check-circle-fill me-1"></i> Active
+                <div class="col-lg-8">
+
+                    {# ════════════════════════════════════════
+       ★ MY INTERNSHIP — التربص الحالي
+    ════════════════════════════════════════ #}
+                    {% if myInternship %}
+                        {% set cs = myInternship.computedStatus %}
+
+                        <h4 class="fw-bold mb-3">
+                            <i class="bi bi-briefcase-fill text-primary me-2" style="font-size:1rem;"></i>
+                            My Internship
+                        </h4>
+
+                        <div class="stat-card p-4 mb-4 position-relative"
+                             style="background: rgba(51,120,243,0.05);
+                border: 1px solid rgba(51,120,243,0.2);
+                border-radius:14px;">
+
+                            {# ── Header: Title + Status Badge ── #}
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <div>
+                                    <h5 class="fw-bold mb-1 text-white" style="font-size:1.1rem;">
+                                        {{ myInternship.title }}
+                                    </h5>
+                                    <span class="text-secondary small">
+                    <i class="bi bi-building me-1"></i>
+                    {{ myInternship.company.companyName ?? myInternship.company.fullName }}
                 </span>
-                                     </div>
-
-                                     {# الجزء الأوسط: تفاصيل سريعة #}
-                                     <div class="row g-3 mb-4">
-                                         <div class="col-6 col-md-3">
-                                             {# تم تغيير text-muted إلى text-white لجعل العنوان فاتحاً وواضحاً #}
-                                             <small class="text-white d-block text-uppercase" style="font-size: 0.7rem; letter-spacing: 1px; opacity: 0.9;">Duration</small>
-                                             <span class="fw-medium"><i class="bi bi-calendar3 me-2 text-primary"></i>{{ myInternship.duration }}</span>
-                                         </div>
-                                         <div class="col-6 col-md-3">
-                                             {# تم تغيير text-muted إلى text-white لجعل كلمة Type فاتحة #}
-                                             <small class="text-white d-block text-uppercase" style="font-size: 0.7rem; letter-spacing: 1px; opacity: 0.9;">Type</small>
-                                             <span class="fw-medium"><i class="bi bi-laptop me-2 text-primary"></i>{{ myInternship.locationType }}</span>
-                                         </div>
-
-                                         <div class="col-6 col-md-3">
-                                             {# تم تغيير text-muted إلى text-white لجعل كلمة Start Date فاتحة #}
-                                             <small class="text-white d-block text-uppercase" style="font-size: 0.7rem; letter-spacing: 1px; opacity: 0.9;">Start Date</small>
-                                             <span class="fw-medium"><i class="bi bi-clock-history me-2 text-primary"></i>{{ myInternship.internshipStart|date('d M Y') }}</span>
-                                         </div>
-                                     </div>
-
-                                     <hr style="border-color: rgba(255,255,255,0.1);">
-
-                                     {# الأزرار التفاعلية #}
-                                     <div class="d-flex flex-wrap gap-2 mt-3">
-                                         {# استبدلي الزر القديم بهذا #}
-                                         <button type="button" class="btn btn-sm btn-outline-light px-3" data-bs-toggle="modal" data-bs-target="#companyModal">
-                                             <i class="bi bi-eye me-1"></i> View Company Details
-                                         </button>
-
-                                         {# زر تحميل الاتفاقية (مهم جداً للعلامة الكاملة) #}
-                                         {% if acceptedApplication and acceptedApplication.conventionFile %}
-                                             <a href="{{ asset('conventions/' ~ acceptedApplication.conventionFile) }}" class="btn btn-sm btn-primary px-3">
-                                                 <i class="bi bi-file-earmark-pdf me-1"></i> Download Convention
-                                             </a>
-                                         {% endif %}
-                                     </div>
-
-                                 </div>
-                             {% else %}
-                                 {# الكود الخاص بحالة عدم وجود تربص يبقى كما هو #}
-                                 <h4 class="fw-bold mb-4">Recommended for You</h4>
-                                 <div class="stat-card p-5 text-center border-dashed" style="border: 2px dashed rgba(255,255,255,0.1); background: transparent;">
-                                     <div class="mb-3">
-                                         <i class="bi bi-search text-muted" style="font-size: 2rem;"></i>
-                                     </div>
-                                     <p class="text-secondary mb-3">You don't have an active internship yet.</p>
-                                     <a href="{{ path('app_student_browse_offers') }}" class="btn btn-primary btn-sm px-4">Browse Offers</a>
-                                 </div>
-                             {% endif %}
-                         </div>
-                        <!-- جانب لوحة التحكم: نسبة اكتمال الملف -->
-                        <div class="col-lg-4">
-                            <div class="stat-card">
-                                <h5 class="fw-bold mb-4">Profile Completion</h5>
-                                <div class="progress bg-black mb-3" style="height: 10px; border-radius: 5px;">
-                                    <div class="progress-bar bg-primary" style="width: {{ completionPercent }}%;"></div>
                                 </div>
-                                <p class="small text-secondary mb-4">{{ completionPercent }}% Completed</p>
-                                <h6 class="small fw-bold text-primary mb-3">YOUR SKILLS</h6>
-                                <div class="d-flex flex-wrap gap-2">
-                                    {% for skill in user.skills %}
-                                        <span class="skill-badge">{{ skill.tagName }}</span>
-                                    {% endfor %}
-                                </div>
+
+                                {# Badge ديناميكي حسب الحالة #}
+                                {% if cs == 'In Progress' %}
+                                    <span class="badge rounded-pill px-3 py-2"
+                                          style="background:rgba(59,130,246,0.12);color:#60a5fa;
+                             border:1px solid rgba(59,130,246,0.3);font-size:0.7rem;">
+                    <i class="bi bi-play-circle-fill me-1"></i> IN PROGRESS
+                </span>
+                                {% else %}
+                                    <span class="badge rounded-pill px-3 py-2"
+                                          style="background:rgba(16,185,129,0.1);color:#10b981;
+                             border:1px solid rgba(16,185,129,0.2);font-size:0.7rem;">
+                    <i class="bi bi-check-circle-fill me-1"></i> ACTIVE
+                </span>
+                                {% endif %}
                             </div>
-                        </div>
-                    </div> <!-- إغلاق الـ row السفلي -->
-                </div> <!-- إغلاق section-dashboard الصحيح -->
 
+                            {# ── Progress Bar — فقط إذا In Progress ووجد تاريخ البداية في العرض ── #}
+                            {% if cs == 'In Progress' and myInternship.internshipStart %}
 
+                                {# 1. تحويل تاريخ بداية التربص المخزن في الـ Offer إلى ثوانٍ #}
+                                {% set startTs = myInternship.internshipStart|date('U') %}
+                                {% set todayTs = "now"|date('U') %}
 
+                                {# 2. حساب الأيام التي مرت منذ تاريخ البداية وحتى اليوم #}
+                                {% set daysPassed = ((todayTs - startTs) / 86400)|round %}
 
+                                {# 3. تعيين المدة الافتراضية للتربص بالأيام (fallback 90 يوم) #}
+                                {% set totalDays = 90 %}
 
+                                {# 4. حساب النسبة المئوية وضمان بقائها بين 0% و 100% #}
+                                {% set currentPct = ((daysPassed / totalDays) * 100)|round %}
+                                {% set progressPct = min(max(currentPct, 0), 100) %}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-            <div id="section-offers" class="d-none">
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <div>
-                        <h2 class="fw-bold mb-0">Browse Internships</h2>
-                        <p class="text-secondary small">
-                            Offers from companies
-                            {% if offers|length > 0 %}
-                                — <span class="text-primary fw-bold">{{ offers|length }} available</span>
-                            {% endif %}
-                        </p>
-                    </div>
-                </div>
-
-                {# ══ Filters ══ #}
-                <div class="stat-card p-3 mb-4">
-                    <div class="row g-2 align-items-end">
-
-                        {# Search #}
-                        <div class="col-md-4">
-                            <div class="input-group">
-                    <span class="input-group-text bg-black border-secondary text-white">
-                        <i class="bi bi-search"></i>
+                                {# 5. رسم واجهة شريط التقدم الأنيق والتأثير اللامع #}
+                                <div class="mb-4">
+                                    <div class="d-flex justify-content-between small mb-1">
+                                        <span class="text-white-50" style="font-size:0.72rem;">PROGRESS</span>
+                                        <span style="color:#60a5fa;font-size:0.72rem;font-weight:700;">
+                        Day {{ daysPassed }} of {{ totalDays }}
                     </span>
-                                <input type="text" id="filter-search" class="form-control shadow-none bg-black text-white border-secondary"
-                                       placeholder="Search by title, company, skill..."
-                                       oninput="filterOffers()">
+                                    </div>
+                                    <div style="height:6px;background:rgba(255,255,255,0.06); border-radius:10px;overflow:hidden;">
+                                        <div style="height:100%;width:{{ progressPct }}%;
+                                                background:linear-gradient(90deg,#3b82f6,#60a5fa);
+                                                border-radius:10px;
+                                                box-shadow:0 0 10px rgba(59,130,246,0.4);
+                                                transition:width 1s ease;"></div>
+                                    </div>
+                                </div>
+                            {% endif %}
+
+                            {# ── Meta Info ── #}
+                            <div class="row g-3 mb-3">
+                                <div class="col-6 col-md-3">
+                                    <small class="text-white-50 d-block text-uppercase"
+                                           style="font-size:0.65rem;letter-spacing:1px;">Duration</small>
+                                    <span class="fw-medium small">
+                    <i class="bi bi-calendar3 me-1 text-primary"></i>
+                    {{ myInternship.duration ?? '—' }}
+                </span>
+                                </div>
+                                <div class="col-6 col-md-3">
+                                    <small class="text-white-50 d-block text-uppercase"
+                                           style="font-size:0.65rem;letter-spacing:1px;">Type</small>
+                                    <span class="fw-medium small">
+                    <i class="bi bi-laptop me-1 text-primary"></i>
+                    {{ myInternship.locationType }}
+                </span>
+                                </div>
+                                <div class="col-6 col-md-3">
+                                    <small class="text-white-50 d-block text-uppercase"
+                                           style="font-size:0.65rem;letter-spacing:1px;">Start Date</small>
+                                    <span class="fw-medium small">
+                    <i class="bi bi-play-circle me-1 text-primary"></i>
+                    {{ myInternship.internshipStart ? myInternship.internshipStart|date('d M Y') : '—' }}
+                </span>
+                                </div>
+                                {% if myInternship.wilaya is defined and myInternship.wilaya %}
+                                    <div class="col-6 col-md-3">
+                                        <small class="text-white-50 d-block text-uppercase"
+                                               style="font-size:0.65rem;letter-spacing:1px;">Location</small>
+                                        <span class="fw-medium small">
+                        <i class="bi bi-geo-alt me-1 text-primary"></i>
+                        {{ myInternship.wilaya }}
+                    </span>
+                                    </div>
+                                {% endif %}
                             </div>
-                        </div>
 
-                        {# Wilaya #}
-                        <div class="col-md-3">
-                            <input class="form-control shadow-none bg-black text-white border-secondary"
-                                   id="filter-wilaya" list="datalistWilaya" placeholder="Wilaya..." oninput="filterOffers()">
-                            <datalist id="datalistWilaya">
-                                <option value="Adrar"><option value="Chlef"><option value="Laghouat">
-                                <option value="Oum El Bouaghi"><option value="Batna"><option value="Béjaïa">
-                                <option value="Biskra"><option value="Béchar"><option value="Blida">
-                                <option value="Bouira"><option value="Tamanrasset"><option value="Tébessa">
-                                <option value="Tlemcen"><option value="Tiaret"><option value="Tizi Ouzou">
-                                <option value="Algiers"><option value="Djelfa"><option value="Jijel">
-                                <option value="Sétif"><option value="Saïda"><option value="Skikda">
-                                <option value="Sidi Bel Abbès"><option value="Annaba"><option value="Guelma">
-                                <option value="Constantine"><option value="Médéa"><option value="Mostaganem">
-                                <option value="M'Sila"><option value="Mascara"><option value="Ouargla">
-                                <option value="Oran"><option value="El Bayadh"><option value="Illizi">
-                                <option value="Bordj Bou Arreridj"><option value="Boumerdès"><option value="El Tarf">
-                                <option value="Tindouf"><option value="Tissemsilt"><option value="El Oued">
-                                <option value="Khenchela"><option value="Souk Ahras"><option value="Tipaza">
-                                <option value="Mila"><option value="Aïn Defla"><option value="Naâma">
-                                <option value="Aïn Témouchent"><option value="Ghardaïa"><option value="Relizane">
-                                <option value="Timimoun"><option value="Bordj Badji Mokhtar">
-                                <option value="Ouled Djellal"><option value="Béni Abbès"><option value="In Salah">
-                                <option value="In Guezzam"><option value="Touggourt"><option value="Djanet">
-                                <option value="El M'Ghair"><option value="El Meniaa">
-                            </datalist>
-                        </div>
+                            <hr style="border-color:rgba(255,255,255,0.07);">
 
-                        {# Type #}
-                        <div class="col-md-2">
-                            <select class="form-select shadow-none bg-black text-white border-secondary" id="filter-type" onchange="filterOffers()">
-                                <option value="">All Types</option>
-                                <option value="PFE">PFE</option>
-                                <option value="Stage d'Immersion">Stage d'Immersion</option>
-                                <option value="Stage Technique">Stage Technique</option>
-                            </select>
-                        </div>
-
-                        {# Smart Match Filter #}
-                        <div class="col-md-1">
-                            <div class="form-check form-switch pt-2">
-                                <input class="form-check-input" type="checkbox" id="filter-match" onchange="filterOffers()">
-                                <label class="form-check-label text-secondary small" for="filter-match">Match</label>
+                            {# ── Buttons ── #}
+                            <div class="d-flex flex-wrap gap-2 mt-3">
+                                <button type="button"
+                                        class="btn btn-sm btn-outline-light px-3 rounded-3"
+                                        data-bs-toggle="modal" data-bs-target="#companyModal">
+                                    <i class="bi bi-eye me-1"></i> View Company
+                                </button>
+                                {% if acceptedApplication and acceptedApplication.conventionFile %}
+                                    <a href="{{ asset('conventions/' ~ acceptedApplication.conventionFile) }}"
+                                       class="btn btn-sm btn-primary px-3 rounded-3">
+                                        <i class="bi bi-file-earmark-pdf me-1"></i> Download Convention
+                                    </a>
+                                {% endif %}
                             </div>
+
                         </div>
 
-                        {# Reset #}
-                        <div class="col-md-2">
-                            <button class="btn btn-outline-secondary w-100 shadow-none" onclick="resetFilters()">
-                                <i class="bi bi-x-circle me-1"></i> Reset
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <p class="text-secondary small mb-3" id="offers-count">
-                    Showing <span id="offers-count-num">{{ offers|length }}</span>
-                    offer{{ offers|length != 1 ? 's' : '' }}
-                </p>
-
-                {# ══ Offers List ══ #}
-                <div class="d-flex flex-column gap-3" id="offers-container">
-
-                    {% if offers is empty %}
-                        <div class="stat-card p-5 text-center">
-                            <i class="bi bi-inbox fs-1 text-muted mb-3 d-block"></i>
-                            <h5 class="text-white-50">No offers available yet</h5>
-                            <p class="text-secondary small">Your university hasn't approved any company partners yet.</p>
+                    {% else %}
+                        {# لا يوجد تربص حالي ── التوصيات المقترحة #}
+                        <h4 class="fw-bold mb-3">Recommended for You</h4>
+                        <div class="stat-card p-5 text-center mb-4"
+                             style="border: 2px dashed rgba(255,255,255,0.08); background: transparent; border-radius:14px;">
+                            <i class="bi bi-search text-muted mb-3 d-block" style="font-size:2rem;"></i>
+                            <p class="text-secondary mb-3">You don't have an active internship yet.</p>
+                            <a href="{{ path('app_student_browse_offers') }}"
+                               class="btn btn-primary btn-sm px-4 rounded-3">Browse Offers</a>
                         </div>
                     {% endif %}
 
-                    {# ★ Smart Matching: حساب مهارات الطالب #}
-                    {% set studentSkills = user.skills|map(s => s.tagName|lower)|join(',') %}
+                    {# ════════════════════════════════════════
+       ★ MY EXPERIENCE — التربصات المنتهية
+    ════════════════════════════════════════ #}
+                    {% if pastApplications is defined and pastApplications|length > 0 %}
 
-                    {% for offer in offers %}
-                        {% set isApplied = offer.id in appliedOfferIds %}
+                        <div class="d-flex align-items-center gap-2 mb-3 mt-1">
+                            <i class="bi bi-trophy-fill" style="color:#f59e0b;font-size:1rem;"></i>
+                            <h4 class="fw-bold mb-0">My Experience</h4>
+                            <span class="badge rounded-pill ms-1"
+                                  style="background:rgba(245,158,11,0.1);color:#f59e0b;
+                         border:1px solid rgba(245,158,11,0.3);font-size:0.68rem;">
+                {{ pastApplications|length }} completed
+            </span>
+                        </div>
 
-                        {# حساب نسبة التوافق #}
-                        {% set matchCount = 0 %}
-                        {% set totalSkills = offer.skills|length %}
-                        {% for skill in offer.skills %}
-                            {% if skill.tagName|lower in user.skills|map(s => s.tagName|lower) %}
-                                {% set matchCount = matchCount + 1 %}
-                            {% endif %}
-                        {% endfor %}
-                        {% set matchPercent = totalSkills > 0 ? ((matchCount / totalSkills) * 100)|round : 0 %}
-                        {% set matchColor = matchPercent >= 70 ? '#22c55e' : (matchPercent >= 40 ? '#f59e0b' : '#ef4444') %}
-                        {% set matchLabel = matchPercent >= 70 ? 'Great Match' : (matchPercent >= 40 ? 'Partial Match' : 'Low Match') %}
+                        <div class="d-flex flex-column gap-3">
+                            {% for pastApp in pastApplications %}
+                                {% set pastOffer = pastApp.getOffer() %}
+                                <div class="stat-card p-3"
+                                     style="border:1px solid rgba(245,158,11,0.15);
+                            background:rgba(245,158,11,0.02);
+                            border-radius:12px;
+                            transition:border-color 0.2s;"
+                                     onmouseover="this.style.borderColor='rgba(245,158,11,0.35)'"
+                                     onmouseout="this.style.borderColor='rgba(245,158,11,0.15)'">
 
-                        <div class="stat-card p-4 offer-card"
-                             data-title="{{ offer.title|lower }}"
-                             data-company="{{ (offer.company.companyName ?? offer.company.fullName)|lower }}"
-                             data-wilaya="{{ offer.wilaya|lower }}"
-                             data-type="{{ offer.locationType }}"
-                             data-skills="{{ offer.skills|map(s => s.tagName|lower)|join(',') }}"
-                             data-match="{{ matchPercent }}"
-                             id="offer-card-{{ offer.id }}">
+                                    <div class="d-flex align-items-center justify-content-between gap-3">
 
-                            <div class="d-flex justify-content-between align-items-start gap-3">
-
-                                {# ═══ LEFT — Offer Info ═══ #}
-                                <div class="flex-grow-1">
-
-                                    {# Title + Status #}
-                                    <div class="d-flex align-items-center gap-2 mb-1">
-                                        {# Company Logo #}
-                                        <div style="width:36px;height:36px;border-radius:8px;background:#0f172a;border:1px solid #1e293b;display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;">
-                                            {% if offer.company.logo %}
-                                                <img src="{{ asset('uploads/logos/' ~ offer.company.logo) }}" style="width:100%;height:100%;object-fit:cover;">
+                                        {# Logo #}
+                                        <div style="width:40px;height:40px;border-radius:9px;flex-shrink:0;
+                                    background:#0a0f1a;border:1px solid #1e293b;
+                                    display:flex;align-items:center;justify-content:center;
+                                    overflow:hidden;">
+                                            {% if pastOffer.company.logo %}
+                                                <img src="{{ asset('uploads/logos/' ~ pastOffer.company.logo) }}"
+                                                     style="width:100%;height:100%;object-fit:cover;">
                                             {% else %}
                                                 <i class="bi bi-building text-primary" style="font-size:14px;"></i>
                                             {% endif %}
                                         </div>
-                                        <h5 class="fw-bold mb-0 text-white">{{ offer.title }}</h5>{% set cs = offer.computedStatus %}
-                                        {% if cs == 'Active' %}
-                                            <span class="badge bg-success-subtle text-success ms-1" style="font-size:0.65rem;">ACTIVE</span>
-                                        {% elseif cs == 'In Progress' %}
-                                            <span class="badge bg-info-subtle text-info ms-1" style="font-size:0.65rem;">IN PROGRESS</span>
-                                        {% elseif cs == 'Deadline Over' %}
-                                            <span class="badge bg-warning-subtle text-warning ms-1" style="font-size:0.65rem;">DEADLINE OVER</span>
-                                        {% endif %}
+
+                                        {# Info #}
+                                        <div class="flex-grow-1 min-width-0">
+                                            <div class="fw-bold text-white mb-0" style="font-size:0.9rem;">
+                                                {{ pastOffer.title }}
+                                            </div>
+                                            <div class="text-secondary" style="font-size:0.78rem;">
+                                                {{ pastOffer.company.companyName ?? pastOffer.company.fullName }}
+                                                {% if pastOffer.wilaya %}
+                                                    <span class="text-muted mx-1">·</span>
+                                                    <i class="bi bi-geo-alt"></i> {{ pastOffer.wilaya }}
+                                                {% endif %}
+                                            </div>
+                                        </div>
+
+                                        {# Meta Tags #}
+                                        <div class="d-flex flex-column align-items-end gap-1 flex-shrink-0">
+                                            {% if pastOffer.duration %}
+                                                <span class="badge"
+                                                      style="background:rgba(245,158,11,0.1);
+                                             color:#f59e0b;border:1px solid rgba(245,158,11,0.25);
+                                             font-size:0.65rem;">
+                                    <i class="bi bi-clock me-1"></i>{{ pastOffer.duration }}
+                                </span>
+                                            {% endif %}
+                                            {% if pastOffer.internshipStart %}
+                                                <span class="text-white-50" style="font-size:0.68rem;">
+                                    <i class="bi bi-calendar3 me-1"></i>
+                                    {{ pastOffer.internshipStart|date('M Y') }}
+                                </span>
+                                            {% endif %}
+                                        </div>
+
+                                        {# Completed Badge #}
+                                        <span class="badge rounded-pill flex-shrink-0"
+                                              style="background:rgba(16,185,129,0.1);color:#10b981;
+                                     border:1px solid rgba(16,185,129,0.25);
+                                     font-size:0.65rem;padding:5px 10px;">
+                            <i class="bi bi-check2-circle me-1"></i> Completed
+                        </span>
+
                                     </div>
 
-                                    {# Company + Type + Level #}
-                                    <div class="mb-2">
+                                    {# Convention download if exists #}
+                                    {% if pastApp.conventionFile %}
+                                        <div class="mt-2 pt-2" style="border-top:1px solid rgba(255,255,255,0.05);">
+                                            <a href="{{ path('app_student_download_convention', {'id': pastApp.id}) }}"
+                                               class="btn btn-sm px-3 rounded-3"
+                                               style="background:rgba(245,158,11,0.08);
+                                      border:1px solid rgba(245,158,11,0.25);
+                                      color:#f59e0b;font-size:0.75rem;">
+                                                <i class="bi bi-download me-1"></i> Download Attestation
+                                            </a>
+                                        </div>
+                                    {% endif %}
+
+                                </div>
+                            {% endfor %}
+                        </div>
+
+                    {% endif %}
+                    {# نهاية My Experience #}
+
+                </div>
+                {# نهاية col-lg-8 #}
+
+                <!-- جانب لوحة التحكم: نسبة اكتمال الملف -->
+                <div class="col-lg-4">
+                    <div class="stat-card">
+                        <h5 class="fw-bold mb-4">Profile Completion</h5>
+                        <div class="progress bg-black mb-3" style="height: 10px; border-radius: 5px;">
+                            <div class="progress-bar bg-primary" style="width: {{ completionPercent }}%;"></div>
+                        </div>
+                        <p class="small text-secondary mb-4">{{ completionPercent }}% Completed</p>
+                        <h6 class="small fw-bold text-primary mb-3">YOUR SKILLS</h6>
+                        <div class="d-flex flex-wrap gap-2">
+                            {% for skill in user.skills %}
+                                <span class="skill-badge">{{ skill.tagName }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div> <!-- إغلاق الـ row السفلي -->
+        </div> <!-- إغلاق section-dashboard الصحيح -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        <div id="section-offers" class="d-none">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h2 class="fw-bold mb-0">Browse Internships</h2>
+                    <p class="text-secondary small">
+                        Offers from companies
+                        {% if offers|length > 0 %}
+                            — <span class="text-primary fw-bold">{{ offers|length }} available</span>
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+
+            {# ══ Filters ══ #}
+            <div class="stat-card p-3 mb-4">
+                <div class="row g-2 align-items-end">
+
+                    {# Search #}
+                    <div class="col-md-4">
+                        <div class="input-group">
+                    <span class="input-group-text bg-black border-secondary text-white">
+                        <i class="bi bi-search"></i>
+                    </span>
+                            <input type="text" id="filter-search" class="form-control shadow-none bg-black text-white border-secondary"
+                                   placeholder="Search by title, company, skill..."
+                                   oninput="filterOffers()">
+                        </div>
+                    </div>
+
+                    {# Wilaya #}
+                    <div class="col-md-3">
+                        <input class="form-control shadow-none bg-black text-white border-secondary"
+                               id="filter-wilaya" list="datalistWilaya" placeholder="Wilaya..." oninput="filterOffers()">
+                        <datalist id="datalistWilaya">
+                            <option value="Adrar"><option value="Chlef"><option value="Laghouat">
+                            <option value="Oum El Bouaghi"><option value="Batna"><option value="Béjaïa">
+                            <option value="Biskra"><option value="Béchar"><option value="Blida">
+                            <option value="Bouira"><option value="Tamanrasset"><option value="Tébessa">
+                            <option value="Tlemcen"><option value="Tiaret"><option value="Tizi Ouzou">
+                            <option value="Algiers"><option value="Djelfa"><option value="Jijel">
+                            <option value="Sétif"><option value="Saïda"><option value="Skikda">
+                            <option value="Sidi Bel Abbès"><option value="Annaba"><option value="Guelma">
+                            <option value="Constantine"><option value="Médéa"><option value="Mostaganem">
+                            <option value="M'Sila"><option value="Mascara"><option value="Ouargla">
+                            <option value="Oran"><option value="El Bayadh"><option value="Illizi">
+                            <option value="Bordj Bou Arreridj"><option value="Boumerdès"><option value="El Tarf">
+                            <option value="Tindouf"><option value="Tissemsilt"><option value="El Oued">
+                            <option value="Khenchela"><option value="Souk Ahras"><option value="Tipaza">
+                            <option value="Mila"><option value="Aïn Defla"><option value="Naâma">
+                            <option value="Aïn Témouchent"><option value="Ghardaïa"><option value="Relizane">
+                            <option value="Timimoun"><option value="Bordj Badji Mokhtar">
+                            <option value="Ouled Djellal"><option value="Béni Abbès"><option value="In Salah">
+                            <option value="In Guezzam"><option value="Touggourt"><option value="Djanet">
+                            <option value="El M'Ghair"><option value="El Meniaa">
+                        </datalist>
+                    </div>
+
+                    {# Type #}
+                    <div class="col-md-2">
+                        <select class="form-select shadow-none bg-black text-white border-secondary" id="filter-type" onchange="filterOffers()">
+                            <option value="">All Types</option>
+                            <option value="PFE">PFE</option>
+                            <option value="Stage d'Immersion">Stage d'Immersion</option>
+                            <option value="Stage Technique">Stage Technique</option>
+                        </select>
+                    </div>
+
+                    {# Smart Match Filter #}
+                    <div class="col-md-1">
+                        <div class="form-check form-switch pt-2">
+                            <input class="form-check-input" type="checkbox" id="filter-match" onchange="filterOffers()">
+                            <label class="form-check-label text-secondary small" for="filter-match">Match</label>
+                        </div>
+                    </div>
+
+                    {# Reset #}
+                    <div class="col-md-2">
+                        <button class="btn btn-outline-secondary w-100 shadow-none" onclick="resetFilters()">
+                            <i class="bi bi-x-circle me-1"></i> Reset
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <p class="text-secondary small mb-3" id="offers-count">
+                Showing <span id="offers-count-num">{{ offers|length }}</span>
+                offer{{ offers|length != 1 ? 's' : '' }}
+            </p>
+
+            {# ══ Offers List ══ #}
+            <div class="d-flex flex-column gap-3" id="offers-container">
+
+                {% if offers is empty %}
+                    <div class="stat-card p-5 text-center">
+                        <i class="bi bi-inbox fs-1 text-muted mb-3 d-block"></i>
+                        <h5 class="text-white-50">No offers available yet</h5>
+                        <p class="text-secondary small">Your university hasn't approved any company partners yet.</p>
+                    </div>
+                {% endif %}
+
+                {# ★ Smart Matching: حساب مهارات الطالب #}
+                {% set studentSkills = user.skills|map(s => s.tagName|lower)|join(',') %}
+
+                {% for offer in offers %}
+                    {% set isApplied = offer.id in appliedOfferIds %}
+
+                    {# حساب نسبة التوافق #}
+                    {% set matchCount = 0 %}
+                    {% set totalSkills = offer.skills|length %}
+                    {% for skill in offer.skills %}
+                        {% if skill.tagName|lower in user.skills|map(s => s.tagName|lower) %}
+                            {% set matchCount = matchCount + 1 %}
+                        {% endif %}
+                    {% endfor %}
+                    {% set matchPercent = totalSkills > 0 ? ((matchCount / totalSkills) * 100)|round : 0 %}
+                    {% set matchColor = matchPercent >= 70 ? '#22c55e' : (matchPercent >= 40 ? '#f59e0b' : '#ef4444') %}
+                    {% set matchLabel = matchPercent >= 70 ? 'Great Match' : (matchPercent >= 40 ? 'Partial Match' : 'Low Match') %}
+
+                    <div class="stat-card p-4 offer-card"
+                         data-title="{{ offer.title|lower }}"
+                         data-company="{{ (offer.company.companyName ?? offer.company.fullName)|lower }}"
+                         data-wilaya="{{ offer.wilaya|lower }}"
+                         data-type="{{ offer.locationType }}"
+                         data-skills="{{ offer.skills|map(s => s.tagName|lower)|join(',') }}"
+                         data-match="{{ matchPercent }}"
+                         id="offer-card-{{ offer.id }}">
+
+                        <div class="d-flex justify-content-between align-items-start gap-3">
+
+                            {# ═══ LEFT — Offer Info ═══ #}
+                            <div class="flex-grow-1">
+
+                                {# Title + Status #}
+                                <div class="d-flex align-items-center gap-2 mb-1">
+                                    {# Company Logo #}
+                                    <div style="width:36px;height:36px;border-radius:8px;background:#0f172a;border:1px solid #1e293b;display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;">
+                                        {% if offer.company.logo %}
+                                            <img src="{{ asset('uploads/logos/' ~ offer.company.logo) }}" style="width:100%;height:100%;object-fit:cover;">
+                                        {% else %}
+                                            <i class="bi bi-building text-primary" style="font-size:14px;"></i>
+                                        {% endif %}
+                                    </div>
+                                    <h5 class="fw-bold mb-0 text-white">{{ offer.title }}</h5>{% set cs = offer.computedStatus %}
+                                    {% if cs == 'Active' %}
+                                        <span class="badge bg-success-subtle text-success ms-1" style="font-size:0.65rem;">ACTIVE</span>
+                                    {% elseif cs == 'In Progress' %}
+                                        <span class="badge bg-info-subtle text-info ms-1" style="font-size:0.65rem;">IN PROGRESS</span>
+                                    {% elseif cs == 'Deadline Over' %}
+                                        <span class="badge bg-warning-subtle text-warning ms-1" style="font-size:0.65rem;">DEADLINE OVER</span>
+                                    {% endif %}
+                                </div>
+
+                                {# Company + Type + Level #}
+                                <div class="mb-2">
                             <span class="text-primary fw-bold small">
                                 {{ offer.company.companyName ?? offer.company.fullName }}
                             </span>
-                                        <span class="text-muted mx-2">|</span>
-                                        {% if offer.locationType %}
-                                            <span class="badge bg-primary-subtle text-primary" style="font-size:0.7rem;">
+                                    <span class="text-muted mx-2">|</span>
+                                    {% if offer.locationType %}
+                                        <span class="badge bg-primary-subtle text-primary" style="font-size:0.7rem;">
                                     {{ offer.locationType }}
                                 </span>
-                                        {% endif %}
-                                        {% if offer.level is defined and offer.level %}
-                                            <span class="badge bg-info-subtle text-info ms-1" style="font-size:0.7rem;">
+                                    {% endif %}
+                                    {% if offer.level is defined and offer.level %}
+                                        <span class="badge bg-info-subtle text-info ms-1" style="font-size:0.7rem;">
                                     {{ offer.level }}
                                 </span>
-                                        {% endif %}
-                                    </div>
-
-                                    {# Meta: location, duration, dates #}
-                                    <div class="d-flex flex-wrap gap-3 text-secondary small mb-3">
-                                        {% if offer.wilaya %}
-                                            <span><i class="bi bi-geo-alt me-1 text-primary"></i>{{ offer.wilaya }}</span>
-                                        {% endif %}
-                                        {% if offer.duration %}
-                                            <span><i class="bi bi-clock me-1 text-primary"></i>{{ offer.duration }}</span>
-                                        {% endif %}
-                                        {% if offer.deadline %}
-                                            <span><i class="bi bi-calendar-event me-1 text-danger"></i>Deadline: {{ offer.deadline|date('M d, Y') }}</span>
-                                        {% endif %}
-                                        {% if offer.internshipStart %}
-                                            <span><i class="bi bi-play-circle me-1 text-success"></i>Internship: {{ offer.internshipStart|date('M d, Y') }}</span>
-                                        {% endif %}
-                                    </div>
-
-                                    {# Description #}
-                                    {% if offer.description %}
-                                        <p class="text-secondary small mb-3" style="display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;max-width:700px;">
-                                            {{ offer.description }}
-                                        </p>
                                     {% endif %}
-
-                                    {# Skills + Map #}
-                                    <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
-                                        <div class="d-flex gap-2 flex-wrap">
-                                            {% for skill in offer.skills %}
-                                                {% set isMatched = skill.tagName|lower in user.skills|map(s => s.tagName|lower) %}
-                                                <span class="skill-badge"
-                                                      style="background:{{ isMatched ? 'rgba(34,197,94,0.1)' : '#1e293b' }};
-                                                              border:1px solid {{ isMatched ? 'rgba(34,197,94,0.4)' : '#334155' }};
-                                                              color:{{ isMatched ? '#86efac' : '#94a3b8' }};
-                                                              border-radius:20px;padding:3px 10px;font-size:11px;display:inline-flex;align-items:center;gap:4px;">
-                                        {% if isMatched %}<i class="bi bi-check-circle-fill" style="font-size:10px;"></i>{% endif %}
-                                                    {{ skill.tagName }}
-                                    </span>
-                                            {% endfor %}
-                                        </div>
-
-                                        {# Map Link #}
-                                        {% if offer.latitude and offer.longitude %}
-                                            <a href="https://www.google.com/maps?q={{ offer.latitude }},{{ offer.longitude }}"
-                                               target="_blank" class="btn btn-sm btn-outline-info border-secondary">
-                                                <i class="bi bi-map me-1"></i> View Map
-                                            </a>
-                                        {% endif %}
-                                    </div>
                                 </div>
 
-                                {# ═══ RIGHT — Match % + Buttons ═══ #}
-                                <div class="d-flex flex-column align-items-center gap-3" style="min-width:120px;">
-
-                                    {# ★ Smart Match Badge #}
-                                    <div class="text-center">
-                                        <div style="width:60px;height:60px;border-radius:50%;border:3px solid {{ matchColor }};display:flex;align-items:center;justify-content:center;margin:0 auto;background:rgba(0,0,0,0.3);">
-                                            <span style="font-size:14px;font-weight:700;color:{{ matchColor }};">{{ matchPercent }}%</span>
-                                        </div>
-                                        <div style="font-size:10px;color:{{ matchColor }};font-weight:600;margin-top:4px;">
-                                            {{ matchLabel }}
-                                        </div>
-                                    </div>
-                                    {# ─── Apply / Withdraw / Seats Full ─── #}
-                                    {% set isFull = offer.seats is not null and offer.remainingSeats == 0 %}
-
-                                    {% if isFull and not isApplied %}
-                                        {# المقاعد منتهية #}
-                                        <button class="btn btn-secondary px-3 rounded-3 fw-bold w-100" disabled
-                                                style="opacity:0.7; cursor:not-allowed;">
-                                            <i class="bi bi-person-fill-slash me-1"></i>
-                                            <span class="small">Seats Full</span>
-                                        </button>
-                                    {% else %}
-                                        <button class="btn px-3 rounded-3 fw-bold w-100 apply-btn {{ isApplied ? 'btn-outline-danger' : 'btn-primary' }}"
-                                                data-offer-id="{{ offer.id }}"
-                                                data-applied="{{ isApplied ? 'true' : 'false' }}"
-                                                data-seats="{{ offer.seats }}"
-                                                data-remaining="{{ offer.remainingSeats }}"
-                                                onclick="toggleApply(this)">
-                                            {% if isApplied %}
-                                                <i class="bi bi-x-circle me-1"></i><span class="small">Withdraw</span>
-                                            {% else %}
-                                                <i class="bi bi-send me-1"></i><span class="small">Apply Now</span>
-                                            {% endif %}
-                                        </button>
+                                {# Meta: location, duration, dates #}
+                                <div class="d-flex flex-wrap gap-3 text-secondary small mb-3">
+                                    {% if offer.wilaya %}
+                                        <span><i class="bi bi-geo-alt me-1 text-primary"></i>{{ offer.wilaya }}</span>
                                     {% endif %}
+                                    {% if offer.duration %}
+                                        <span><i class="bi bi-clock me-1 text-primary"></i>{{ offer.duration }}</span>
+                                    {% endif %}
+                                    {% if offer.deadline %}
+                                        <span><i class="bi bi-calendar-event me-1 text-danger"></i>Deadline: {{ offer.deadline|date('M d, Y') }}</span>
+                                    {% endif %}
+                                    {% if offer.internshipStart %}
+                                        <span><i class="bi bi-play-circle me-1 text-success"></i>Internship: {{ offer.internshipStart|date('M d, Y') }}</span>
+                                    {% endif %}
+                                </div>
 
-                                    {# عدد المقاعد المتبقية #}
-                                    {% if offer.seats is not null %}
-                                        <div class="text-center mt-1" style="font-size:0.7rem;">
-                                            {% if isFull %}
-                                                <span style="color:#ef4444;">
+                                {# Description #}
+                                {% if offer.description %}
+                                    <p class="text-secondary small mb-3" style="display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;max-width:700px;">
+                                        {{ offer.description }}
+                                    </p>
+                                {% endif %}
+
+                                {# Skills + Map #}
+                                <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+                                    <div class="d-flex gap-2 flex-wrap">
+                                        {% for skill in offer.skills %}
+                                            {% set isMatched = skill.tagName|lower in user.skills|map(s => s.tagName|lower) %}
+                                            <span class="skill-badge"
+                                                  style="background:{{ isMatched ? 'rgba(34,197,94,0.1)' : '#1e293b' }};
+                                                          border:1px solid {{ isMatched ? 'rgba(34,197,94,0.4)' : '#334155' }};
+                                                          color:{{ isMatched ? '#86efac' : '#94a3b8' }};
+                                                          border-radius:20px;padding:3px 10px;font-size:11px;display:inline-flex;align-items:center;gap:4px;">
+                                        {% if isMatched %}<i class="bi bi-check-circle-fill" style="font-size:10px;"></i>{% endif %}
+                                                {{ skill.tagName }}
+                                    </span>
+                                        {% endfor %}
+                                    </div>
+
+                                    {# Map Link #}
+                                    {% if offer.latitude and offer.longitude %}
+                                        <a href="https://www.google.com/maps?q={{ offer.latitude }},{{ offer.longitude }}"
+                                           target="_blank" class="btn btn-sm btn-outline-info border-secondary">
+                                            <i class="bi bi-map me-1"></i> View Map
+                                        </a>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            {# ═══ RIGHT — Match % + Buttons ═══ #}
+                            <div class="d-flex flex-column align-items-center gap-3" style="min-width:120px;">
+
+                                {# ★ Smart Match Badge #}
+                                <div class="text-center">
+                                    <div style="width:60px;height:60px;border-radius:50%;border:3px solid {{ matchColor }};display:flex;align-items:center;justify-content:center;margin:0 auto;background:rgba(0,0,0,0.3);">
+                                        <span style="font-size:14px;font-weight:700;color:{{ matchColor }};">{{ matchPercent }}%</span>
+                                    </div>
+                                    <div style="font-size:10px;color:{{ matchColor }};font-weight:600;margin-top:4px;">
+                                        {{ matchLabel }}
+                                    </div>
+                                </div>
+                                {# ─── Apply / Withdraw / Seats Full ─── #}
+                                {% set isFull = offer.seats is not null and offer.remainingSeats == 0 %}
+
+                                {% if isFull and not isApplied %}
+                                    {# المقاعد منتهية #}
+                                    <button class="btn btn-secondary px-3 rounded-3 fw-bold w-100" disabled
+                                            style="opacity:0.7; cursor:not-allowed;">
+                                        <i class="bi bi-person-fill-slash me-1"></i>
+                                        <span class="small">Seats Full</span>
+                                    </button>
+                                {% else %}
+                                    <button class="btn px-3 rounded-3 fw-bold w-100 apply-btn {{ isApplied ? 'btn-outline-danger' : 'btn-primary' }}"
+                                            data-offer-id="{{ offer.id }}"
+                                            data-applied="{{ isApplied ? 'true' : 'false' }}"
+                                            data-seats="{{ offer.seats }}"
+                                            data-remaining="{{ offer.remainingSeats }}"
+                                            onclick="toggleApply(this)">
+                                        {% if isApplied %}
+                                            <i class="bi bi-x-circle me-1"></i><span class="small">Withdraw</span>
+                                        {% else %}
+                                            <i class="bi bi-send me-1"></i><span class="small">Apply Now</span>
+                                        {% endif %}
+                                    </button>
+                                {% endif %}
+
+                                {# عدد المقاعد المتبقية #}
+                                {% if offer.seats is not null %}
+                                    <div class="text-center mt-1" style="font-size:0.7rem;">
+                                        {% if isFull %}
+                                            <span style="color:#ef4444;">
                 <i class="bi bi-x-circle-fill me-1"></i>0 / {{ offer.seats }} seats
             </span>
-                                            {% elseif offer.remainingSeats <= 2 %}
-                                                <span style="color:#f59e0b;">
+                                        {% elseif offer.remainingSeats <= 2 %}
+                                            <span style="color:#f59e0b;">
                 <i class="bi bi-exclamation-triangle-fill me-1"></i>{{ offer.remainingSeats }} / {{ offer.seats }} left
             </span>
-                                            {% else %}
-                                                <span style="color:#22c55e;">
+                                        {% else %}
+                                            <span style="color:#22c55e;">
                 <i class="bi bi-people-fill me-1"></i>{{ offer.remainingSeats }} / {{ offer.seats }} seats
             </span>
-                                            {% endif %}
-                                        </div>
-                                    {% endif %}
-                                    {# View Details #}
-                                    <button class="btn btn-outline-secondary btn-sm px-3 rounded-3 w-100"
-                                            onclick="openOfferModal(this)"
-                                            data-offer-id="{{ offer.id }}"
-                                            data-title="{{ offer.title|escape('html_attr') }}"
-                                            data-description="{{ (offer.description ?? '')|escape('html_attr') }}"
-                                            data-duration="{{ (offer.duration ?? '')|escape('html_attr') }}"
-                                            data-type="{{ offer.locationType }}"
-                                            data-level="{{ offer.level is defined ? (offer.level ?? '') : '' }}"
-                                            data-wilaya="{{ (offer.wilaya ?? '')|escape('html_attr') }}"
-                                            data-deadline="{{ offer.deadline ? offer.deadline|date('M d, Y') : '' }}"
-                                            data-internship-start="{{ offer.internshipStart ? offer.internshipStart|date('M d, Y') : '' }}"
-                                            data-lat="{{ offer.latitude ?? '' }}"
-                                            data-lng="{{ offer.longitude ?? '' }}"
-                                            data-skills="{{ offer.skills|map(s => s.tagName)|join(',')|escape('html_attr') }}"
-                                            data-matched-skills="{{ offer.skills|filter(s => s.tagName|lower in user.skills|map(u => u.tagName|lower))|map(s => s.tagName)|join(',')|escape('html_attr') }}"
-                                            data-match-percent="{{ matchPercent }}"
-                                            data-match-color="{{ matchColor }}"
-                                            data-match-label="{{ matchLabel }}"
-                                            data-applied="{{ isApplied ? 'true' : 'false' }}"
-                                            data-company-name="{{ (offer.company.companyName ?? offer.company.fullName)|escape('html_attr') }}"
-                                            data-company-email="{{ offer.company.email|escape('html_attr') }}"
-                                            data-company-phone="{{ (offer.company.phone ?? '')|escape('html_attr') }}"
-                                            data-company-industry="{{ (offer.company.industry ?? '')|escape('html_attr') }}"
-                                            data-company-wilaya="{{ (offer.company.wilaya ?? '')|escape('html_attr') }}"
-                                            data-company-website="{{ (offer.company.website ?? '')|escape('html_attr') }}"
-                                            data-company-bio="{{ (offer.company.bio ?? '')|escape('html_attr') }}"
-                                            data-company-logo="{{ offer.company.logo ? asset('uploads/logos/' ~ offer.company.logo) : '' }}"
-                                            data-company-doc="{{ offer.company.verificationFile ? asset('uploads/verification/' ~ offer.company.verificationFile) : '' }}">
-                                        <i class="bi bi-eye me-1"></i> Details
-                                    </button>
-                                </div>
-
+                                        {% endif %}
+                                    </div>
+                                {% endif %}
+                                {# View Details #}
+                                <button class="btn btn-outline-secondary btn-sm px-3 rounded-3 w-100"
+                                        onclick="openOfferModal(this)"
+                                        data-offer-id="{{ offer.id }}"
+                                        data-title="{{ offer.title|escape('html_attr') }}"
+                                        data-description="{{ (offer.description ?? '')|escape('html_attr') }}"
+                                        data-duration="{{ (offer.duration ?? '')|escape('html_attr') }}"
+                                        data-type="{{ offer.locationType }}"
+                                        data-level="{{ offer.level is defined ? (offer.level ?? '') : '' }}"
+                                        data-wilaya="{{ (offer.wilaya ?? '')|escape('html_attr') }}"
+                                        data-deadline="{{ offer.deadline ? offer.deadline|date('M d, Y') : '' }}"
+                                        data-internship-start="{{ offer.internshipStart ? offer.internshipStart|date('M d, Y') : '' }}"
+                                        data-lat="{{ offer.latitude ?? '' }}"
+                                        data-lng="{{ offer.longitude ?? '' }}"
+                                        data-skills="{{ offer.skills|map(s => s.tagName)|join(',')|escape('html_attr') }}"
+                                        data-matched-skills="{{ offer.skills|filter(s => s.tagName|lower in user.skills|map(u => u.tagName|lower))|map(s => s.tagName)|join(',')|escape('html_attr') }}"
+                                        data-match-percent="{{ matchPercent }}"
+                                        data-match-color="{{ matchColor }}"
+                                        data-match-label="{{ matchLabel }}"
+                                        data-applied="{{ isApplied ? 'true' : 'false' }}"
+                                        data-company-name="{{ (offer.company.companyName ?? offer.company.fullName)|escape('html_attr') }}"
+                                        data-company-email="{{ offer.company.email|escape('html_attr') }}"
+                                        data-company-phone="{{ (offer.company.phone ?? '')|escape('html_attr') }}"
+                                        data-company-industry="{{ (offer.company.industry ?? '')|escape('html_attr') }}"
+                                        data-company-wilaya="{{ (offer.company.wilaya ?? '')|escape('html_attr') }}"
+                                        data-company-website="{{ (offer.company.website ?? '')|escape('html_attr') }}"
+                                        data-company-bio="{{ (offer.company.bio ?? '')|escape('html_attr') }}"
+                                        data-company-logo="{{ offer.company.logo ? asset('uploads/logos/' ~ offer.company.logo) : '' }}"
+                                        data-company-doc="{{ offer.company.verificationFile ? asset('uploads/verification/' ~ offer.company.verificationFile) : '' }}">
+                                    <i class="bi bi-eye me-1"></i> Details
+                                </button>
                             </div>
-                        </div>
-                    {% endfor %}
 
-                </div>
+                        </div>
+                    </div>
+                {% endfor %}
+
             </div>
+        </div>
 
 
 
@@ -1085,20 +1276,22 @@
                 </div>
 
                 <div class="col-lg-4">
-                    <div class="stat-card mb-4">
-                        <h6 class="fw-bold mb-3 text-primary">Technical Skills</h6>
-                        <div id="skills-container" class="d-flex flex-wrap gap-2 mb-3">
-                            {% for skill in user.skills %}
-                                <span class="badge badge-skill d-flex align-items-center gap-1">
+
+                        <div class="stat-card mb-4">
+                            <h6 class="fw-bold mb-3 text-primary">Technical Skills</h6>
+                            <div id="skills-container" class="d-flex flex-wrap gap-2 mb-3">
+                                {% for skill in user.skills %}
+                                    <span class="badge badge-skill d-flex align-items-center gap-1">
                                         {{ skill }} <i class="bi bi-x cursor-pointer" onclick="this.parentElement.remove()"></i>
                                     </span>
-                            {% endfor %}
+                                {% endfor %}
+                            </div>
+                            <div class="input-group input-group-sm">
+                                <input type="text" id="skill-input" class="form-control bg-black" placeholder="Add a skill...">
+                                <button class="btn btn-outline-primary" type="button" onclick="addSkill()">+</button>
+                            </div>
                         </div>
-                        <div class="input-group input-group-sm">
-                            <input type="text" id="skill-input" class="form-control bg-black" placeholder="Add a skill...">
-                            <button class="btn btn-outline-primary" type="button" onclick="addSkill()">+</button>
-                        </div>
-                    </div>
+
 
                     <div class="stat-card text-center border-primary hover-glow">
                         <p class="fw-bold mb-3 text-primary">Profile Preview</p>
@@ -1198,214 +1391,214 @@
 
         </div>
 
-            <div id="section-applications" class="d-none">
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <div>
-                        <h2 class="fw-bold mb-0 text-white">My Applications</h2>
-                        <p style="color:#94a3b8;font-size:0.85rem;">Track and manage your application</p>
-                    </div>
-                    <div class="stat-card py-2 px-4 mb-0 d-flex align-items-center gap-2" style="border-radius:50px;">
-                        <div class="rounded-circle bg-primary" style="width:8px;height:8px;box-shadow:0 0 10px var(--accent-primary);"></div>
-                        <span class="small fw-bold text-white">{{ stats.pending }} Pending</span>
-                    </div>
+        <div id="section-applications" class="d-none">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h2 class="fw-bold mb-0 text-white">My Applications</h2>
+                    <p style="color:#94a3b8;font-size:0.85rem;">Track and manage your application</p>
                 </div>
+                <div class="stat-card py-2 px-4 mb-0 d-flex align-items-center gap-2" style="border-radius:50px;">
+                    <div class="rounded-circle bg-primary" style="width:8px;height:8px;box-shadow:0 0 10px var(--accent-primary);"></div>
+                    <span class="small fw-bold text-white">{{ stats.pending }} Pending</span>
+                </div>
+            </div>
 
-                {% if applications is empty %}
-                    <div class="stat-card p-5 text-center">
-                        <i class="bi bi-file-earmark-x fs-1 text-muted mb-3 d-block"></i>
-                        <h5 class="text-white-50">No applications yet</h5>
-                        <p class="text-secondary small">Browse internship offers and apply to get started.</p>
-                        <button class="btn btn-primary px-4 mt-2" onclick="switchTab('offers', null)">
-                            <i class="bi bi-search me-2"></i> Browse Offers
-                        </button>
-                    </div>
-                {% else %}
-                    <div class="stat-card p-0 overflow-hidden border-0 shadow-lg">
-                        <div class="table-responsive">
-                            <table class="table table-dark mb-0" style="--bs-table-bg:transparent;background:rgba(0,0,0,0.4);">
-                                <thead>
-                                <tr style="border-bottom:1px solid var(--border-color);">
-                                    <th class="p-4 small fw-bold text-white-50 uppercase-tracking">Internship & Company</th>
-                                    <th class="p-4 small fw-bold text-white-50 uppercase-tracking">Type</th>
-                                    <th class="p-4 small fw-bold text-white-50 uppercase-tracking">Date Applied</th>
-                                    <th class="p-4 small fw-bold text-white-50 uppercase-tracking">Status</th>
-                                    <th class="p-4 small fw-bold text-white-50 uppercase-tracking text-end">Action</th>
-                                </tr>
-                                </thead>
-                                <tbody class="border-0">
+            {% if applications is empty %}
+                <div class="stat-card p-5 text-center">
+                    <i class="bi bi-file-earmark-x fs-1 text-muted mb-3 d-block"></i>
+                    <h5 class="text-white-50">No applications yet</h5>
+                    <p class="text-secondary small">Browse internship offers and apply to get started.</p>
+                    <button class="btn btn-primary px-4 mt-2" onclick="switchTab('offers', null)">
+                        <i class="bi bi-search me-2"></i> Browse Offers
+                    </button>
+                </div>
+            {% else %}
+                <div class="stat-card p-0 overflow-hidden border-0 shadow-lg">
+                    <div class="table-responsive">
+                        <table class="table table-dark mb-0" style="--bs-table-bg:transparent;background:rgba(0,0,0,0.4);">
+                            <thead>
+                            <tr style="border-bottom:1px solid var(--border-color);">
+                                <th class="p-4 small fw-bold text-white-50 uppercase-tracking">Internship & Company</th>
+                                <th class="p-4 small fw-bold text-white-50 uppercase-tracking">Type</th>
+                                <th class="p-4 small fw-bold text-white-50 uppercase-tracking">Date Applied</th>
+                                <th class="p-4 small fw-bold text-white-50 uppercase-tracking">Status</th>
+                                <th class="p-4 small fw-bold text-white-50 uppercase-tracking text-end">Action</th>
+                            </tr>
+                            </thead>
+                            <tbody class="border-0">
 
-                                {% for app in applications %}
-                                    <tr class="align-middle transition-row"
-                                        style="border-bottom:1px solid rgba(17,24,39,0.5);"
-                                        id="app-row-{{ app.id }}">
+                            {% for app in applications %}
+                                <tr class="align-middle transition-row"
+                                    style="border-bottom:1px solid rgba(17,24,39,0.5);"
+                                    id="app-row-{{ app.id }}">
 
-                                        {# ── Company + Offer ── #}
-                                        <td class="p-4">
-                                            <div class="d-flex align-items-center gap-3">
-                                                <div class="d-flex align-items-center justify-content-center overflow-hidden"
-                                                     style="width:42px;height:42px;background:#09090b;border:1px solid var(--border-color);border-radius:10px;flex-shrink:0;">
-                                                    {% if app.offer.company.logo %}
-                                                        <img src="{{ asset('uploads/logos/' ~ app.offer.company.logo) }}"
-                                                             style="width:100%;height:100%;object-fit:cover;">
-                                                    {% else %}
-                                                        <i class="bi bi-building text-primary"></i>
-                                                    {% endif %}
-                                                </div>
-                                                <div>
-                                                    <p class="fw-bold mb-0 text-white">{{ app.offer.title }}</p>
-                                                    <small style="color:#64748b;">
-                                                        {{ app.offer.company.companyName ?? app.offer.company.fullName }}
-                                                        {% if app.offer.wilaya %}
-                                                            · <i class="bi bi-geo-alt"></i> {{ app.offer.wilaya }}
-                                                        {% endif %}
-                                                    </small>
-                                                </div>
+                                    {# ── Company + Offer ── #}
+                                    <td class="p-4">
+                                        <div class="d-flex align-items-center gap-3">
+                                            <div class="d-flex align-items-center justify-content-center overflow-hidden"
+                                                 style="width:42px;height:42px;background:#09090b;border:1px solid var(--border-color);border-radius:10px;flex-shrink:0;">
+                                                {% if app.offer.company.logo %}
+                                                    <img src="{{ asset('uploads/logos/' ~ app.offer.company.logo) }}"
+                                                         style="width:100%;height:100%;object-fit:cover;">
+                                                {% else %}
+                                                    <i class="bi bi-building text-primary"></i>
+                                                {% endif %}
                                             </div>
-                                        </td>
+                                            <div>
+                                                <p class="fw-bold mb-0 text-white">{{ app.offer.title }}</p>
+                                                <small style="color:#64748b;">
+                                                    {{ app.offer.company.companyName ?? app.offer.company.fullName }}
+                                                    {% if app.offer.wilaya %}
+                                                        · <i class="bi bi-geo-alt"></i> {{ app.offer.wilaya }}
+                                                    {% endif %}
+                                                </small>
+                                            </div>
+                                        </div>
+                                    </td>
 
-                                        {# ── Type ── #}
-                                        <td class="p-4">
+                                    {# ── Type ── #}
+                                    <td class="p-4">
                             <span class="badge bg-primary-subtle text-primary" style="font-size:0.7rem;">
                                 {{ app.offer.locationType }}
                             </span>
-                                        </td>
+                                    </td>
 
-                                        {# ── Date ── #}
-                                        <td class="p-4 small" style="color:#94a3b8;">
-                                            {{ app.createdAt|date('M d, Y') }}
-                                        </td>
+                                    {# ── Date ── #}
+                                    <td class="p-4 small" style="color:#94a3b8;">
+                                        {{ app.createdAt|date('M d, Y') }}
+                                    </td>
 
-                                        {# ── Status Badge ── #}
-                                        {# ── Status Badge ── #}
-                                        <td class="p-4">
-                                            {% if app.status == 'pending' %}
-                                                <span class="badge-custom-tech">
+                                    {# ── Status Badge ── #}
+                                    {# ── Status Badge ── #}
+                                    <td class="p-4">
+                                        {% if app.status == 'pending' %}
+                                            <span class="badge-custom-tech">
             <span class="dot-glow"></span> PENDING
         </span>
-                                            {% elseif app.status == 'pending_admin' %}
-                                                {# حالة جديدة: الشركة وافقت والآن الدور على الجامعة #}
-                                                <span class="badge-custom-tech" style="color: var(--accent-info); border-color: var(--accent-info);">
+                                        {% elseif app.status == 'pending_admin' %}
+                                            {# حالة جديدة: الشركة وافقت والآن الدور على الجامعة #}
+                                            <span class="badge-custom-tech" style="color: var(--accent-info); border-color: var(--accent-info);">
             <i class="dot-glow"></i> WAITING FOR ADMIN
         </span>
-                                            {% elseif app.status == 'accepted' %}
-                                                <span class="badge-custom-tech-active">
+                                        {% elseif app.status == 'accepted' %}
+                                            <span class="badge-custom-tech-active">
             <i></i> ACCEPTED
         </span>
-                                            {% else %}
-                                                <span class="badge-custom-rejected">
+                                        {% else %}
+                                            <span class="badge-custom-rejected">
             <span class="dot-glow-red"></span> REJECTED
         </span>
-                                            {% endif %}
-                                        </td>
-
-                                        {# ── Actions ── #}
-                                        <td class="p-4 text-end">
-                                            <div class="d-flex justify-content-end gap-2">
-
-                                                {# زر التراجع — فقط إذا pending #}
-                                                {% if app.status == 'pending' %}
-                                                    <button class="btn-tech-outline-danger"
-                                                            onclick="withdrawApp({{ app.offer.id }}, {{ app.id }}, this)">
-                                                        <i class="bi bi-x-circle me-1"></i> Withdraw
-                                                    </button>
-                                                {% endif %}
-
-                                                {# زر تحميل الاتفاقية — إذا accepted وفيه ملف #}
-                                                {% if app.status == 'accepted' and app.conventionFile %}
-                                                    <a href="{{ path('app_student_download_convention', {'id': app.id}) }}"
-                                                       class="btn-tech-outline" style="text-decoration:none;">
-                                                        <i class="bi bi-download me-1"></i> Convention
-                                                    </a>
-                                                {% endif %}
-                                                {# التأكد من عرض سبب الرفض إذا وجد على شكل زر #}
-                                    {# إذا كان الطلب قيد الانتظار: يظهر زر التراجع #}
-                                    {% if app.status == 'pending' %}
-                                    <button class="btn-tech-outline-danger"
-                                            onclick="handleApplicationAction({{ app.offer.id }}, {{ app.id }}, 'withdraw', this)">
-                                        <i class="bi bi-x-circle me-1"></i> Withdraw
-                                    </button>
-
-                                    {# إذا كان الطلب مرفوضاً: يظهر زر الحذف #}
-                                    {% elseif app.status == 'refused' %}
-                                        <button class="btn-tech-outline-danger"
-                                                style="border-color: #ef4444; color: #ef4444;"
-                                                onclick="handleApplicationAction({{ app.offer.id }}, {{ app.id }},  'delete', this)">
-                                            <i class="bi bi-trash3 me-1"></i> Delete Record
-                                        </button>
                                         {% endif %}
-                                                {% if app.rejectionReason %}
-                                                    <button class="btn-tech-outline-danger"
-                                                            onclick="showRejectionReason(this)"
-                                                            data-offer="{{ app.offer.title }}"
-                                                            data-reason="{{ app.rejectionReason }}">
-                                                        <i class="bi bi-exclamation-triangle me-1"></i> View Reason
-                                                    </button>
-                                                {% endif %}
+                                    </td>
 
-                                                {# View Offer Details #}
-                                                <button class="btn-tech-outline"
-                                                        onclick="openOfferModal(this)"
-                                                        data-offer-id="{{ app.offer.id }}"
-                                                        data-title="{{ app.offer.title|escape('html_attr') }}"
-                                                        data-description="{{ (app.offer.description ?? '')|escape('html_attr') }}"
-                                                        data-duration="{{ (app.offer.duration ?? '')|escape('html_attr') }}"
-                                                        data-type="{{ app.offer.locationType }}"
-                                                        data-level="{{ app.offer.level ?? '' }}"
-                                                        data-wilaya="{{ (app.offer.wilaya ?? '')|escape('html_attr') }}"
-                                                        data-deadline="{{ app.offer.deadline ? app.offer.deadline|date('M d, Y') : '' }}"
-                                                        data-internship-start="{{ app.offer.internshipStart ? app.offer.internshipStart|date('M d, Y') : '' }}"
-                                                        data-lat="{{ app.offer.latitude ?? '' }}"
-                                                        data-lng="{{ app.offer.longitude ?? '' }}"
-                                                        data-skills="{{ app.offer.skills|map(s => s.tagName)|join(',')|escape('html_attr') }}"
-                                                        data-matched-skills="{{ app.offer.skills|filter(s => s.tagName|lower in user.skills|map(u => u.tagName|lower))|map(s => s.tagName)|join(',')|escape('html_attr') }}"
-                                                        {# استبدل القيم القديمة بهذه القيم الديناميكية #}
-                                                        data-match-percent="{{ app.getMatchingScore }}"
-                                                        data-match-color="{% if app.getMatchingScore >= 70 %}#22c55e{% elseif app.getMatchingScore >= 40 %}#f59e0b{% else %}#ef4444{% endif %}"
-                                                        data-match-label="{% if app.getMatchingScore >= 70 %}High Match{% elseif app.getMatchingScore >= 40 %}Average Match{% else %}Low Match{% endif %}"
-                                                        data-applied="true"
-                                                        data-company-name="{{ (app.offer.company.companyName ?? app.offer.company.fullName)|escape('html_attr') }}"
-                                                        data-company-email="{{ app.offer.company.email|escape('html_attr') }}"
-                                                        data-company-phone="{{ (app.offer.company.phone ?? '')|escape('html_attr') }}"
-                                                        data-company-industry="{{ (app.offer.company.industry ?? '')|escape('html_attr') }}"
-                                                        data-company-wilaya="{{ (app.offer.company.wilaya ?? '')|escape('html_attr') }}"
-                                                        data-company-website="{{ (app.offer.company.website ?? '')|escape('html_attr') }}"
-                                                        data-company-bio="{{ (app.offer.company.bio ?? '')|escape('html_attr') }}"
-                                                        data-company-logo="{{ app.offer.company.logo ? asset('uploads/logos/' ~ app.offer.company.logo) : '' }}"
-                                                        data-company-doc="{{ app.offer.company.verificationFile ? asset('uploads/verification/' ~ app.offer.company.verificationFile) : '' }}">
-                                                    <i class="bi bi-eye me-1"></i> Details
+                                    {# ── Actions ── #}
+                                    <td class="p-4 text-end">
+                                        <div class="d-flex justify-content-end gap-2">
+
+                                            {# زر التراجع — فقط إذا pending #}
+                                            {% if app.status == 'pending' %}
+                                                <button class="btn-tech-outline-danger"
+                                                        onclick="withdrawApp({{ app.offer.id }}, {{ app.id }}, this)">
+                                                    <i class="bi bi-x-circle me-1"></i> Withdraw
+                                                </button>
+                                            {% endif %}
+
+                                            {# زر تحميل الاتفاقية — إذا accepted وفيه ملف #}
+                                            {% if app.status == 'accepted' and app.conventionFile %}
+                                                <a href="{{ path('app_student_download_convention', {'id': app.id}) }}"
+                                                   class="btn-tech-outline" style="text-decoration:none;">
+                                                    <i class="bi bi-download me-1"></i> Convention
+                                                </a>
+                                            {% endif %}
+                                            {# التأكد من عرض سبب الرفض إذا وجد على شكل زر #}
+                                            {# إذا كان الطلب قيد الانتظار: يظهر زر التراجع #}
+                                            {% if app.status == 'pending' %}
+                                                <button class="btn-tech-outline-danger"
+                                                        onclick="handleApplicationAction({{ app.offer.id }}, {{ app.id }}, 'withdraw', this)">
+                                                    <i class="bi bi-x-circle me-1"></i> Withdraw
                                                 </button>
 
-                                            </div>
-                                        </td>
-                                    </tr>
-                                {% endfor %}
+                                                {# إذا كان الطلب مرفوضاً: يظهر زر الحذف #}
+                                            {% elseif app.status == 'refused' %}
+                                                <button class="btn-tech-outline-danger"
+                                                        style="border-color: #ef4444; color: #ef4444;"
+                                                        onclick="handleApplicationAction({{ app.offer.id }}, {{ app.id }},  'delete', this)">
+                                                    <i class="bi bi-trash3 me-1"></i> Delete Record
+                                                </button>
+                                            {% endif %}
+                                            {% if app.rejectionReason %}
+                                                <button class="btn-tech-outline-danger"
+                                                        onclick="showRejectionReason(this)"
+                                                        data-offer="{{ app.offer.title }}"
+                                                        data-reason="{{ app.rejectionReason }}">
+                                                    <i class="bi bi-exclamation-triangle me-1"></i> View Reason
+                                                </button>
+                                            {% endif %}
 
-                                </tbody>
-                            </table>
-                        </div>
+                                            {# View Offer Details #}
+                                            <button class="btn-tech-outline"
+                                                    onclick="openOfferModal(this)"
+                                                    data-offer-id="{{ app.offer.id }}"
+                                                    data-title="{{ app.offer.title|escape('html_attr') }}"
+                                                    data-description="{{ (app.offer.description ?? '')|escape('html_attr') }}"
+                                                    data-duration="{{ (app.offer.duration ?? '')|escape('html_attr') }}"
+                                                    data-type="{{ app.offer.locationType }}"
+                                                    data-level="{{ app.offer.level ?? '' }}"
+                                                    data-wilaya="{{ (app.offer.wilaya ?? '')|escape('html_attr') }}"
+                                                    data-deadline="{{ app.offer.deadline ? app.offer.deadline|date('M d, Y') : '' }}"
+                                                    data-internship-start="{{ app.offer.internshipStart ? app.offer.internshipStart|date('M d, Y') : '' }}"
+                                                    data-lat="{{ app.offer.latitude ?? '' }}"
+                                                    data-lng="{{ app.offer.longitude ?? '' }}"
+                                                    data-skills="{{ app.offer.skills|map(s => s.tagName)|join(',')|escape('html_attr') }}"
+                                                    data-matched-skills="{{ app.offer.skills|filter(s => s.tagName|lower in user.skills|map(u => u.tagName|lower))|map(s => s.tagName)|join(',')|escape('html_attr') }}"
+                                                    {# استبدل القيم القديمة بهذه القيم الديناميكية #}
+                                                    data-match-percent="{{ app.getMatchingScore }}"
+                                                    data-match-color="{% if app.getMatchingScore >= 70 %}#22c55e{% elseif app.getMatchingScore >= 40 %}#f59e0b{% else %}#ef4444{% endif %}"
+                                                    data-match-label="{% if app.getMatchingScore >= 70 %}High Match{% elseif app.getMatchingScore >= 40 %}Average Match{% else %}Low Match{% endif %}"
+                                                    data-applied="true"
+                                                    data-company-name="{{ (app.offer.company.companyName ?? app.offer.company.fullName)|escape('html_attr') }}"
+                                                    data-company-email="{{ app.offer.company.email|escape('html_attr') }}"
+                                                    data-company-phone="{{ (app.offer.company.phone ?? '')|escape('html_attr') }}"
+                                                    data-company-industry="{{ (app.offer.company.industry ?? '')|escape('html_attr') }}"
+                                                    data-company-wilaya="{{ (app.offer.company.wilaya ?? '')|escape('html_attr') }}"
+                                                    data-company-website="{{ (app.offer.company.website ?? '')|escape('html_attr') }}"
+                                                    data-company-bio="{{ (app.offer.company.bio ?? '')|escape('html_attr') }}"
+                                                    data-company-logo="{{ app.offer.company.logo ? asset('uploads/logos/' ~ app.offer.company.logo) : '' }}"
+                                                    data-company-doc="{{ app.offer.company.verificationFile ? asset('uploads/verification/' ~ app.offer.company.verificationFile) : '' }}">
+                                                <i class="bi bi-eye me-1"></i> Details
+                                            </button>
+
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+
+                            </tbody>
+                        </table>
                     </div>
-                {% endif %}
-            </div>
+                </div>
+            {% endif %}
+        </div>
 
-            {# ── Rejection Reason Modal ── #}
-            <div class="modal fade" id="rejectionReasonModal" tabindex="-1" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered" style="max-width:480px;">
-                    <div class="modal-content border-0" style="background:#09090b;border:1px solid rgba(239,68,68,0.3);border-radius:14px;">
-                        <div class="modal-header border-0 pb-0">
-                            <h6 class="modal-title text-danger fw-bold">
-                                <i class="bi bi-x-octagon me-2"></i> Rejection Reason
-                            </h6>
-                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                        </div>
-                        <div class="modal-body px-4 pb-4">
-                            <p class="text-white-50 small mb-2" id="rejection-offer-name"></p>
-                            <div style="background:#0f172a;border-radius:10px;padding:16px;border:1px solid rgba(239,68,68,0.2);">
-                                <p id="rejection-reason-text" class="text-secondary mb-0" style="line-height:1.8;"></p>
-                            </div>
+        {# ── Rejection Reason Modal ── #}
+        <div class="modal fade" id="rejectionReasonModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" style="max-width:480px;">
+                <div class="modal-content border-0" style="background:#09090b;border:1px solid rgba(239,68,68,0.3);border-radius:14px;">
+                    <div class="modal-header border-0 pb-0">
+                        <h6 class="modal-title text-danger fw-bold">
+                            <i class="bi bi-x-octagon me-2"></i> Rejection Reason
+                        </h6>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body px-4 pb-4">
+                        <p class="text-white-50 small mb-2" id="rejection-offer-name"></p>
+                        <div style="background:#0f172a;border-radius:10px;padding:16px;border:1px solid rgba(239,68,68,0.2);">
+                            <p id="rejection-reason-text" class="text-secondary mb-0" style="line-height:1.8;"></p>
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
     </div>
     </div>
 
@@ -1488,7 +1681,7 @@
                             <div class="stat-card p-4 h-100">
                             <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-2 text-uppercase fw-bold mb-4 d-block"
                                   style="font-size:0.7rem;width:fit-content;">
-                                <i class="bi bi-eye me-1"></i> Company Preview
+                                <i class="bi bi-eye me-1"></i>
                             </span>
 
                                 <!-- Logo + Name -->
@@ -1526,6 +1719,7 @@
                                 <hr class="border-secondary opacity-25 my-3">
                                 <p id="cp-bio" class="text-secondary small mb-3" style="line-height:1.7;"></p>
 
+
                                 <div id="cp-doc-wrap" class="d-none">
                                     <a id="cp-doc" href="#" target="_blank"
                                        class="btn btn-sm btn-primary w-100 fw-bold rounded-3">
@@ -1541,58 +1735,266 @@
         </div>
     </div>
 
+    {% if myInternship %}
+        <div class="modal fade" id="companyModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-lg" style="max-width: 780px;">
+                <div class="modal-content border-0"
+                     style="background: #09090b; border: 1px solid #1e293b !important; border-radius: 18px; color: white;">
 
-
-
-
-
-    <div class="modal fade" id="companyModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content" style="background: #0a0a0a; border: 1px solid #111827; color: white;">
-                <div class="modal-header border-0 pb-0">
-                    <h5 class="modal-title fw-bold">Company Profile</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body p-4">
-                    <div class="text-center mb-4">
-                        <div class="rounded-circle bg-primary d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px; font-size: 2rem;">
-                            {{ myInternship.company.fullName|slice(0, 1)|upper }}
-                        </div>
-                        <h4 class="fw-bold mb-1">{{ myInternship.company.fullName }}</h4>
-                        <p class="text-muted small"><i class="bi bi-patch-check-fill text-primary me-1"></i> Verified Partner</p>
+                    {# ── Header ── #}
+                    <div class="modal-header border-0 px-4 pt-4 pb-0">
+                <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-2"
+                      style="font-size: 0.7rem; font-weight: 700; letter-spacing: 1px;">
+                    <i class="bi bi-building me-1"></i> COMPANY PROFILE
+                </span>
+                        <button type="button" class="btn-close btn-close-white ms-auto"
+                                data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
 
-                    <div class="space-y-4">
-                        <div class="mb-3">
-                            <label class="text-muted small text-uppercase mb-2 d-block">About the Company</label>
-                            <p class="mb-0" style="font-size: 0.95rem; line-height: 1.6;">
-                                {# نفترض وجود حقل bio أو description في كيان User #}
-                                {{ myInternship.company.bio ?: 'No description available for this company yet.' }}
-                            </p>
-                        </div>
+                    <div class="modal-body px-4 pb-0 pt-3">
+                        <div class="row g-4">
 
-                        <hr style="border-color: rgba(255,255,255,0.1);">
+                            {# ══ LEFT: Logo + Name + Info ══ #}
+                            <div class="col-md-4 d-flex flex-column align-items-center text-center pt-2">
 
-                        <div class="row g-3">
-                            <div class="col-12">
-                                <div class="d-flex align-items-center gap-3">
-                                    <i class="bi bi-envelope text-primary"></i>
-                                    <div>
-                                        <small class="text-muted d-block">Contact Email</small>
-                                        <span>{{ myInternship.company.email }}</span>
-                                    </div>
+                                {# Logo #}
+                                <div class="mb-3"
+                                     style="width:88px;height:88px;border-radius:16px;
+                                    background:#020617;border:2px solid #3b82f6;
+                                    display:flex;align-items:center;justify-content:center;
+                                    overflow:hidden;box-shadow:0 0 20px rgba(59,130,246,0.15);">
+                                    {% if myInternship.company.logo %}
+                                        <img src="{{ asset('uploads/logos/' ~ myInternship.company.logo) }}"
+                                             style="width:100%;height:100%;object-fit:cover;">
+                                    {% else %}
+                                        <span class="fw-bold text-primary" style="font-size:2.2rem;">
+                                    {{ (myInternship.company.companyName ?? myInternship.company.fullName)|slice(0,1)|upper }}
+                                </span>
+                                    {% endif %}
+                                </div>
+
+                                {# Name #}
+                                <h5 class="fw-bold text-white mb-1" style="font-size:1rem;">
+                                    {{ myInternship.company.companyName ?? myInternship.company.fullName }}
+                                </h5>
+
+                                {# Verified #}
+                                <span class="badge mb-2"
+                                      style="background:rgba(16,185,129,0.1);color:#10b981;
+                                     border:1px solid rgba(16,185,129,0.3);font-size:0.68rem;">
+                            <i class="bi bi-patch-check-fill me-1"></i> Verified Partner
+                        </span>
+
+                                {# Industry #}
+                                {% if myInternship.company.industry %}
+                                    <span class="badge bg-primary-subtle text-primary px-3 py-2 mb-3"
+                                          style="font-size:0.72rem;">
+                                {{ myInternship.company.industry }}
+                            </span>
+                                {% endif %}
+
+                                <hr style="border-color:rgba(255,255,255,0.07);width:100%;">
+
+                                {# Contact List #}
+                                <div class="d-flex flex-column gap-2 w-100 text-start">
+
+                                    <a href="mailto:{{ myInternship.company.email }}"
+                                       class="d-flex align-items-center gap-2 text-decoration-none"
+                                       style="color:#94a3b8;font-size:0.8rem;transition:color 0.2s;"
+                                       onmouseover="this.style.color='#3b82f6'" onmouseout="this.style.color='#94a3b8'">
+                                        <i class="bi bi-envelope-fill text-primary" style="font-size:13px;flex-shrink:0;"></i>
+                                        <span class="text-truncate">{{ myInternship.company.email }}</span>
+                                    </a>
+
+                                    {% if myInternship.company.phone %}
+                                        <a href="tel:{{ myInternship.company.phone }}"
+                                           class="d-flex align-items-center gap-2 text-decoration-none"
+                                           style="color:#94a3b8;font-size:0.8rem;transition:color 0.2s;"
+                                           onmouseover="this.style.color='#3b82f6'" onmouseout="this.style.color='#94a3b8'">
+                                            <i class="bi bi-telephone-fill text-primary" style="font-size:13px;flex-shrink:0;"></i>
+                                            <span>{{ myInternship.company.phone }}</span>
+                                        </a>
+                                    {% endif %}
+
+                                    {% if myInternship.company.wilaya %}
+                                        <div class="d-flex align-items-center gap-2"
+                                             style="color:#94a3b8;font-size:0.8rem;">
+                                            <i class="bi bi-geo-alt-fill text-primary" style="font-size:13px;flex-shrink:0;"></i>
+                                            <span>{{ myInternship.company.wilaya }}</span>
+                                        </div>
+                                    {% endif %}
+
+                                    {% if myInternship.company.website %}
+                                        <a href="{{ myInternship.company.website }}" target="_blank"
+                                           class="d-flex align-items-center gap-2 text-decoration-none"
+                                           style="color:#94a3b8;font-size:0.8rem;transition:color 0.2s;"
+                                           onmouseover="this.style.color='#38bdf8'" onmouseout="this.style.color='#94a3b8'">
+                                            <i class="bi bi-globe text-primary" style="font-size:13px;flex-shrink:0;"></i>
+                                            <span class="text-truncate">{{ myInternship.company.website }}</span>
+                                        </a>
+                                    {% endif %}
+
                                 </div>
                             </div>
-                        </div>
+
+                            {# ══ RIGHT: About + Map ══ #}
+                            <div class="col-md-8 d-flex flex-column gap-3">
+
+                                {# About #}
+                                {% if myInternship.company.bio %}
+                                    <div style="background:#0d1117;border-radius:12px;
+                                        padding:14px 16px;border:1px solid #1e293b;">
+                                        <div class="text-white-50 small fw-bold mb-2" style="font-size:0.68rem;letter-spacing:1px;">
+                                            <i class="bi bi-info-circle me-1"></i> ABOUT
+                                        </div>
+                                        <p class="text-secondary small mb-0" style="line-height:1.8;font-size:0.83rem;">
+                                            {{ myInternship.company.bio }}
+                                        </p>
+                                    </div>
+                                {% endif %}
+
+                                {# ══ MAP SECTION ══ #}
+                                <div style="border-radius:14px;overflow:hidden;
+                                    border:1px solid #1e3a5f;
+                                    box-shadow:0 0 30px rgba(59,130,246,0.08);
+                                    position:relative;">
+
+                                    {# Map Header Bar #}
+                                    <div class="d-flex align-items-center justify-content-between px-3 py-2"
+                                         style="background:#0d1117;border-bottom:1px solid #1e3a5f;">
+                                        <div class="d-flex align-items-center gap-2">
+                                            <div style="width:8px;height:8px;border-radius:50%;
+                                                background:#3b82f6;
+                                                box-shadow:0 0 8px #3b82f6;"></div>
+                                            <span class="text-white fw-bold" style="font-size:0.75rem;letter-spacing:0.5px;">
+                                        LOCATION
+                                    </span>
+                                            {% if myInternship.company.wilaya %}
+                                                <span class="text-white-50" style="font-size:0.7rem;">
+                                            — {{ myInternship.company.wilaya }}
+                                        </span>
+                                            {% endif %}
+                                        </div>
+
+                                        {# Open in Google Maps button #}
+                                        {% if myInternship.latitude and myInternship.longitude %}
+                                            <a href="https://www.google.com/maps?q={{ myInternship.latitude }},{{ myInternship.longitude }}"
+                                               target="_blank"
+                                               class="d-flex align-items-center gap-1 text-decoration-none"
+                                               style="color:#3b82f6;font-size:0.7rem;font-weight:600;
+                                              padding:3px 10px;border-radius:20px;
+                                              border:1px solid rgba(59,130,246,0.3);
+                                              background:rgba(59,130,246,0.08);
+                                              transition:all 0.2s;"
+                                               onmouseover="this.style.background='rgba(59,130,246,0.2)'"
+                                               onmouseout="this.style.background='rgba(59,130,246,0.08)'">
+                                                <i class="bi bi-box-arrow-up-right" style="font-size:10px;"></i>
+                                                Open Maps
+                                            </a>
+                                        {% elseif myInternship.company.wilaya %}
+                                            <a href="https://www.google.com/maps/search/{{ myInternship.company.wilaya|url_encode }},+Algeria"
+                                               target="_blank"
+                                               class="d-flex align-items-center gap-1 text-decoration-none"
+                                               style="color:#3b82f6;font-size:0.7rem;font-weight:600;
+                                              padding:3px 10px;border-radius:20px;
+                                              border:1px solid rgba(59,130,246,0.3);
+                                              background:rgba(59,130,246,0.08);
+                                              transition:all 0.2s;"
+                                               onmouseover="this.style.background='rgba(59,130,246,0.2)'"
+                                               onmouseout="this.style.background='rgba(59,130,246,0.08)'">
+                                                <i class="bi bi-box-arrow-up-right" style="font-size:10px;"></i>
+                                                Open Maps
+                                            </a>
+                                        {% endif %}
+                                    </div>
+
+                                    {# Embedded Map #}
+                                    {% if myInternship.latitude and myInternship.longitude %}
+                                        <div style="position:relative;">
+                                            <iframe
+                                                    src="https://www.openstreetmap.org/export/embed.html?bbox={{ (myInternship.longitude - 0.01)|round(6) }},{{ (myInternship.latitude - 0.01)|round(6) }},{{ (myInternship.longitude + 0.01)|round(6) }},{{ (myInternship.latitude + 0.01)|round(6) }}&layer=mapnik&marker={{ myInternship.latitude }},{{ myInternship.longitude }}"
+                                                    width="100%"
+                                                    height="210"
+                                                    frameborder="0"
+                                                    style="display:block;filter:invert(90%) hue-rotate(180deg) brightness(0.85) contrast(1.1);"
+                                                    loading="lazy">
+                                            </iframe>
+                                            {# Blue overlay pin pulse #}
+                                            <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+                                                pointer-events:none;z-index:10;">
+                                                <div style="width:16px;height:16px;border-radius:50%;
+                                                    background:#3b82f6;
+                                                    box-shadow:0 0 0 6px rgba(59,130,246,0.3),
+                                                               0 0 0 12px rgba(59,130,246,0.1);
+                                                    animation:pulse-map 2s infinite;">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% elseif myInternship.company.wilaya %}
+                                        {# Fallback: wilaya only — show styled placeholder #}
+                                        <div style="height:210px;background:#0a0f1a;
+                                            display:flex;flex-direction:column;
+                                            align-items:center;justify-content:center;gap:12px;">
+                                            <div style="position:relative;">
+                                                <i class="bi bi-geo-alt-fill" style="font-size:2.5rem;color:#3b82f6;
+                                                  filter:drop-shadow(0 0 12px rgba(59,130,246,0.6));"></i>
+                                                <div style="position:absolute;bottom:-4px;left:50%;transform:translateX(-50%);
+                                                    width:20px;height:4px;border-radius:50%;
+                                                    background:rgba(59,130,246,0.4);
+                                                    filter:blur(3px);"></div>
+                                            </div>
+                                            <div class="text-center">
+                                                <div class="text-white fw-bold" style="font-size:0.95rem;">
+                                                    {{ myInternship.company.wilaya }}
+                                                </div>
+                                                <div class="text-white-50 small">Algeria</div>
+                                            </div>
+                                            <a href="https://www.google.com/maps/search/{{ myInternship.company.wilaya|url_encode }},+Algeria"
+                                               target="_blank"
+                                               class="btn btn-sm px-4 rounded-pill fw-bold"
+                                               style="background:rgba(59,130,246,0.15);
+                                              border:1px solid rgba(59,130,246,0.4);
+                                              color:#3b82f6;font-size:0.75rem;">
+                                                <i class="bi bi-map me-1"></i> View on Google Maps
+                                            </a>
+                                        </div>
+                                    {% else %}
+                                        <div style="height:180px;background:#0a0f1a;
+                                            display:flex;align-items:center;justify-content:center;">
+                                    <span class="text-white-50 small">
+                                        <i class="bi bi-geo me-2"></i>No location available
+                                    </span>
+                                        </div>
+                                    {% endif %}
+
+                                </div>{# end map section #}
+
+                            </div>{# end col-md-8 #}
+                        </div>{# end row #}
+                    </div>{# end modal-body #}
+
+                    <div class="modal-footer border-0 px-4 py-3">
+                        <button type="button"
+                                class="btn btn-outline-secondary rounded-3 px-4 ms-auto"
+                                data-bs-dismiss="modal">
+                            Close
+                        </button>
                     </div>
-                </div>
-                <div class="modal-footer border-0">
-                    <button type="button" class="btn btn-secondary w-100" data-bs-dismiss="modal">Close</button>
+
                 </div>
             </div>
         </div>
-    </div>
 
+        <style>
+            @keyframes pulse-map {
+                0%   { box-shadow: 0 0 0 6px rgba(59,130,246,0.3), 0 0 0 12px rgba(59,130,246,0.1); }
+                50%  { box-shadow: 0 0 0 10px rgba(59,130,246,0.15), 0 0 0 20px rgba(59,130,246,0.05); }
+                100% { box-shadow: 0 0 0 6px rgba(59,130,246,0.3), 0 0 0 12px rgba(59,130,246,0.1); }
+            }
+        </style>
+    {% endif %}
+    <link href="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/css/tom-select.bootstrap5.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/js/tom-select.complete.min.js"></script>
     <script>
 
 
@@ -2003,14 +2405,6 @@
         }
 
 
-
-
-
-
-
-
-
-
         // ══════════════════════════════════════════════════
         // ★ Withdraw من جدول My Applications
         // ══════════════════════════════════════════════════
@@ -2061,30 +2455,6 @@
         }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         async function handleApplicationAction(offerId, appId, action, btn) {
             const confirmMsg = action === 'delete'
                 ? 'Are you sure you want to delete this rejection record?'
@@ -2133,5 +2503,82 @@
                 btn.disabled = false;
             }
         }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const selectElement = document.getElementById('skills-select');
+            const suggestBox = document.getElementById('suggest-skill-box');
+            const btnSuggest = document.getElementById('btn-suggest');
+            let currentSearchQuery = '';
+
+            // تفعيل محرك البحث التلقائي المرتبط بالـ API الخلفي
+            const control = new TomSelect(selectElement, {
+                valueField: 'id',
+                labelField: 'text',
+                searchField: 'text',
+                load: function(query, callback) {
+                    currentSearchQuery = query;
+                    if(!query.length) return callback();
+
+                    const url = '/api/skills/search?q=' + encodeURIComponent(query);
+
+                    fetch(url)
+                        .then(response => response.json())
+                        .then(json => {
+                            callback(json);
+                            // إذا كتبت مهارة ولم تظهر نتائج، نظهر زر الاقتراح الذكي
+                            if (json.length === 0 && query.length > 0) {
+                                suggestBox.classList.remove('d-none');
+                            } else {
+                                suggestBox.classList.add('d-none');
+                            }
+                        }).catch(() => {
+                        callback();
+                    });
+                },
+                render: {
+                    option: function(item, escape) {
+                        // إظهار اسم المهارة وأسفلها القسم التابع لها داخل قائمة الاقتراحات لجمالية أكبر
+                        return `<div class="py-1 px-2">
+                            <span class="d-block fw-bold">${escape(item.text)}</span>
+                            <small class="text-muted" style="font-size: 10px;">Field: ${escape(item.category)}</small>
+                        </div>`;
+                    }
+                }
+            });
+
+            // عند الضغط على زر اقتراح مهارة جديدة غير مسجلة
+            btnSuggest.addEventListener('click', function() {
+                if (!currentSearchQuery) return;
+
+                fetch('/api/skills/suggest', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name: currentSearchQuery })
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        alert(data.message); // إشعار نجاح الإرسال للإدارة
+                        suggestBox.classList.add('d-none');
+                    });
+            });
+        });
+
     </script>
 {% endblock %}

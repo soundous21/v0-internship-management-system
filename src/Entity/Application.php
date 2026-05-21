@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\ApplicationRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\DBAL\Types\Types; // أضيفي هذا السطر في أعلى الملف
 
 #[ORM\Entity(repositoryClass: ApplicationRepository::class)]
 #[ORM\Table(name: 'applications')]
@@ -149,5 +150,64 @@ class Application
 
         // حساب النسبة المئوية
         return (int) (($matchCount / $offerSkills->count()) * 100);
+    }
+
+
+
+
+
+
+// ══════════════════════════════════════════════════════════════════
+// C) src/Entity/Application.php
+// أضيفي هذه الحقول الثلاثة داخل كلاس Application
+// ══════════════════════════════════════════════════════════════════
+
+    // ── حقول التقييم بعد انتهاء التربص ──────────────────────────
+
+    /** تقييم الطالب للشركة من 1 إلى 5 نجوم */
+    #[ORM\Column(type: 'integer', nullable: true)]
+    private ?int $rating = null;
+
+    /** تعليق الطالب على تجربة التربص */
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $feedback = null;
+
+    /** تاريخ إنهاء التربص (يُملأ يدوياً أو تلقائياً) */
+    #[ORM\Column(type: 'datetime', nullable: true)]
+    private ?\DateTimeInterface $completedAt = null;
+
+    // ── Getters & Setters ─────────────────────────────────────────
+
+    public function getRating(): ?int
+    {
+        return $this->rating;
+    }
+
+    public function setRating(?int $rating): static
+    {
+        $this->rating = $rating;
+        return $this;
+    }
+
+    public function getFeedback(): ?string
+    {
+        return $this->feedback;
+    }
+
+    public function setFeedback(?string $feedback): static
+    {
+        $this->feedback = $feedback;
+        return $this;
+    }
+
+    public function getCompletedAt(): ?\DateTimeInterface
+    {
+        return $this->completedAt;
+    }
+
+    public function setCompletedAt(?\DateTimeInterface $completedAt): static
+    {
+        $this->completedAt = $completedAt;
+        return $this;
     }
 }

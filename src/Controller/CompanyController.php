@@ -244,11 +244,22 @@ class CompanyController extends AbstractController
     public function deleteOffer(int $id, EntityManagerInterface $em): Response
     {
         $offer = $em->getRepository(Offers::class)->find($id);
-        if ($offer && $offer->getCompany() === $this->getUser()) {
-            $em->remove($offer);
-            $em->flush();
-            $this->addFlash('success', 'Offer deleted successfully!');
+
+        if (!$offer || $offer->getCompany() !== $this->getUser()) {
+            $this->addFlash('error', 'Offer not found.');
+            return $this->redirectToRoute('app_company_offers');
         }
+
+        // ★ منع الحذف إذا كان التربص جارياً
+        if ($offer->getComputedStatus() === 'In Progress') {
+            $this->addFlash('error', 'Cannot delete this offer: an internship is currently in progress.');
+            return $this->redirectToRoute('app_company_offers');
+        }
+
+        $em->remove($offer);
+        $em->flush();
+        $this->addFlash('success', 'Offer deleted successfully!');
+
         return $this->redirectToRoute('app_company_offers');
     }
 
